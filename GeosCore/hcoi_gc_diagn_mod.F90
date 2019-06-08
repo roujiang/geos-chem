@@ -80,6 +80,8 @@ MODULE HCOI_GC_Diagn_Mod
 !  11 Nov 2014 - C. Keller   - Added call to ESMF diagnostics.
 !  22 Apr 2015 - M. Sulprizio- Now save out hydrocarbons in units kgC/m2/s
 !  27 Feb 2016 - C. Keller   - Update to HEMCO v2.0
+!  31 May 2019 - C. Keller   - Make sure that ND56 diagnostics is always called
+!                              in GEOS environment
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -265,10 +267,14 @@ CONTAINS
 
     CALL Diagn_Biogenic( am_I_Root, Input_Opt, HcoState, ExtState, RC )
     IF ( RC /= HCO_SUCCESS ) RETURN
+#endif
 
+#if defined( BPCH_DIAG ) || defined( MODEL_GEOS )
     CALL Diagn_LFlash  ( am_I_Root, Input_Opt, HcoState, ExtState, RC )
     IF ( RC /= HCO_SUCCESS ) RETURN
+#endif
 
+#if defined( BPCH_DIAG )
     CALL Diagn_ParaNOx ( am_I_Root, Input_Opt, HcoState, ExtState, RC )
     IF ( RC /= HCO_SUCCESS ) RETURN
 
@@ -4510,8 +4516,6 @@ CONTAINS
     ! Assume success
     RC = HCO_SUCCESS
 
-#if defined( BPCH_DIAG )
-
     ! Exit if we are doing a specialty simulation w/o lightning
     IF ( .not. Input_Opt%ITS_A_FULLCHEM_SIM ) RETURN
 
@@ -4605,7 +4609,6 @@ CONTAINS
        IF ( RC /= HCO_SUCCESS ) RETURN
 
     ENDIF ! ND56 
-#endif
 
   END SUBROUTINE Diagn_LFlash
 !EOC

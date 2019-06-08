@@ -3813,6 +3813,8 @@
 !  23 Jun 2016 - R. Yantosca - Now call INIT_DIAG_OH from GIGC_Init_Extra
 !  20 Jul 2016 - R. Yantosca - Remove references to NNPAR
 !  08 Nov 2017 - R. Yantosca - Return error condition to calling program
+!  31 May 2019 - C. Keller   - Make sure ND21 and ND56 are still set if run in
+!                              GEOS environment
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -5000,6 +5002,7 @@
 #endif
 #if defined( MODEL_GEOS )
       Input_Opt%ND21 = ND21x
+      Input_Opt%ND56 = ND56x
 #endif
 
       ! Return success
