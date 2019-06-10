@@ -63,7 +63,7 @@ help:
 	@echo 'libcore         Builds GEOS-Chem objs & libs only in GeosCore/'
 	@echo 'libheaders      Builds GEOS-Chem objs & libs only in Headers/'
 	@echo 'libhistory      Builds GEOS-Chem objs & libs only in History/'
-	@echo 'libiso          Builds GEOS-Chem objs & libs only in ISOROPIA/'
+	@echo 'libiso          Builds GEOS-Chem objs & libs only in ISORROPIA/'
 	@echo 'libkpp          Builds GEOS-Chem objs & libs only in KPP/'
 	@echo 'libnc           Builds GEOS-Chem objs & libs only in NcdfUtil/'  
 	@echo 'librad          Builds GEOS-Chem objs & libs only in GeosRad/'  
@@ -78,7 +78,6 @@ help:
 	@echo 'tauclean        Removes *.pdb, *.inst, *.pp, and *.continue.* files produced by TAU'
 	@echo 'help            Displays this help screen'
 #-----------------------------------------------------------------------------
-# Prior to 5/16/18:
 # Comment out until GTMM is restored.  GTMM hasn't worked for a long time.
 # (bmy, 5/16/18)
 #	@echo ''	       
@@ -157,9 +156,6 @@ help:
 	@echo '                (i.e. to maintain backwards compatibility until these'
 	@echo '                diagnostics are available in netCDF format)'
 	@echo '                --> Default: BPCH_TIMESER=y'
-	@echo ''
-	@echo 'NC_DIAG=y       Enable netCDF output for diagnostics'
-	@echo '                --> Default: NC_DIAG=n'
 	@echo ''
 	@echo 'NC_NODEFLATE=y  Disable netCDF file compression when writing'
 	@echo '                diagnostic or restart files to disk.  This may'

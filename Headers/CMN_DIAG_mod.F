@@ -35,10 +35,6 @@
       !######################################################
       !##### NOTE: These variables can be blocked out!  #####
       !######################################################
-#if defined( BPCH_DIAG ) || defined( BPCH_TIMESER ) || defined( MODEL_GEOS )
-      INTEGER, PARAMETER :: PD21=8+(NRHAER+NDUST)*3+(NRHAER*2)+
-     &                           (NSTRATAER*3)
-#endif
 #if defined( BPCH_DIAG ) || defined( BPCH_TIMESER )
       INTEGER, PARAMETER :: PD05=20
       INTEGER, PARAMETER :: PD06=NDSTBIN
@@ -52,6 +48,10 @@
       INTEGER, PARAMETER :: PD17=8           
       INTEGER, PARAMETER :: PD18=8
       INTEGER, PARAMETER :: PD19=3
+#if defined( BPCH_DIAG ) || defined( BPCH_TIMESER ) || defined( MODEL_GEOS )
+      INTEGER, PARAMETER :: PD21=8+(NRHAER+NDUST)*3+(NRHAER*2)+
+     &                           (NSTRATAER*3)
+#endif
       INTEGER, PARAMETER :: PD22=76
       INTEGER, PARAMETER :: PD43=4
       INTEGER, PARAMETER :: PD52=6
@@ -239,19 +239,21 @@
 !\\
 ! !INTERFACE:
 !
-      SUBROUTINE Init_CMN_DIAG( am_I_Root, RC )
+      SUBROUTINE Init_CMN_DIAG( am_I_Root, State_Grid, RC )
 !
 ! !USES:
 !
       USE ErrCode_Mod
+      USE State_Grid_Mod, ONLY : GrdState
 !
 ! !INPUT PARAMETERS:
 !
-      LOGICAL, INTENT(IN)  :: am_I_Root   ! Are we on the root CPU?
+      LOGICAL,        INTENT(IN)  :: am_I_Root   ! Are we on the root CPU?
+      TYPE(GrdState), INTENT(IN)  :: State_Grid  ! Grid State object
 !
 ! !OUTPUT PARAMETERS:
 !
-      INTEGER, INTENT(OUT) :: RC          ! Success or failure?
+      INTEGER,        INTENT(OUT) :: RC          ! Success or failure?
 ! 
 ! !REVISION HISTORY: 
 !  19 Nov 2012 - R. Yantosca - Added ProTeX headers
@@ -263,7 +265,7 @@
       
 #if defined( BPCH_DIAG ) || defined( BPCH_TIMESER )
       ! Set PD65 (for backwards compatibility, for now)
-      PD65 = LLPAR*MAXFAM 
+      PD65 = State_Grid%NZ * MAXFAM 
       PD64 = W_
 #endif
 

@@ -102,12 +102,10 @@ $(wildcard $(HDR)/*.F*)               \
 $(CORE)/main.F                        \
 $(CORE)/input_mod.F                   \
 $(CORE)/gc_environment_mod.F90        \
-$(CORE)/restart_mod.F                 \
 $(CORE)/cleanup.F                     \
 ./gc_transport.P                      \
 $(CORE)/transport_mod.F               \
 $(CORE)/pjc_pfix_mod.F                \
-$(CORE)/tpcore_bc_mod.F               \
 $(CORE)/tpcore_fvdas_mod.F90          \
 $(CORE)/tpcore_window_mod.F90         \
 ./gc_convection.P                     \
@@ -145,11 +143,10 @@ $(CORE)/carbon_mod.F                  \
 $(CORE)/dust_mod.F                    \
 $(CORE)/seasalt_mod.F                 \
 $(CORE)/sulfate_mod.F                 \
-$(CORE)/isoropiaII_mod.F              \
+$(CORE)/isorropiaII_mod.F             \
 ./gc_met.P                            \
 $(CORE)/dao_mod.F                     \
-$(CORE)/merra2_read_mod.F90           \
-$(CORE)/geosfp_read_mod.F90           \
+$(CORE)/flexgrid_read_mod.F90         \
 ./gc_specialty.P                      \
 $(CORE)/c2h6_mod.F                    \
 $(CORE)/co2_mod.F                     \
