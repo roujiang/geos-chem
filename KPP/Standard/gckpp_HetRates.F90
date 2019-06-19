@@ -142,15 +142,14 @@ MODULE GCKPP_HETRATES
   REAL(fp) :: HSO3conc_Cld, SO3conc_Cld, fupdateHOBr
 
   ! Arrays
-  REAL(fp) :: XAREA(25)
-  REAL(fp) :: XRADI(25)
+  REAL(fp) :: XAREA(25), XRADI(25), XVOL(25), XH2O(25)
   REAL(fp) :: KHETI_SLA(11)
 
 !$OMP THREADPRIVATE( NAERO,        NATSURFACE, PSCBOX,   STRATBOX )
 !$OMP THREADPRIVATE( TEMPK,        RELHUM,     SPC_NIT,  SPC_SO4  )
 !$OMP THREADPRIVATE( GAMMA_HO2,    XTEMP,      XDENA,    QLIQ     )
-!$OMP THREADPRIVATE( QICE,         XAREA,      XRADI              )
-!$OMP THREADPRIVATE( KHETI_SLA,    SUNCOS                         )
+!$OMP THREADPRIVATE( QICE,         KHETI_SLA,  SUNCOS             )
+!$OMP THREADPRIVATE( XAREA,        XRADI,      XVOL,     XH2O     )
 !$OMP THREADPRIVATE( H_PLUS,       MSO4,       MNO3,     MHSO4    )
 !$OMP THREADPRIVATE( HSO3conc_Cld, SO3conc_Cld, fupdateHOBr       )
 !
@@ -236,9 +235,10 @@ MODULE GCKPP_HETRATES
 !  24 Aug 2017 - M. Sulprizio- Remove support for GCAP, GEOS-4, GEOS-5 and MERRA
 !  15 Nov 2017 - M. Sulprizio- Add modifications for HOBr + S(IV) based on work
 !                              by Qianjie Chen
-!  02 Mar 2018 - M. Sulprizio- Update HSTAR_EPOX following recommendation from 
+!  02 Mar 2018 - M. Sulprizio- Update HSTAR_EPOX following recommendation from
 !                              E. Marais to address SOAIE being a factor of 2
 !                              lower in v11-02d than in Marais et al. [2016]
+!  23 Oct 2018 - C.D. Holmes & V. Shah- N2O5 gamma updates
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -580,14 +580,24 @@ MODULE GCKPP_HETRATES
       MHSO4  = State_Chm%BisulSav(I,J,L)
 
       !--------------------------------------------------------------------
-      ! Get fields from State_Met, State_Chm, and Input_Opt
+      ! Aerosol physical properties
       !--------------------------------------------------------------------
 
-      ! Aerosol area [cm2/cm3]
+      ! Aerosol specific surface area, cm2(aerosol)/cm3(air)
       XAREA(1:State_Chm%nAero) = State_Chm%AeroArea(I,J,L,:)
 
-      ! Aerosol radius [cm]
+      ! Aerosol effective radius, cm
       XRADI(1:State_Chm%nAero) = State_Chm%AeroRadi(I,J,L,:)
+
+      ! Aerosol specific volume, cm3(aerosol)/cm3(air)
+      XVOL(1:State_Chm%nAero)  = XAREA(1:State_Chm%nAero) * XRADI(1:State_Chm%nAero) / 3d0
+
+      ! Aerosol water content, cm3(H2O)/cm3(air)
+      XH2O(1:State_Chm%nAero)  = State_Chm%AeroH2O(I,J,L,:)
+
+      !--------------------------------------------------------------------
+      ! Get fields from State_Met, State_Chm, and Input_Opt
+      !--------------------------------------------------------------------
 
       TEMPK  = State_Met%T(I,J,L)              ! Temperature [K]
       XTEMP  = sqrt(State_Met%T(I,J,L))        ! Square root of temperature
@@ -1587,6 +1597,7 @@ MODULE GCKPP_HETRATES
 !  29 Mar 2016 - R. Yantosca - Added ProTeX header
 !  01 Apr 2016 - R. Yantosca - Define N, XSTKCF, ADJUSTEDRATE locally
 !  01 Apr 2016 - R. Yantosca - Replace KII_KI with DO_EDUCT local variable
+!  23 Oct 2018 - C. D. Holmes & V. Shah - Update gamma for SO4-NIT-NH4 & OC aerosol
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -1596,14 +1607,12 @@ MODULE GCKPP_HETRATES
       LOGICAL  :: DO_EDUCT
       INTEGER  :: N
       REAL(fp) :: XSTKCF, ADJUSTEDRATE
-      REAL(fp) :: TMP1,   TMP2
+      REAL(fp) :: sna_NIT,sna_H2O, sna_Cl
 
       ! Initialize
       HET_N2O5     = 0.0_fp
       ADJUSTEDRATE = 0.0_fp
       XSTKCF       = 0.0_fp
-      TMP1         = 0.0_fp
-      TMP2         = 0.0_fp
 
       ! Always apply PSC rate adjustment
       DO_EDUCT     = .TRUE.
@@ -1628,39 +1637,25 @@ MODULE GCKPP_HETRATES
 	 ! restore route for tropospheric sulfate (TMS 17/04/10)
 	 ! this is to maintain consistancy with Sherwen et al (2016)
          ELSEIF (N.eq.8) THEN
-            ! Fixed gamma?
-            !XSTKCF = 0.1e-4_fp ! Sulfate
-            ! RH dependence
-            XSTKCF = N2O5( N, TEMPK, RELHUM )
+
+            ! Concentration of NO3- in aerosol, molar (mol/L)
+            ! SPC_NO3 is molec/cm3(air), xvol is cm3(aerosol)/cm3(air)
+            sna_NIT = SPC_NIT / XVOL(N) / 6.02d23 * 1d3
+
+            ! Concentration of H2O in aerosol, molar (mol/L)
+            ! XH2O is cm3(H2O)/cm3(air)
+            sna_H2O = XH2O(N) / 18d0 / XVOL(N) * 1d3
+
+            ! Assume [Cl-]=0 for sulfate aerosol for now
+            sna_Cl  = 0.0e+0_fp
+
+            ! Gamma from Bertram and Thornton (2009) expression
+            ! is considered a different aerosol type
+            XSTKCF = N2O5_BT( RELHUM, sna_NIT, sna_Cl, sna_H2O )
+
          ELSE
             ! For UCX-based mechanisms ABSHUMK is set to Spc(I,J,L,id_H2O)
             XSTKCF = N2O5( N, TEMPK, RELHUM )
-         ENDIF
-         ! Nitrate effect; reduce the gamma on nitrate by a
-         ! factor of 10 (lzh, 10/25/2011)
-         IF ( N == 8 ) THEN
-            ! WARNING! It appears that these should be in units of
-            !          mcl/cc. This is discerned from output in
-            !          the old calcrate.F routine which gets the
-            !          tracer concentrations from the state_chm object.
-            !          When the values are dumped in calcrate.F, they were
-            !          in mcl/cc. Still, comments later in calcrate.F indicate
-            !          that Tracers should be in units of kg/box.
-            ! -- As a fix, here, we simply impose the equivalent of a kg to
-            !    mcl/cc conversion using the SO4 and NIT molecular weights.
-            !    This should be investigated and the proper units applied.
-            !    It will and does have a large impct on heterogenous
-            !    N chemistry and on NOx in remote regions.
-            ! -- In any case, the result from below yields the same
-            !    ratio of TMP2/TMP1 as calcrate does with its
-            !    current settings.
-            !    MSL - Feb. 16, 2016
-            TMP1 = SPC_NIT+SPC_SO4
-            TMP2 = SPC_NIT
-            IF ( TMP1 .GT. 0.0 ) THEN
-               XSTKCF = XSTKCF * ( 1.0e+0_fp - 0.9e+0_fp &
-                                   *TMP2/TMP1 )
-            ENDIF
          ENDIF
 
          IF (N.eq.13) THEN
@@ -1680,6 +1675,101 @@ MODULE GCKPP_HETRATES
       END DO
 
     END FUNCTIOn HETN2O5
+!EOC
+!------------------------------------------------------------------------------
+!                  GEOS-Chem Global Chemical Transport Model                  !
+!------------------------------------------------------------------------------
+!BOP
+!
+! !IROUTINE: N2O5_BT
+!
+! !DESCRIPTION: Function N2O5_BT computes the GAMMA reaction probability
+!  for N2O5 loss in sulfate-nitrate-ammonium (SNA) aerosols based on the
+!  recommendation of
+!  Bertram and Thornton (2009). Toward a general parameterization of N2O5
+!    reactivity on aqueous particles: the competing effects of particle liquid
+!    water, nitrate and chloride. Atmospheric Chemistry and Physics, 9, 8351–8363.
+!
+!\\
+!\\
+! !INTERFACE:
+!
+    FUNCTION N2O5_BT( RH, NIT, CL, H2O ) RESULT( GAMMA )
+!
+! !INPUT PARAMETERS:
+!
+      REAL(fp),  INTENT(IN) :: RH        ! Relative humidity [1]
+      REAL(fp),  INTENT(IN) :: NIT       ! Aerosol nitrate, mol/L
+      REAL(fp),  INTENT(IN) :: CL        ! Aerosol chloride, mol/L
+      REAL(fp),  INTENT(IN) :: H2O       ! Aerosol H2O, mol/L
+!
+! !RETURN VALUE:
+!
+      REAL(fp)              :: GAMMA
+!
+! !REMARKS:
+!
+! !REVISION HISTORY:
+!  !  23 Aug 2018 - C. D. Holmes & V. Shah - Initial version
+!EOP
+!------------------------------------------------------------------------------
+!BOC
+!
+! !DEFINED PARAMETERS:
+!
+      ! Parameters from Bertram and Thornton (2009 ACP)
+      REAL(fp), parameter :: A     = 3.2d-8, &
+                             k3k2b = 6.0d-2, &
+                             k4k2b = 29.0d0, &
+                             beta  = 1.15d6, &
+                             delta = 1.3d-1
+!
+! !LOCAL VARIABLES:
+!
+      REAL(fp)              :: k2f, NI, CA
+
+!------------------------------------------------------------------------------
+
+      ! Select dry or deliquesced aerosol
+      if ( H2O < 0.1 ) then
+
+         ! When [H2O(l)] is nearly zero, use a dry aerosol value
+         gamma = 0.005
+
+      else
+
+         ! Eq. 11 from Bertram and Thornton, 2009
+         ! Modified to avoid underflow when exp(-delta*H2O)~1
+         if ( delta*H2O < 1e-2 ) then
+            k2f = beta * ( delta * H2O )
+         else
+            k2f   = beta * ( 1d0 - exp( -delta * H2O ) )
+         endif
+
+         ! Nitrate inhibition
+         IF ( NIT .GT. 0.e+0_fp ) THEN
+            NI       = k3k2b * H2O / NIT
+         ELSE
+            NI       = 0.e+0_fp
+         ENDIF
+
+         ! Chloride acceleration
+         IF ( NIT .GT. 0.e+0_fp ) THEN
+            CA       = k4k2b * CL / NIT
+         ELSE
+            CA       = 0.e+0_fp
+         ENDIF
+
+         ! Eq. 12 from Bertram and Thornton, 2009
+         gamma = A * k2f * ( 1d0 - 1d0 / ( 1d0 + NI + CA ) )
+
+         ! Ensure gamma is >= to the dry aerosol value
+         gamma = max( 0.005, gamma )
+
+      endif
+
+    END FUNCTION N2O5_BT
+
 !EOC
 !------------------------------------------------------------------------------
 !                  GEOS-Chem Global Chemical Transport Model                  !
@@ -3196,6 +3286,7 @@ MODULE GCKPP_HETRATES
 !                              standard N2O5 calculation to establish gamma for
 !                              sulfate, rather than relying on a fixed factor.
 !  03 Jan 2018 - M. Sulprizio  - Replace UCX CPP switch with Input_Opt%LUCX
+!  23 Aug 2018 - C. D. Holmes & V. Shah - Update gamma for SO4-NIT-NH4 aerosol
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -3204,6 +3295,7 @@ MODULE GCKPP_HETRATES
 !
       INTEGER  :: N
       REAL(fp) :: XSTKCF, ADJUSTEDRATE
+      REAL(fp) :: sna_NIT,sna_H2O, sna_Cl
 
       ! Initialize
       kISum        = 0.0_fp
@@ -3222,6 +3314,9 @@ MODULE GCKPP_HETRATES
                ! Fixed gamma?
                !XSTKCF = 0.1e-4_fp ! Sulfate
                ! RH dependence
+               ! Note gamma calculation on sulfate in troposphere uses
+               ! the Bertram & Thornton parameterization (func: N2O5_BT)
+               ! V.Shah, 2018-10-23
       	       XSTKCF = N2O5( N, TEMPK, RELHUM )
 	    ENDIF
          ENDIF
@@ -5384,6 +5479,7 @@ MODULE GCKPP_HETRATES
 !  29 Mar 2016 - R. Yantosca - Added ProTeX headers
 !  15 Jun 2017 - M. Sulprizio- Move conversion of RH from fraction to % to
 !                              SET_HET above
+!  23 Oct 2018 - V. Shah - Updated Gamma values for organic aerosols
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -5417,10 +5513,13 @@ MODULE GCKPP_HETRATES
          !----------------
          ! Sulfate
          !----------------
-         CASE ( 8 )            
-    
+         CASE ( 8 )
+           ! The following calculation for sulfate aerosols is
+           ! done only for the stratosphere following the UCX implementation.
+           ! For troposphere, we use the Bertram and Thornton parameterization
+           ! (func: N2O5_BT) V.Shah, 2018-10-23
             !===========================================================
-            ! RH dependence from Kane et al., Heterogenous uptake of 
+            ! RH dependence from Kane et al., Heterogenous uptake of
             ! gaseous N2O5 by (NH4)2SO4, NH4HSO4 and H2SO4 aerosols
             ! J. Phys. Chem. A , 2001, 105, 6465-6470 
             !===========================================================
@@ -5463,17 +5562,18 @@ MODULE GCKPP_HETRATES
          !----------------
          ! Organic Carbon
          !----------------           
-         CASE ( 10 )          
+         CASE ( 10 )
 
             !===========================================================
-            ! Based on Thornton, Braban and Abbatt, 2003
-            ! N2O5 hydrolysis on sub-micron organic aerosol: the effect
-            ! of relative humidity, particle phase and particle size
+            ! Based on Badger et al. 2006 (J. Phys. Chem.) for humic acid
+            ! Badger CL, et al. Reactive uptake of N2O5 by aerosol particles
+            ! containing mixtures of humic acid and ammonium sulfate.
+            ! The Journal of Physical Chemistry A. 2006 Jun 1;110(21):6986-94.
             !===========================================================
-            IF ( RH_P >= 57e+0_fp ) THEN
-               GAMMA = 0.03e+0_fp
+            IF ( RH_P >= 50.e+0_fp ) THEN
+                 GAMMA = 0.001d0
             ELSE
-               GAMMA = RH_P * 5.2e-4_fp
+                GAMMA = 0.0001D0
             ENDIF
 
          !----------------
