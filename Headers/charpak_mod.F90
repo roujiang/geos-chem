@@ -36,36 +36,17 @@ MODULE Charpak_Mod
   PUBLIC  :: TranUc     
   PUBLIC  :: Txtext
   PUBLIC  :: WordWrapPrint
+  PUBLIC  :: Unique
 !
-! !PRIVATE MEMBER FUNCTIONS
-!
+! !PRIVATE MEMBER FUNCTIONS:
 !
 ! !REMARKS:
 !  CHARPAK routines by Robert D. Stewart, 1992.  Subsequent modifications 
 !  made for GEOS-CHEM by Bob Yantosca (1998, 2002, 2004).
 !
 ! !REVISION HISTORY:
-!  (1 ) Moved "cntmat.f", "copytxt.f", "cstrip.f", "fillstr.f", "txt2inum.f",
-!        "txtext.f", into this F90 module for easier bookkeeping 
-!        (bmy, 10/15/01)
-!  (2 ) Moved "tranuc.f" into this F90 module (bmy, 11/15/01)
-!  (3 ) Now divide module header into MODULE PRIVATE, MODULE VARIABLES, and
-!        MODULE ROUTINES sections.  Updated comments (bmy, 5/28/02)
-!  (4 ) Wrote a new file "strrepl.f", which replaces a character pattern
-!        within a string with replacement text.  Moved "tranlc.f" into
-!        this module.  Replaced calls to function LENTRIM with F90 
-!        intrinsic function LEN_TRIM.  Removed function FILLSTR and
-!        replaced it w/ F90 intrinsic REPEAT. (bmy, 6/25/02)
-!  (5 ) Added routine STRSPLIT as a wrapper for TXTEXT.  Also added
-!        routines STRREPL and STRSQUEEZE. (bmy, 7/30/02)
-!  (6 ) Added function ISDIGIT.  Also replace LEN_TRIM with LEN in routine
-!        STRREPL, to allow us to replace tabs w/ spaces. (bmy, 7/20/04)
-!  20 Nov 2009 - R. Yantosca - Added ProTeX header
-!  20 Aug 2013 - R. Yantosca - Removed "define.h", this is now obsolete
-!  07 Aug 2017 - R. Yantosca - Add ProTeX headers for subroutines
-!  31 Oct 2017 - R. Yantosca - Converted module to F90 free-format
-!  01 Nov 2017 - R. Yantosca - Added ReadOneLine and CleanText
-!  01 Nov 2017 - R. Yantosca - Added MaxStrLen parameter for ReadOneLine
+!  15 Oct 2001 - R. Yantosca - Initial version
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -1164,5 +1145,77 @@ CONTAINS
     ENDDO
 
   END SUBROUTINE WordWrapPrint
+!EOC
+!------------------------------------------------------------------------------
+!                  GEOS-Chem Global Chemical Transport Model                  !
+!------------------------------------------------------------------------------
+!BOP
+!
+! !IROUTINE: Unique
+!
+! !DESCRIPTION: Returns only the unique values in a vector of strings.
+!\\
+!\\
+! !INTERFACE:
+!
+  SUBROUTINE Unique( vec, vec_unique )
+!
+! !INPUT PARAMETERS:
+!
+    CHARACTER(LEN=*),          INTENT(IN)  :: vec(:)
+!
+! !OUTPUT PARAMETERS:
+!
+    CHARACTER(LEN=*), POINTER, INTENT(OUT) :: vec_unique(:)
+!
+! !AUTHOR:
+!  Jacob Williams (jacob@degenerateconic.com)
+!  Source code at: http://degenerateconic.com/unique/
+!  Modified for string handling by Bob Yantosca
+!
+! !REVISION HISTORY:
+!  See the subsequent Git history with the gitk browser!
+!EOP
+!------------------------------------------------------------------------------
+!BOC
+!
+! !LOCAL VARIABLES:
+!
+    integer :: i,num
+    logical,dimension(size(vec)) :: mask
+
+    mask = .false.
+
+    ! Loop over all elements
+    do i = 1, SIZE( vec )
+
+       ! Assume that all valid array elements are located
+       ! contiguously  Exit upon the encountering the
+       ! first null character. (bmy, 7/23/19)
+       IF ( LEN_TRIM( vec(I) ) == 0 ) EXIT
+
+       !count the number of occurrences of this element:
+       num = count( vec(i)==vec )
+
+       if (num==1) then
+          !there is only one, flag it:
+          mask(i) = .true.
+       else
+          !flag this value only if it hasn't already been flagged:
+          if (.not. any(vec(i)==vec .and. mask) ) mask(i) = .true.
+       end if
+
+    end do
+
+    !return only flagged elements:
+    iF ( ASSOCIATED( vec_unique ) ) DEALLOCATE( vec_unique )
+    ALLOCATE( vec_unique(count(mask)) )
+    vec_unique = PACK( vec, mask )
+
+    !if you also need it sorted, then do so.
+    ! For example, with slatec routine:
+    !call ISORT (vec_unique, [0], size(vec_unique), 1)
+
+  END SUBROUTINE Unique
 !EOC
 END MODULE CharPak_Mod

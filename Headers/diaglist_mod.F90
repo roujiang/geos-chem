@@ -1274,7 +1274,8 @@ CONTAINS
 !\\
 ! !INTERFACE:
 !
-  SUBROUTINE Check_DiagList( am_I_Root, DiagList, substr, found, RC, exact )
+  SUBROUTINE Check_DiagList( am_I_Root, DiagList, substr, found,             &
+                             RC,        exact,    tagList                   )
 !
 ! !USES:
 !
@@ -1291,10 +1292,12 @@ CONTAINS
 !
     LOGICAL,           INTENT(OUT) :: found       ! Was a match found (T/F)?
     INTEGER,           INTENT(OUT) :: RC          ! Success or failure?
+    CHARACTER(LEN=*),  OPTIONAL    :: tagList     ! Output list of tags (csv)
 !
+
 ! !REVISION HISTORY:
 !  22 Sep 2017 - E. Lundgren - Initial version
-!  01 Nov 2017 - R. Yantosca - Now use To_UpperCase from charpak_mod.F90
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -1303,6 +1306,7 @@ CONTAINS
 !
     ! Scalars
     LOGICAL                :: doExactMatch
+    LOGICAL                :: doLookForAll
     INTEGER                :: matchInd
     INTEGER                :: matchLen
 
@@ -1318,6 +1322,12 @@ CONTAINS
     RC      = GC_SUCCESS
     thisLoc = ' -> at Check_DiagList (in module Headers/diaglist_mod.F90)'
     found   = .FALSE.
+
+    ! Initialize the optional tagList argument, which will return a list
+    ! of all found tags.  This will be either the wildcard or the species
+    ! names themelves. (bmy, 7/23/19)
+    doLookForAll = PRESENT( tagList )
+    IF ( doLookForAll ) tagList = ''
 
     ! Get the optional exactMatch argument, whichg determines
     ! if we should force an exact name match or not (bmy, 10/29/18)
@@ -1352,7 +1362,15 @@ CONTAINS
           IF ( ( matchInd == 1                               )   .and.       &
                ( matchLen == LEN_TRIM( currentName_AllCaps ) ) ) THEN
              found = .TRUE.
-             EXIT
+
+             ! If we are looking for the tags, then keep searching the list.
+             ! Otherwise, exit as soon as we have found a match.
+             IF ( doLookForAll ) THEN
+                tagList = TRIM( tagList                   ) //               &
+                          TRIM( current%name(matchLen+1:) ) // ', '
+             ELSE
+                EXIT
+             ENDIF
           ENDIF
 
        ELSE
@@ -1362,7 +1380,15 @@ CONTAINS
           ! starting from the beginning).
           IF ( matchInd > 0 ) THEN
              found = .TRUE.
-             EXIT
+
+             ! If we are looking for the tags, then keep searching the list.
+             ! Otherwise, exit as soon as we have found a match.
+             IF ( doLookForAll ) THEN
+                tagList = TRIM( tagList                   ) //               &
+                          TRIM( current%name(matchLen+1:) ) // ','
+             ELSE
+                EXIT
+             ENDIF
           ENDIF
          
        ENDIF

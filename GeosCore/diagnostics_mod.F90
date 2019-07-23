@@ -485,7 +485,7 @@ CONTAINS
 !
     ! Scalars
     LOGICAL            :: Found
-    INTEGER            :: D, I, J, L, N
+    INTEGER            :: D, I, J, L, N, S
     REAL(fp)           :: TmpVal, Conv
 
     ! Strings
@@ -536,9 +536,9 @@ CONTAINS
        ! NOTE: If you change the units of SpeciesConc in state_diag_mod.F90,
        ! then comment this IF block out and then also uncomment the IF block
        ! in the main routine above where Set_SpcConc_Diagnostic is called.
-       IF ( State_Diag%Archive_SpeciesConc ) THEN
-          State_Diag%SpeciesConc(I,J,L,N) = State_Chm%Species(I,J,L,N)
-       ENDIF
+       !IF ( State_Diag%Archive_SpeciesConc ) THEN
+       !   State_Diag%SpeciesConc(I,J,L,N) = State_Chm%Species(I,J,L,N)
+       !ENDIF
 
        ! Species concentrations for restart file [v/v dry]
        IF ( State_Diag%Archive_SpeciesRst ) THEN
@@ -550,6 +550,17 @@ CONTAINS
     ENDDO
     ENDDO
     !$OMP END PARALLEL DO
+
+    ! Species concentrations diagnostic [v/v dry]
+    ! NOTE: If you change the units of SpeciesConc in state_diag_mod.F90,
+    ! then comment this IF block out and then also uncomment the IF block
+    ! in the main routine above where Set_SpcConc_Diagnostic is called.
+    IF ( State_Diag%Archive_SpeciesConc ) THEN
+       DO S = 1, State_Diag%nSpeciesConc
+          N = State_Diag%Map_SpeciesConc(S)
+          State_Diag%SpeciesConc(:,:,:,S) = State_Chm%Species(:,:,:,N)
+       ENDDO
+    ENDIF
 
     !=======================================================================
     ! Diagnostic for correcting species concentrations from the height
