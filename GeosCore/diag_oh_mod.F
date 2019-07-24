@@ -416,9 +416,6 @@
 !
 ! !LOCAL VARIABLES:
 !
-      ! Scalars
-      INTEGER :: LMAX
-
       ! Strings
       CHARACTER(LEN=255) :: ThisLoc
       CHARACTER(LEN=512) :: ErrMsg
@@ -441,8 +438,6 @@
       ! lifetime or just mean mass-weighted OH concentration
       IF ( Input_Opt%ITS_A_FULLCHEM_SIM ) THEN
 
-         ! Fullchem: chemistry grid only
-         LMAX       = State_Grid%MaxChemLev
          DO_SAVE_OH = .TRUE.
 
          ! Find the OH species ID (formerly in tracerid_mod.F)
@@ -457,8 +452,6 @@
 
       ELSE IF ( Input_Opt%ITS_A_CH4_SIM ) THEN
 
-         ! CH4: all levels
-         LMAX       = State_Grid%NZ
          DO_SAVE_OH = .TRUE.
 
       ELSE
@@ -482,44 +475,44 @@
       !=================================================================
 
       ! Air mass array
-      ALLOCATE( AIR_MASS( State_Grid%NX, State_Grid%NY, LMAX ),
+      ALLOCATE( AIR_MASS( State_Grid%NX, State_Grid%NY, State_Grid%NZ ),
      &          STAT=RC)
       CALL GC_CheckVar( 'diag_oh_mod.F:AIR_MASS', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       AIR_MASS = 0e+0_fp
 
       ! OH mass array
-      ALLOCATE( OH_MASS( State_Grid%NX, State_Grid%NY, LMAX ),
+      ALLOCATE( OH_MASS( State_Grid%NX, State_Grid%NY, State_Grid%NZ ),
      &          STAT=RC )
       CALL GC_CheckVar( 'diag_oh_mod.F:OH_MASS', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       OH_MASS = 0e+0_fp
 
-      ALLOCATE( OH_LOSS( State_Grid%NX, State_Grid%NY, LMAX ),
+      ALLOCATE( OH_LOSS( State_Grid%NX, State_Grid%NY, State_Grid%NZ ),
      &          STAT=RC )
       CALL GC_CheckVar( 'diag_oh_mod.F:OH_LOSS', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       OH_LOSS = 0e+0_fp
 
-      ALLOCATE( OHCH4_LOSS( State_Grid%NX, State_Grid%NY, LMAX ),
-     &          STAT=RC )
+      ALLOCATE( OHCH4_LOSS( State_Grid%NX, State_Grid%NY,
+     &                      State_Grid%NZ ), STAT=RC )
       CALL GC_CheckVar( 'diag_oh_mod.F:OHCH4_LOSS', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       OHCH4_LOSS = 0e+0_fp
 
-      ALLOCATE( CH4_MASS( State_Grid%NX, State_Grid%NY, LMAX ),
+      ALLOCATE( CH4_MASS( State_Grid%NX, State_Grid%NY, State_Grid%NZ ),
      &          STAT=RC )
       CALL GC_CheckVar( 'diag_oh_mod.F:CH4_MASS', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       CH4_MASS = 0e+0_fp
 
-      ALLOCATE( CH4_TROPMASS( State_Grid%NX, State_Grid%NY, LMAX ),
-     &          STAT=RC )
+      ALLOCATE( CH4_TROPMASS( State_Grid%NX, State_Grid%NY,
+     &                        State_Grid%NZ ), STAT=RC )
       CALL GC_CheckVar( 'diag_oh_mod.F:CH4_TROPMASS', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       CH4_TROPMASS = 0e+0_fp
 
-      ALLOCATE( CH4_EMIS( State_Grid%NX, State_Grid%NY, LMAX ),
+      ALLOCATE( CH4_EMIS( State_Grid%NX, State_Grid%NY, State_Grid%NZ ),
      &          STAT=RC )
       CALL GC_CheckVar( 'diag_oh_mod.F:CH4_EMIS', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN

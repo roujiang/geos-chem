@@ -4165,7 +4165,7 @@ CONTAINS
 
             ! For non-advected species at levels above chemistry grid,
             ! use a small number for background
-            ELSEIF ( L > State_Grid%MaxChemLev .and. &
+            ELSEIF ( .NOT. State_Met%InChemGrid(I,J,L) .AND. &
                      .NOT. SpcInfo%Is_Advected ) THEN
 
                State_Chm%Species(I,J,L,N) = SMALL_NUM * MW_g / AIRMW 

@@ -240,6 +240,7 @@ MODULE State_Met_Mod
      ! Fields for querying in which vertical regime a grid box is in
      ! or if a grid box is near local noon solar time
      !----------------------------------------------------------------------
+     INTEGER           :: MaxChemLev            ! Maximum level in chem grid
      LOGICAL,  POINTER :: InChemGrid    (:,:,:) ! Are we in the chemistry grid?
      LOGICAL,  POINTER :: InPbl         (:,:,:) ! Are we in the PBL?
      LOGICAL,  POINTER :: InStratMeso   (:,:,:) ! Are we in the stratosphere
@@ -419,6 +420,9 @@ CONTAINS
     IM = State_Grid%NX ! # latitudes
     JM = State_Grid%NY ! # longitudes
     LM = State_Grid%NZ ! # levels
+
+    ! Inizialize
+    State_Met%MaxChemLev = 0
 
     !=======================================================================
     ! Nullify all fields for safety's sake before allocating them

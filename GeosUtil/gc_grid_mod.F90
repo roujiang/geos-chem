@@ -134,23 +134,6 @@ CONTAINS
     ! Both GEOS-FP and MERRA-2 have native vertical resolution of 72 levels
     State_Grid%NativeNZ = 72
 
-    ! Hardcode maximum number of levels below tropopause and stratopause
-    ! (formerly set in CMN_SIZE_mod.F)
-    IF ( State_Grid%NZ == 47 ) THEN
-       State_Grid%MaxTropLev  = 38
-       State_Grid%MaxStratLev = 44
-    ELSE IF ( State_Grid%NZ == 72 ) THEN
-       State_Grid%MaxTropLev  = 40
-       State_Grid%MaxStratLev = 59
-    ENDIF
-
-    ! Set maximum number of levels in the chemistry grid
-    IF ( Input_Opt%LUCX ) THEN
-       State_Grid%MaxChemLev  = State_Grid%MaxStratLev
-    ELSE
-       State_Grid%MaxChemLev  = State_Grid%MaxTropLev
-    ENDIF
-
     !======================================================================
     ! Global Horizontal Grid
     !

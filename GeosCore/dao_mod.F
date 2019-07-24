@@ -773,31 +773,25 @@
      &      ( .not. State_Met%InTroposphere(I,J,L) )
 
          ! Is this grid box within the stratosphere (but not mesosphere)?
+         ! Now directly use 1 hPa to determine if a grid box is in the
+         ! stratosphere (sde, mps, 7/24/19)
          State_Met%InStratosphere(I,J,L) =
-     &      ( L <= State_Grid%MaxStratLev .and.
-     &        State_Met%InStratMeso(I,J,L) )
+     &      ( State_Met%InStratMeso(I,J,L) .and.
+     &        State_Met%PEDGE(I,J,L) <= 1.0_fp )
 
          ! Is grid box (I,J,L) within the chemistry grid?
-         IF ( L > State_Grid%MaxChemLev ) THEN
+         IF ( Input_Opt%LUCX ) THEN
 
-            ! Chemistry is not done higher than the mesopause
-            State_Met%InChemGrid(I,J,L) = .FALSE.
+            ! UCX mechanisms: Chemistry grid goes up to stratopause
+            State_Met%InChemGrid(I,J,L) =
+     &         ( State_Met%InTroposphere(I,J,L) .or.
+     &           State_Met%InStratosphere(I,J,L) )
 
          ELSE
 
-            IF ( Input_Opt%LUCX ) THEN
-
-               ! UCX mechanisms: Chemistry grid goes up to stratopause
-               State_Met%InChemGrid(I,J,L) =
-     &            ( L <= State_Grid%MaxChemLev )
-
-            ELSE
-
-               ! "tropchem" mechanisms: Chemistry grid goes up to tropopause
-               State_Met%InChemGrid(I,J,L) =
-     &              State_Met%InTroposphere(I,J,L)
-
-            ENDIF
+            ! "tropchem" mechanisms: Chemistry grid goes up to tropopause
+            State_Met%InChemGrid(I,J,L) =
+     &           State_Met%InTroposphere(I,J,L)
 
          ENDIF
 
@@ -882,6 +876,9 @@
       ENDDO
       ENDDO
 !$OMP END PARALLEL DO
+
+      ! Determine the maximum level within the chemistry grid
+      State_Met%MaxChemLev = MAXVAL(State_Met%ChemGridLev(:,:))
 
       !=================================================================
       ! Update species concentrations with updated air quantities

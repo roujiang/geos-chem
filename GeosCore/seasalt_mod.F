@@ -747,12 +747,12 @@
          ENDDO
 
          ! We know the boundary condition at the model top
-         L    = State_Grid%MaxChemLev
+         L    = State_Met%MaxChemLev
          DELZ = State_Met%BXHEIGHT(I,J,L)
 
          TC(I,J,L) = TC(I,J,L) / ( 1.e+0_fp + DTCHEM * VTS(L) / DELZ )
 
-         DO L = State_Grid%MaxChemLev-1, 1, -1
+         DO L = State_Met%MaxChemLev-1, 1, -1
             DELZ  = State_Met%BXHEIGHT(I,J,L)
             DELZ1 = State_Met%BXHEIGHT(I,J,L+1)
             TC(I,J,L) = 1.e+0_fp / ( 1.e+0_fp + DTCHEM * VTS(L) / DELZ )

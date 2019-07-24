@@ -1976,7 +1976,6 @@
                !  Hygroscopic growth of Sea Salt (accum)   [unitless]
                !  Hygroscopic growth of Sea Salt (coarse)  [unitless]
                IF ( State_Diag%Archive_AerHygGrowth .AND.
-     &              L <= State_Grid%MaxChemLev      .AND.
      &              ODSWITCH.EQ.1 ) THEN
                   State_Diag%AerHygGrowth(I,J,L,Map_NRHAER(N)) = SCALEOD
                ENDIF

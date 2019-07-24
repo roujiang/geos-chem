@@ -979,7 +979,7 @@
      &                        T_CTM,  P_CTM,
      &                        O3_CTM, O3COL, T_CLIM,
      &                        O3_CLIM,  Z_CLIM,  AIR_CLIM,
-     &                        Input_Opt, State_Grid )
+     &                        Input_Opt, State_Met )
             O3VMR(I,J,L) = O3_CLIM(L)/AIR_TMP
 
             !GET SCALINGS IF THIS IS THE FIRST LEVEL IN THE STRAT

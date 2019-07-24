@@ -1919,12 +1919,12 @@
          ENDDO
 
          ! We know the boundary condition at the model top
-         L    = State_Grid%MaxChemLev
+         L    = State_Met%MaxChemLev
          DELZ = State_Met%BXHEIGHT(I,J,L)
 
          TC(I,J,L) = TC(I,J,L) / ( 1.e+0_fp + DTCHEM * VTS(L) / DELZ )
 
-         DO L = State_Grid%MaxChemLev-1, 1, -1
+         DO L = State_Met%MaxChemLev-1, 1, -1
             DELZ  = State_Met%BXHEIGHT(I,J,L)
             DELZ1 = State_Met%BXHEIGHT(I,J,L+1)
             TC(I,J,L) = 1.e+0_fp / ( 1.e+0_fp + DTCHEM * VTS(L) / DELZ )
@@ -2487,10 +2487,6 @@
 
       ! Strings
       CHARACTER(LEN=255) :: FILENAME
-
-      ! Arrays
-      REAL*4             :: ARRAY(State_Grid%NX,State_Grid%NY,
-     &                            State_Grid%MaxChemLev)
 
       ! Pointers
       REAL(fp), POINTER  :: Spc(:,:,:,:)
@@ -7702,7 +7698,7 @@
 
          ! Get O3 [v/v] for this gridbox & month
          ! O3 is defined only in the chemistry grid
-         IF ( L <= State_Grid%MaxChemLev ) THEN
+         IF ( State_Met%InChemGrid(I,J,L) ) THEN
             O3_VV = O3m(I,J,L)
          ELSE
             O3_VV = 0e+0_fp
@@ -8296,46 +8292,46 @@
       IF ( RC /= GC_SUCCESS ) RETURN
       DMSo = 0e+0_fp
 
-      ALLOCATE( PMSA_DMS( State_Grid%NX, State_Grid%NY,
-     &          State_Grid%MaxChemLev ), STAT=RC ) 
+      ALLOCATE( PMSA_DMS( State_Grid%NX, State_Grid%NY, State_Grid%NZ ),
+     &          STAT=RC ) 
       CALL GC_CheckVar( 'sulfate_mod.F:PMSA_DMS', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       PMSA_DMS = 0e+0_fp
 
-      ALLOCATE( PSO2_DMS( State_Grid%NX, State_Grid%NY,
-     &          State_Grid%MaxChemLev ), STAT=RC )
+      ALLOCATE( PSO2_DMS( State_Grid%NX, State_Grid%NY, State_Grid%NZ ),
+     &          STAT=RC )
       CALL GC_CheckVar( 'sulfate_mod.F:PSO2_DMS', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       PSO2_DMS = 0e+0_fp
 
-      ALLOCATE( PSO4_SO2( State_Grid%NX, State_Grid%NY,
-     &          State_Grid%MaxChemLev ), STAT=RC )
+      ALLOCATE( PSO4_SO2( State_Grid%NX, State_Grid%NY, State_Grid%NZ ),
+     &          STAT=RC )
       CALL GC_CheckVar( 'sulfate_mod.F:PSO4_SO2', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       PSO4_SO2 = 0e+0_fp
 
-      ALLOCATE( PSO4_ss( State_Grid%NX, State_Grid%NY,
-     &          State_Grid%MaxChemLev ), STAT=RC )
+      ALLOCATE( PSO4_ss( State_Grid%NX, State_Grid%NY, State_Grid%NZ ),
+     &          STAT=RC )
       CALL GC_CheckVar( 'sulfate_mod.F:PSO4_ss', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       PSO4_ss = 0e+0_fp
 
-      ALLOCATE( PNITs( State_Grid%NX, State_Grid%NY,
-     &          State_Grid%MaxChemLev ), STAT=RC )
+      ALLOCATE( PNITs( State_Grid%NX, State_Grid%NY, State_Grid%NZ ),
+     &          STAT=RC )
       CALL GC_CheckVar( 'sulfate_mod.F:PNITs', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       PNITs = 0e+0_fp
 
       !tdf
       ALLOCATE( PSO4_dust( State_Grid%NX, State_Grid%NY,
-     &                     State_Grid%MaxChemLev, NDSTBIN ), STAT=RC )
+     &                     State_Grid%NZ, NDSTBIN ), STAT=RC )
       CALL GC_CheckVar( 'sulfate_mod.F:PSO4_dust', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       PSO4_dust = 0e+0_fp
 
       !tdf
       ALLOCATE( PNIT_dust( State_Grid%NX, State_Grid%NY,
-     &                     State_Grid%MaxChemLev, NDSTBIN ), STAT=RC )
+     &                     State_Grid%NZ, NDSTBIN ), STAT=RC )
       CALL GC_CheckVar( 'sulfate_mod.F:PNIT_dust', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       PNIT_dust = 0e+0_fp

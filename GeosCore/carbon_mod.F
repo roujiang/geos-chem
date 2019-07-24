@@ -2009,7 +2009,7 @@
 #if defined( APM )
 !$OMP+PRIVATE( N, NTEMP)
 #endif
-      DO L = 1, State_Grid%MaxChemLev
+      DO L = 1, State_Grid%NZ
       DO J = 1, State_Grid%NY
       DO I = 1, State_Grid%NX
 
@@ -2476,9 +2476,9 @@
      &                           GLOB_AM0_POA(IIDEBUG,JJDEBUG,2,1,2,2),
      &                           GLOB_AM0_POA(IIDEBUG,JJDEBUG,10,1,2,2)
      
-            print*, 'POA to trop', SUM(Spc(:,:,1:State_Grid%MaxChemLev,
+            print*, 'POA to trop', SUM(Spc(:,:,1:State_Met%MaxChemLev,
      &                                     id_POA1)) 
-     &                            +SUM(Spc(:,:,1:State_Grid%MaxChemLev,
+     &                            +SUM(Spc(:,:,1:State_Met%MaxChemLev,
      &                                     id_POA2))
          ENDIF ! OPOA (hotp 8/24/09)
 
@@ -6335,7 +6335,7 @@ ccc
 
          ! Get O3 [v/v] for this gridbox & month
          ! O3 is defined only in the chemistry grid
-         IF ( L <= State_Grid%MaxChemLev ) THEN
+         IF ( State_Met%InChemGrid(I,J,L) ) THEN
 
             ! Get O3 [v/v] and convert it to [kg]
             O3_MOLEC_CM3 = O3(I,J,L) * State_Met%AD(I,J,L) *
@@ -7149,10 +7149,11 @@ ccc
 !$OMP PARALLEL DO
 !$OMP+DEFAULT( SHARED )
 !$OMP+PRIVATE( NOX, JHC, JSV, I, J, L )
-      DO L = 1, State_Grid%MaxChemLev
+      DO L = 1, State_Grid%NZ
       DO J = 1, State_Grid%NY
       DO I = 1, State_Grid%NX
 
+         ! Skip non-chemistry boxes
          IF ( .not. State_Met%InChemGrid(I,J,L) ) CYCLE
 
          !----------------------------------------------------
@@ -7322,10 +7323,11 @@ ccc
 !$OMP+PRIVATE( NOX,         JHC,        JSV,    IPR )
 !$OMP+PRIVATE( TEMPDELTA,   TEMPSOAG,   MBDIFF      )
 !$OMP+PRIVATE( I, J, L                              )
-      DO L = 1, State_Grid%MaxChemLev
+      DO L = 1, State_Grid%NZ
       DO J = 1, State_Grid%NY
       DO I = 1, State_Grid%NX
 
+         ! Skip non-chemistry boxes
          IF ( .not. State_Met%InChemGrid(I,J,L) ) CYCLE
 
          !----------------------------------------------------

@@ -500,8 +500,7 @@
       ENDIF
 
       ! convert REAL*4 to REAL(fpp) 
-      SO4_GC(:,:,1:State_Grid%MaxChemLev) =
-     &   ARRAYso4(:,:,1:State_Grid%MaxChemLev)
+      SO4_GC(:,:,:) = ARRAYso4(:,:,:)
 
       !---------------------------
       ! Read NH4 from HEMCO
@@ -512,8 +511,7 @@
       ENDIF
 
       ! convert REAL*4 to REAL(fpp) 
-      NH4_CONC(:,:,1:State_Grid%MaxChemLev) =
-     &    ARRAYnh4(:,:,1:State_Grid%MaxChemLev)
+      NH4_CONC(:,:,:) = ARRAYnh4(:,:,:)
 
       !---------------------------
       ! Read NIT from HEMCO
@@ -524,8 +522,7 @@
       ENDIF
       
       ! convert REAL*4 to REAL(fpp) 
-      NIT_CONC(:,:,1:State_Grid%MaxChemLev) =
-     &    ARRAYnit(:,:,1:State_Grid%MaxChemLev)
+      NIT_CONC(:,:,:) = ARRAYnit(:,:,:)
 
       !---------------------------
       ! Read BCPI+BCPO from HEMCO
@@ -550,8 +547,7 @@
       ! convert REAL*4 to REAL(fpp) 
       ARRAYtemp                 = 0.e0_f4
       ARRAYtemp(:,:,1:LL)       = ARRAYbcpi + ARRAYbcpo
-      BC_CONC(:,:,1:State_Grid%MaxChemLev) =
-     &    ARRAYtemp(:,:,1:State_Grid%MaxChemLev)
+      BC_CONC(:,:,:)            = ARRAYtemp(:,:,:)
 
       !---------------------------
       ! Read OCPI+OCPO from HEMCO
@@ -576,8 +572,7 @@
       ! convert REAL*4 to REAL(fpp) 
       ARRAYtemp                 = 0.e0_f4
       ARRAYtemp(:,:,1:LL)       = ARRAYocpi + ARRAYocpo
-      OC_CONC(:,:,1:State_Grid%MaxChemLev) =
-     &    ARRAYtemp(:,:,1:State_Grid%MaxChemLev)
+      OC_CONC(:,:,:)            = ARRAYtemp(:,:,:)
 
       !---------------------------
       ! Read DST1 from HEMCO
@@ -588,8 +583,7 @@
       ENDIF
 
       ! convert REAL*4 to REAL(fpp) 
-      DST_CONC(:,:,1:State_Grid%MaxChemLev) =
-     &    ARRAYdst1(:,:,1:State_Grid%MaxChemLev)
+      DST_CONC(:,:,:) = ARRAYdst1(:,:,:)
 
 !$OMP PARALLEL DO
 !$OMP+DEFAULT( SHARED )

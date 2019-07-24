@@ -3407,7 +3407,7 @@ c                        or         99.0                 80 km
      &               ODMDUST_COL, ODAER_COL, O3_COL,
      &               O3_TOMS,     AERX_COL,  T_CLIM,
      &               OOJ,         ZZJ,       DDJ,
-     &               Input_Opt,   State_Grid )
+     &               Input_Opt,   State_Met )
 
       ! Fill out PPJ and TTJ with CTM data to replace fixed climatology
       DO L=1,L1_
@@ -3641,10 +3641,10 @@ C-----------------------------------------------------------------------
       enddo
 
       ! Calculate photolysis rates
-      call JRATET(PPJ,T_INPUT,FFF, VALJXX,L_,State_Grid%MaxChemLev,NJX)
+      call JRATET(PPJ,T_INPUT,FFF, VALJXX,L_,State_Met%MaxChemLev,NJX)
 
       ! Fill out common-block array of J-rates
-      DO L=1,State_Grid%MaxChemLev
+      DO L=1,State_Met%MaxChemLev
          DO J=1,NRATJ
             IF (JIND(J).gt.0) THEN
                ZPJ(L,J,ILON,ILAT) = VALJXX(L,JIND(J))*JFACTA(J)
@@ -3655,8 +3655,8 @@ C-----------------------------------------------------------------------
       ENDDO
 
       ! Set J-rates outside the chemgrid to zero
-      IF (State_Grid%MaxChemLev.lt.L_) THEN
-         DO L=State_Grid%MaxChemLev+1,L_
+      IF (State_Met%MaxChemLev.lt.L_) THEN
+         DO L=State_Met%MaxChemLev+1,L_
             DO J=1,NRATJ
                ZPJ(L,J,ILON,ILAT) = 0.e+0_fp
             ENDDO
@@ -4650,13 +4650,13 @@ C---Always does PL(2) = P[1]
       SUBROUTINE SET_PROF (YLAT,     MONTH,  DAY,     T_CTM,  P_CTM,
      &                     CLDOD,    DSTOD,  AEROD,   O3_CTM, O3_TOMS,
      &                     AERCOL,   T_CLIM, O3_CLIM, Z_CLIM, AIR_CLIM,
-     &                     Input_Opt, State_Grid )
+     &                     Input_Opt, State_Met )
 !
 ! !USES:
 !
       USE Input_Opt_Mod,      ONLY : OptInput
       USE PhysConstants,      ONLY : AIRMW, AVO, g0, BOLTZ
-      USE State_Grid_Mod,     ONLY : GrdState
+      USE State_Met_Mod,      ONLY : MetState
 !
 ! !INPUT PARAMETERS:
 !
@@ -4671,7 +4671,7 @@ C---Always does PL(2) = P[1]
       REAL(fp), INTENT(IN)       :: AEROD(L_,A_)      ! Aerosol OD
       REAL(fp), INTENT(IN)       :: O3_CTM(L1_)       ! CTM ozone (molec/cm3)
       TYPE(OptInput), INTENT(IN) :: Input_Opt         ! Input options
-      TYPE(GrdState), INTENT(IN) :: State_Grid        ! Grid State object
+      TYPE(MetState), INTENT(IN) :: State_Met         ! Meteorology State object
 !
 ! !OUTPUT VARIABLES:
 !
@@ -4908,7 +4908,7 @@ C---Always does PL(2) = P[1]
 
          ! Use online O3 values in the chemistry grid if selected
          IF ( (USE_ONLINE_O3) .and.
-     &        (I <= State_Grid%MaxChemLev) .and.
+     &        (I <= State_Met%MaxChemLev) .and.
      &        (O3_CTM(I) > 0e+0_fp) ) THEN
 
             ! Convert from molec/cm3 to molec/cm2

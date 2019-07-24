@@ -364,7 +364,7 @@ CONTAINS
 #if defined( MODEL_GEOS )
     ! Skip strat chem if chemistry is over entire vertical domain
     SKIP = .FALSE.
-    IF ( State_Grid%MaxChemLev == State_Grid%NZ ) THEN
+    IF ( State_Met%MaxChemLev == State_Grid%NZ ) THEN
        SKIP = .TRUE.
        IF ( FIRST .AND. am_I_Root ) THEN
           WRITE( 6, * ) 'Fullchem up to top of atm - skip linearized strat chemistry'

@@ -488,10 +488,8 @@
          ! PBL thickness [hPa]
          PBL_THICK(I,J)           = BLTHIK
 
-         !==============================================================
-         ! Loop up to edge of chemically-active grid
-         !==============================================================
-         DO L = 1, State_Grid%MaxChemLev
+         ! Loop over levels
+         DO L = 1, State_Grid%NZ
 
             ! Thickness of grid box (I,J,L) [hPa]
             DELP = P(L-1) - P(L)
@@ -912,16 +910,8 @@
 !------------------------------------------------------------------------------
 !BOC
 !
-      !=================================================================
-      ! GET_FRAC_OF_PBL begins here!
-      !=================================================================
-      IF ( L <= State_Grid%MaxChemLev ) THEN
-         FRAC = F_OF_PBL(I,J,L)
-      ELSE
-         FRAC = 0e+0_fp
-      ENDIF
+      FRAC = F_OF_PBL(I,J,L)
 
-      ! Return to calling program
       END FUNCTION GET_FRAC_OF_PBL
 !EOC
 !------------------------------------------------------------------------------
@@ -959,11 +949,8 @@
 !EOP
 !------------------------------------------------------------------------------
 !BOC
-      IF ( L <= State_Grid%MaxChemLev ) THEN
-         FRAC = F_UNDER_TOP(I,J,L)
-      ELSE
-         FRAC = 0e+0_fp
-      ENDIF
+
+      FRAC = F_UNDER_TOP(I,J,L)
 
       END FUNCTION GET_FRAC_UNDER_PBLTOP
 !EOC
@@ -1200,13 +1187,13 @@
       FPBL = 0.0_fp
 
       ALLOCATE( F_OF_PBL( State_Grid%NX, State_Grid%NY,
-     &          State_Grid%MaxChemLev ), STAT=RC )
+     &          State_Grid%NZ ), STAT=RC )
       CALL GC_CheckVar( 'pbl_mix_mod:F_OF_PBL', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       F_OF_PBL = 0.0_fp
 
       ALLOCATE( F_UNDER_TOP( State_Grid%NX, State_Grid%NY,
-     &          State_Grid%MaxChemLev ), STAT=RC )
+     &          State_Grid%NZ ), STAT=RC )
       CALL GC_CheckVar( 'pbl_mix_mod:F_UNDER_TOP', 0, RC )
       IF ( RC /= GC_SUCCESS ) RETURN
       F_UNDER_TOP = 0.0_fp
