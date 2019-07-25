@@ -519,9 +519,9 @@ CONTAINS
     !=======================================================================
     ! Copy species concentrations to diagnostic arrays [v/v dry]
     !=======================================================================
-    !$OMP PARALLEL DO           &
-    !$OMP DEFAULT( SHARED     ) &
-    !$OMP PRIVATE( I, J, L, N )
+    !$OMP PARALLEL DO              &
+    !$OMP DEFAULT( SHARED        ) &
+    !$OMP PRIVATE( I, J, L, N, S )
     DO N = 1, State_Chm%nSpecies
     DO L = 1, State_Grid%NZ
     DO J = 1, State_Grid%NY
@@ -536,9 +536,12 @@ CONTAINS
        ! NOTE: If you change the units of SpeciesConc in state_diag_mod.F90,
        ! then comment this IF block out and then also uncomment the IF block
        ! in the main routine above where Set_SpcConc_Diagnostic is called.
-       !IF ( State_Diag%Archive_SpeciesConc ) THEN
-       !   State_Diag%SpeciesConc(I,J,L,N) = State_Chm%Species(I,J,L,N)
-       !ENDIF
+       IF ( State_Diag%Archive_SpeciesConc ) THEN
+          S = State_Diag%Map_SpeciesConc(N)
+          IF ( S > 0 ) THEN
+             State_Diag%SpeciesConc(I,J,L,S) = State_Chm%Species(I,J,L,N)
+          ENDIF
+       ENDIF
 
        ! Species concentrations for restart file [v/v dry]
        IF ( State_Diag%Archive_SpeciesRst ) THEN
@@ -550,17 +553,6 @@ CONTAINS
     ENDDO
     ENDDO
     !$OMP END PARALLEL DO
-
-    ! Species concentrations diagnostic [v/v dry]
-    ! NOTE: If you change the units of SpeciesConc in state_diag_mod.F90,
-    ! then comment this IF block out and then also uncomment the IF block
-    ! in the main routine above where Set_SpcConc_Diagnostic is called.
-    IF ( State_Diag%Archive_SpeciesConc ) THEN
-       DO S = 1, State_Diag%nSpeciesConc
-          N = State_Diag%Map_SpeciesConc(S)
-          State_Diag%SpeciesConc(:,:,:,S) = State_Chm%Species(:,:,:,N)
-       ENDDO
-    ENDIF
 
     !=======================================================================
     ! Diagnostic for correcting species concentrations from the height

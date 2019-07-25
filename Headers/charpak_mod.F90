@@ -1162,11 +1162,11 @@ CONTAINS
 !
 ! !INPUT PARAMETERS:
 !
-    CHARACTER(LEN=*),          INTENT(IN)  :: vec(:)
+    CHARACTER(LEN=*),          INTENT(IN)    :: vec(:)
 !
 ! !OUTPUT PARAMETERS:
 !
-    CHARACTER(LEN=*), POINTER, INTENT(OUT) :: vec_unique(:)
+    CHARACTER(LEN=*), POINTER, INTENT(INOUT) :: vec_unique(:)
 !
 ! !AUTHOR:
 !  Jacob Williams (jacob@degenerateconic.com)
@@ -1208,7 +1208,7 @@ CONTAINS
     end do
 
     !return only flagged elements:
-    iF ( ASSOCIATED( vec_unique ) ) DEALLOCATE( vec_unique )
+    IF ( ASSOCIATED( vec_unique ) ) vec_unique => NULL()
     ALLOCATE( vec_unique(count(mask)) )
     vec_unique = PACK( vec, mask )
 
