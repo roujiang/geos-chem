@@ -90,7 +90,7 @@ CONTAINS
 !               blanks in str1 are ignored.  Revised again
 !               on 3-6-1996.
 !   7 Aug 2017 - R. Yantosca - Added ProTeX header
-!  20 Dec 2017 - R. Yantosca - Now returns the positions where matches occur
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -163,6 +163,7 @@ CONTAINS
 !     DATE:   DEC. 24, 1993
 !     AUTHOR: R.D. STEWART
 !   7 Aug 2017 - R. Yantosca - Added ProTeX header
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -219,7 +220,7 @@ CONTAINS
 !      AUTHOR: Robert D. Stewart
 !        DATE: May 19, 1992
 !  07 Aug 2017 - R. Yantosca - Added ProTeX header
-!  30 Jan 2018 - R. Yantosca - Added KEEPSPACES optional argument
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -289,6 +290,7 @@ CONTAINS
 !     DATE:   NOV. 11, 1993
 !     AUTHOR: R.D. STEWART
 !   7 Aug 2017 - R. Yantosca - Added ProTeX header
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -334,9 +336,7 @@ CONTAINS
 !
 ! !REVISION HISTORY:
 !  25 Jun 2002 - R. Yantosca - Initial version
-!  07 Aug 2017 - R. Yantosca - Updated algorithm to allow PATTERN and
-!                              REPLTXT to have different numbers of characters
-!   7 Aug 2017 - R. Yantosca - Added ProTeX header
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -393,7 +393,7 @@ CONTAINS
 !
 ! !REVISION HISTORY:
 !  11 Jul 2002 - R. Yantosca - Initial version
-!  30 Sep 2014 - R. Yantosca - WORD now has 2047 chars for extra-long strings
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -453,7 +453,7 @@ CONTAINS
 !
 ! !REVISION HISTORY:
 !  11 Jul 2002 - R. Yantosca - Initial version
-!  07 Aug 2017 - R. Yantosca - Added ProTeX header
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -491,6 +491,7 @@ CONTAINS
 !      AUTHOR: Robert D. Stewart
 !        DATE: May 19, 1992
 !   7 Aug 2017 - R. Yantosca - Added ProTeX header
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -535,6 +536,7 @@ CONTAINS
 !      AUTHOR: Robert D. Stewart
 !        DATE: May 19, 1992
 !   7 Aug 2017 - R. Yantosca - Added ProTeX header
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -623,7 +625,8 @@ CONTAINS
 !      MODIFICATIONS by Bob Yantosca (6/25/02)
 !        (1) Replace call to FILLSTR with F90 intrinsic REPEAT
 !
-!   7 Aug 2017 - R. Yantosca - Added ProTeX header
+!  7 Aug 2017 - R. Yantosca - Added ProTeX header
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -752,7 +755,7 @@ CONTAINS
 !
 ! !REVISION HISTORY:
 !  04 May 2016 - R. Yantosca - Initial version
-!  05 May 2016 - R. Yantosca - Now make the input string 14 chars long
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -783,6 +786,10 @@ CONTAINS
     Hash = ( ISHFT( Hash, 5 ) + Hash ) + ICHAR( Str(12:12) )
     Hash = ( ISHFT( Hash, 5 ) + Hash ) + ICHAR( Str(13:13) )
     Hash = ( ISHFT( Hash, 5 ) + Hash ) + ICHAR( Str(14:14) )
+
+    ! Repeat the first character to avoid having duplicate strings
+    ! generate the same hash value (bmy, 7/30/19)
+    Hash = ( ISHFT( Hash, 5 ) + Hash ) + ICHAR( Str( 1: 1) )
 
   END FUNCTION Str2Hash14
 !EOC
@@ -819,6 +826,7 @@ CONTAINS
 !
 ! !REVISION HISTORY:
 !  26 Jun 2017 - R. Yantosca - Initial version
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -867,6 +875,10 @@ CONTAINS
     Hash = ( ISHFT( Hash, 5 ) + Hash ) + ICHAR( Str(30:30) )
     Hash = ( ISHFT( Hash, 5 ) + Hash ) + ICHAR( Str(31:31) )
 
+    ! Repeat the first character to avoid having duplicate strings
+    ! generate the same hash value (bmy, 7/30/19)
+    Hash = ( ISHFT( Hash, 5 ) + Hash ) + ICHAR( Str( 1: 1) )
+
   END FUNCTION Str2Hash31
 !EOC
 !------------------------------------------------------------------------------
@@ -897,6 +909,7 @@ CONTAINS
 !
 ! !REVISION HISTORY:
 !  26 Jun 2017 - R. Yantosca - Initial version
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -964,7 +977,7 @@ CONTAINS
 !
 ! !REVISION HISTORY: 
 !  16 Jun 2017 - R. Yantosca - Initial version, based on GEOS-Chem
-!  01 Nov 2017 - R. Yantosca - Moved to charpak_mod.F90
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -1025,8 +1038,7 @@ CONTAINS
 !
 ! !REVISION HISTORY:
 !  06 Jan 2015 - R. Yantosca - Initial version
-!  21 Jun 2017 - R. Yantosca - Now call CSTRIP to remove tabs etc.
-!  01 Nov 2017 - R. Yantosca - Moved to charpak_mod.F90
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -1072,6 +1084,7 @@ CONTAINS
 !
 ! !REVISION HISTORY:
 !  20 Dec 2015 - R. Yantosca - Initial version
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -1162,11 +1175,11 @@ CONTAINS
 !
 ! !INPUT PARAMETERS:
 !
-    CHARACTER(LEN=*),          INTENT(IN)    :: vec(:)
+    CHARACTER(LEN=*),              INTENT(IN)    :: vec(:)
 !
 ! !OUTPUT PARAMETERS:
 !
-    CHARACTER(LEN=*), POINTER, INTENT(INOUT) :: vec_unique(:)
+    CHARACTER(LEN=*), ALLOCATABLE, INTENT(INOUT) :: vec_unique(:)
 !
 ! !AUTHOR:
 !  Jacob Williams (jacob@degenerateconic.com)
@@ -1208,7 +1221,7 @@ CONTAINS
     end do
 
     !return only flagged elements:
-    IF ( ASSOCIATED( vec_unique ) ) vec_unique => NULL()
+    IF ( ALLOCATED(  vec_unique ) ) DEALLOCATE( vec_unique )
     ALLOCATE( vec_unique(count(mask)) )
     vec_unique = PACK( vec, mask )
 
