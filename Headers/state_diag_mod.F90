@@ -733,9 +733,10 @@ CONTAINS
     ! Arrays
     INTEGER                        :: tagInd(2000)
     CHARACTER(LEN=14), ALLOCATABLE :: tagList(:)
+    CHARACTER(LEN=14), ALLOCATABLE :: fieldList(:)
 
     ! BMY
-    INTEGER                        :: nTags, M, NN, nDiagTags, nFields
+    INTEGER                        :: nTags, nFields
 
     !=======================================================================
     ! Initialize
@@ -1373,7 +1374,8 @@ CONTAINS
 
        ! Get the number of species and the mapping array
        CALL Get_Mapping( am_I_Root, tagList,                    State_Chm,   &
-                         nFields,   State_Diag%Map_SpeciesConc, RC          )
+                         nFields,   State_Diag%Map_SpeciesConc, fieldList,   &
+                         RC                                                 )
        IF ( RC /= GC_SUCCESS ) THEN
           ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
           CALL GC_Error( ErrMsg, RC, ThisLoc )
@@ -1387,10 +1389,11 @@ CONTAINS
        State_Diag%SpeciesConc = 0.0_f8
        State_Diag%Archive_SpeciesConc = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%SpeciesConc,   &
-                                State_Chm, State_Diag, RC, tagList          )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
-    IF ( ALLOCATED( tagList ) ) DEALLOCATE( tagList )
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Budget for emissions  (average kg/m2/s across single timestep)
@@ -1828,8 +1831,8 @@ CONTAINS
        ! Get the number of species and the mapping array
        ! NOTE: Return drydep indices, not model indices!
        CALL Get_Mapping( am_I_Root,  tagList,                  State_Chm,    &
-                         nFields,    State_Diag%Map_DryDepVel, RC,           &
-                         IndFlag='D'                                        )
+                         nFields,    State_Diag%Map_DryDepVel, fieldList,    &
+                         RC,         IndFlag='D'                            )
        IF ( RC /= GC_SUCCESS ) THEN
           ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
           CALL GC_Error( ErrMsg, RC, ThisLoc )
@@ -1843,10 +1846,11 @@ CONTAINS
        State_Diag%DryDepVel = 0.0_f4
        State_Diag%Archive_DryDepVel = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%DryDepVel,     &
-                                State_Chm, State_Diag, RC, tagList          )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
-    IF ( ALLOCATED ( tagList ) ) DEALLOCATE( tagList )
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
 #if defined( MODEL_GEOS )
     !--------------------------------------------
@@ -6605,6 +6609,7 @@ CONTAINS
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%SpeciesConc => NULL()
     ENDIF
+
     IF ( ASSOCIATED( State_Diag%Map_SpeciesConc ) ) THEN
        DEALLOCATE( State_Diag%Map_SpeciesConc, STAT=RC )
        CALL GC_CheckVar( 'State_Diag%Map_SpeciesConc', 2, RC )
@@ -6778,6 +6783,13 @@ CONTAINS
        CALL GC_CheckVar( 'State_Diag%DryDepVel', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%DryDepVel => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%Map_DryDepVel ) ) THEN
+       DEALLOCATE( State_Diag%Map_DryDepVel, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_DryDepVel', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%Map_DryDepVel => NULL()
     ENDIF
 
 #if defined( MODEL_GEOS )
@@ -11272,26 +11284,30 @@ CONTAINS
 !\\
 ! !INTERFACE:
 !
-  SUBROUTINE Get_Mapping( am_I_Root, tagList,    State_Chm,                  &
-                          nFields,   Map_Fields, RC,        IndFlag         ) 
+  SUBROUTINE Get_Mapping( am_I_Root,  tagList,    State_Chm, nFields,        &
+                          Map_Fields, uniqFields, RC,        IndFlag        )
 !
 ! !USES:
 !   
-    USE CharPak_Mod,   ONLY : CntMat, Unique
-    USE State_Chm_Mod, ONLY : Ind_,   NumSpecies_
+    USE CharPak_Mod,   ONLY : CntMat
+    USE CharPak_Mod,   ONLY : Unique
+    USE Species_Mod,   ONLY : Spc_GetIndx
+    USE State_Chm_Mod, ONLY : Ind_
+    USE State_Chm_Mod, ONLY : NumSpecies_
 !
 ! !INPUT PARAMETERS:
 !
-    LOGICAL,           INTENT(IN)  :: am_I_Root      ! Root CPU?
-    CHARACTER(LEN=*),  INTENT(IN)  :: tagList(:)     ! List of tags
-    TYPE(ChmState),    INTENT(IN)  :: State_Chm      ! Chemistry State obj
-    CHARACTER(LEN=1),  OPTIONAL    :: IndFlag        ! Species flag for Ind_
+    LOGICAL,           INTENT(IN)                :: am_I_Root     ! Root CPU?
+    CHARACTER(LEN=*),  INTENT(IN)                :: tagList(:)    ! List of tags
+    TYPE(ChmState),    INTENT(IN)                :: State_Chm     ! Chem State
+    CHARACTER(LEN=1),  OPTIONAL                  :: IndFlag       ! Ind_ arg.
 !
 ! !OUTPUT PARAMETERS:
 !
-    INTEGER,           INTENT(OUT) :: nFields        ! Number of species
-    INTEGER, POINTER,  INTENT(OUT) :: Map_Fields(:)  ! Mapping array
-    INTEGER,           INTENT(OUT) :: RC             ! Success or failure?
+    INTEGER,           INTENT(OUT)               :: nFields       ! # species
+    INTEGER, POINTER,  INTENT(OUT)               :: Map_Fields(:) ! Map array
+    CHARACTER(LEN=*),  INTENT(OUT), ALLOCATABLE  :: uniqFields(:) ! Field list
+    INTEGER,           INTENT(OUT)               :: RC            ! Success?
 !
 ! !REVISION HISTORY:
 !  23 Jul 2019 - R. Yantosca - Initial version
@@ -11303,20 +11319,18 @@ CONTAINS
 ! !LOCAL VARIABLES:
 !
     ! Scalars
-    LOGICAL                    :: Found,     hasIndFlag
-    INTEGER                    :: N,         NN,          nMap
-    INTEGER                    :: nTags,     nSpc,        S
+    LOGICAL            :: Found,     hasIndFlag
+    INTEGER            :: N,         NN,          nMap
+    INTEGER            :: nTags,     nSpc,        S
+    INTEGER            :: Indx
 
     ! Strings
-    CHARACTER(LEN=31 )         :: spcName
-    CHARACTER(LEN=255)         :: ErrMsg,    ThisLoc
-    CHARACTER(LEN=255)         :: tagId,     tagName
+    CHARACTER(LEN=31 ) :: spcName
+    CHARACTER(LEN=255) :: ErrMsg,    ThisLoc
+    CHARACTER(LEN=255) :: tagId,     tagName
 
     ! Arrays
-    CHARACTER(LEN=14)          :: tmpFields(5000)
-
-    ! Pointers
-    CHARACTER(LEN=31), POINTER :: uniqFields(:)
+    CHARACTER(LEN=14)  :: tmpFields(5000)
     
     !=======================================================================
     ! Get_Mapping begins here!
@@ -11387,6 +11401,7 @@ CONTAINS
 
     ! Get the unique list of species
     ! Also drop off the last element, which is the null space value
+    IF ( ALLOCATED( uniqFields ) ) DEALLOCATE( uniqFields )
     CALL Unique( tmpFields, uniqFields )
     nFields = SIZE( UniqFields )
 
@@ -11416,26 +11431,21 @@ CONTAINS
     IF ( RC /= GC_SUCCESS ) RETURN
     Map_Fields = -1
 
-    ! Loop over # of fields in the species database
-    DO N = 1, nMap
+    ! Loop over the number of unique field names
+    DO S = 1, nFields
 
-       ! Name of species in the species database
-       spcName = TRIM( State_Chm%SpcData(N)%Info%Name )
+       ! Get the index for the given species type
+       ! (e.g. modelId, advectId, drydepId, etc...)
+       IF ( hasIndFlag ) THEN
+          Indx = Ind_( TRIM( uniqFields(S) ), IndFlag )
+       ELSE
+          Indx = Ind_( TRIM( uniqFields(S) )          )
+       ENDIF
 
-       ! Match against names in uniqFields
-       ! and save the index for the State_Diag array
-       ! NOTE: There might be a faster way to do this, skip till later!
-       DO S = 1, nFields
-          IF ( TRIM( spcName ) == TRIM( uniqFields(S) ) ) THEN
-             Map_Fields(N) = S
-             EXIT
-          ENDIF
-       ENDDO
+       ! Save model ID into mapping array
+       Map_Fields(Indx) = S
+
     ENDDO
-
-    ! Free array
-    DEALLOCATE( uniqFields )
-    uniqFields => NULL()
 
   END SUBROUTINE Get_Mapping
 !EOC
