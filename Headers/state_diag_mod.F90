@@ -732,8 +732,8 @@ CONTAINS
 
     ! Arrays
     INTEGER                        :: tagInd(2000)
-    CHARACTER(LEN=14), ALLOCATABLE :: tagList(:)
-    CHARACTER(LEN=14), ALLOCATABLE :: fieldList(:)
+    CHARACTER(LEN=31), ALLOCATABLE :: tagList(:)
+    CHARACTER(LEN=31), ALLOCATABLE :: fieldList(:)
 
     ! BMY
     INTEGER                        :: nTags, nFields
@@ -11502,7 +11502,7 @@ CONTAINS
     CHARACTER(LEN=255) :: tagId,     tagName
 
     ! Arrays
-    CHARACTER(LEN=14)  :: tmpFields(5000)
+    CHARACTER(LEN=31)  :: tmpFields(5000)
     
     !=======================================================================
     ! Get_Mapping begins here!
