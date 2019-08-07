@@ -98,7 +98,7 @@ CONTAINS
 ! !LOCAL VARIABLES:
 !
     ! Scalars
-    INTEGER                 :: I, J, L, N
+    INTEGER                 :: I, J, L, N, D
     REAL(fp)                :: ToPptv
 
     ! SAVEd scalars
@@ -155,16 +155,26 @@ CONTAINS
     ! Set total dry deposition flux
     !-----------------------------------------------------------------------
     IF ( State_Diag%Archive_DryDep ) THEN
-       !$OMP PARALLEL DO          &
-       !$OMP DEFAULT( SHARED  )   &
-       !$OMP PRIVATE( I, J, N )
+       !$OMP PARALLEL DO            &
+       !$OMP DEFAULT( SHARED      ) &
+       !$OMP PRIVATE( I, J, N, D  ) &
+       !$OMP SCHEDULE( DYNAMIC, 2 )
        DO N = 1, State_Chm%nDryDep
-       DO J = 1, State_Grid%NY
-       DO I = 1, State_Grid%NX
-          State_Diag%DryDep(I,J,N) = State_Diag%DryDepChm(I,J,N)             &
-                                   + State_Diag%DryDepMix(I,J,N)
-       ENDDO
-       ENDDO
+
+          ! Find the slot of the State_Diag%DryDep array
+          ! corresponding to drydep species N.
+          D = State_Diag%Map_Drydep(N)
+
+          ! Archive into the diagnostic array if species D was listed
+          ! in HISTORY.rc (either individually or via wildcard).
+          IF ( D > 0 ) THEN
+             DO J = 1, State_Grid%NY
+             DO I = 1, State_Grid%NX
+                State_Diag%DryDep(I,J,D) = State_Diag%DryDepChm(I,J,D)       &
+                                         + State_Diag%DryDepMix(I,J,D)
+             ENDDO
+             ENDDO
+          ENDIF
        ENDDO
        !$OMP END PARALLEL DO
     ENDIF

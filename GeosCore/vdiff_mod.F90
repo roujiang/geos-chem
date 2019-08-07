@@ -2048,7 +2048,7 @@ contains
 !
 ! !LOCAL VARIABLES:
 !
-    integer :: I, J, L, N, NN, D, NA, nAdvect, ND, nDryDep
+    integer :: I, J, L, N, NN, D, NA, nAdvect, ND, nDryDep, DdMixId
 
     REAL(fp)                :: FRAC_NO_HG0_DEP !jaf 
     LOGICAL                 :: ZERO_HG0_DEP !jaf 
@@ -2287,7 +2287,7 @@ contains
 
 !$OMP PARALLEL DO                                                         &
 !$OMP DEFAULT( SHARED )                                                   &
-!$OMP PRIVATE( I,      J,               L,            N                 ) &
+!$OMP PRIVATE( I,      J,               L,            N ,      DdMixId  ) &
 !$OMP PRIVATE( WK1,    WK2,             PBL_TOP,      DEP_KG,  TOPMIX   ) &
 !$OMP PRIVATE( fnd,    emis,            dep,          NA,      ND       ) &
 !$OMP PRIVATE( TMPFLX, FRAC_NO_HG0_DEP, ZERO_HG0_DEP, SpcInfo, Hg_Cat   )
@@ -2608,9 +2608,17 @@ contains
           !-----------------------------------------------------------------
           IF ( State_Diag%Archive_DryDepMix .OR. &
                State_Diag%Archive_DryDep ) THEN
-             State_Diag%DryDepMix(:,:,ND) = Dflx(:,:,N)               &
-                                            * 1.0e-4_fp               &
-                                            * ( AVO / EmMW_kg  )
+             
+             ! For drydep species ND, find its slot in State_Diag%DryDepMix
+             DdMixId = State_Diag%Map_DryDepMix(ND)
+
+             ! Only archive into diagnostic if this drydep species
+             ! was listed in HISTORY.rc (individually or via wildcard)
+             IF ( DdMixId > 0 ) THEN 
+                State_Diag%DryDepMix(:,:,DdMixId) = Dflx(:,:,N)              &
+                                                  * 1.0e-4_fp                &
+                                                  * ( AVO / EmMW_kg  )
+             ENDIF
           ENDIF
 
           !-----------------------------------------------------------------

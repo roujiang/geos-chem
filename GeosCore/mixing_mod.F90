@@ -439,7 +439,7 @@ CONTAINS
 !
     ! Scalars
     INTEGER                 :: I, J, L, L1, L2, N, D, NN, NA, nAdvect
-    INTEGER                 :: DRYDEPID
+    INTEGER                 :: DryDepId, DdMixId
     INTEGER                 :: PBL_TOP, DRYD_TOP, EMIS_TOP
     REAL(fp)                :: TS, TMP, FRQ, RKT, FRAC, FLUX, AREA_M2
     REAL(fp)                :: MWkg, DENOM
@@ -606,7 +606,8 @@ CONTAINS
 !$OMP PRIVATE( N,        PBL_TOP,      FND,        TMP,      DryDepId     ) &
 !$OMP PRIVATE( FRQ,      RKT,          FRAC,       FLUX,     Area_m2      ) &
 !$OMP PRIVATE( MWkg,     ChemGridOnly, DryDepSpec, EmisSpec, DRYD_TOP     ) &
-!$OMP PRIVATE( EMIS_TOP, PNOXLOSS,     DENOM,      SpcInfo,  NA           )
+!$OMP PRIVATE( EMIS_TOP, PNOXLOSS,     DENOM,      SpcInfo,  NA           ) &
+!$OMP PRIVATE( DdMixId                                                    )
     DO NA = 1, nAdvect
 
        ! Get the species ID from the advected species ID
@@ -875,7 +876,15 @@ CONTAINS
                    IF ( ( State_Diag%Archive_DryDepMix .or.        &
                           State_Diag%Archive_DryDep        ) .and. &
                           DryDepID > 0 ) THEN
-                      State_Diag%DryDepMix(I,J,DryDepId) = Flux
+
+                      ! For the drydep species with index DryDepId,
+                      ! find its slot in the State_Diag%DryDepMix array.
+                      DdMixId = State_Diag%Map_DryDepMix(DryDepId)
+
+                      ! Archive into diagnostic if species is valid.
+                      IF ( DdMixId > 0 ) THEN
+                         State_Diag%DryDepMix(I,J,DdMixId) = Flux
+                      ENDIF
                    ENDIF
 
                 ENDIF ! apply drydep
