@@ -55,40 +55,60 @@ MODULE State_Diag_Mod
      ! Standard Simulation Diagnostic Arrays
      !----------------------------------------------------------------------
 
-     ! Restart file fields
-     REAL(f8),  POINTER :: SpeciesRst    (:,:,:,:) ! Spc Conc for GC restart
+     ! Species concentrations for restart files
+     REAL(f8),  POINTER :: SpeciesRst(:,:,:,:)
      LOGICAL :: Archive_SpeciesRst
 
-     ! Boundary condition fields
-     REAL(f8),  POINTER :: SpeciesBC     (:,:,:,:) ! Spc Conc for BCs
+     ! Species concentrations for nested-grid boundary conditions
+     REAL(f8),  POINTER :: SpeciesBC(:,:,:,:)
      LOGICAL :: Archive_SpeciesBC
      
-     ! Concentrations
-     REAL(f8),  POINTER :: SpeciesConc    (:,:,:,:) ! Spc Conc for diag output
+     ! Species concentrations
+     REAL(f8),  POINTER :: SpeciesConc    (:,:,:,:)
      INTEGER,   POINTER :: Map_SpeciesConc(:      )
      LOGICAL :: Archive_SpeciesConc
 
      ! Budget diagnostics
-     REAL(f8),  POINTER :: BudgetEmisDryDepFull     (:,:,:) 
-     REAL(f8),  POINTER :: BudgetEmisDryDepTrop     (:,:,:) 
-     REAL(f8),  POINTER :: BudgetEmisDryDepPBL      (:,:,:) 
-     REAL(f8),  POINTER :: BudgetTransportFull      (:,:,:) 
-     REAL(f8),  POINTER :: BudgetTransportTrop      (:,:,:) 
-     REAL(f8),  POINTER :: BudgetTransportPBL       (:,:,:) 
-     REAL(f8),  POINTER :: BudgetMixingFull         (:,:,:) 
-     REAL(f8),  POINTER :: BudgetMixingTrop         (:,:,:) 
-     REAL(f8),  POINTER :: BudgetMixingPBL          (:,:,:) 
-     REAL(f8),  POINTER :: BudgetConvectionFull     (:,:,:) 
-     REAL(f8),  POINTER :: BudgetConvectionTrop     (:,:,:) 
-     REAL(f8),  POINTER :: BudgetConvectionPBL      (:,:,:) 
-     REAL(f8),  POINTER :: BudgetChemistryFull      (:,:,:) 
-     REAL(f8),  POINTER :: BudgetChemistryTrop      (:,:,:) 
-     REAL(f8),  POINTER :: BudgetChemistryPBL       (:,:,:) 
-     REAL(f8),  POINTER :: BudgetWetDepFull         (:,:,:) 
-     REAL(f8),  POINTER :: BudgetWetDepTrop         (:,:,:) 
-     REAL(f8),  POINTER :: BudgetWetDepPBL          (:,:,:) 
-     REAL(f8),  POINTER :: BudgetMass1              (:,:,:,:) 
-     REAL(f8),  POINTER :: BudgetMass2              (:,:,:,:) 
+     REAL(f8),  POINTER :: BudgetEmisDryDepFull    (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetEmisDryDepTrop    (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetEmisDryDepPBL     (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetTransportFull     (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetTransportTrop     (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetTransportPBL      (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetMixingFull        (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetMixingTrop        (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetMixingPBL         (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetConvectionFull    (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetConvectionTrop    (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetConvectionPBL     (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetChemistryFull     (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetChemistryTrop     (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetChemistryPBL      (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetWetDepFull        (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetWetDepTrop        (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetWetDepPBL         (:,:,:  ) 
+     REAL(f8),  POINTER :: BudgetMass1             (:,:,:,:) 
+     REAL(f8),  POINTER :: BudgetMass2             (:,:,:,:) 
+     INTEGER,   POINTER :: Map_BudgetEmisDryDepFull(:      ) 
+     INTEGER,   POINTER :: Map_BudgetEmisDryDepTrop(:      ) 
+     INTEGER,   POINTER :: Map_BudgetEmisDryDepPBL (:      ) 
+     INTEGER,   POINTER :: Map_BudgetTransportFull (:      ) 
+     INTEGER,   POINTER :: Map_BudgetTransportTrop (:      ) 
+     INTEGER,   POINTER :: Map_BudgetTransportPBL  (:      ) 
+     INTEGER,   POINTER :: Map_BudgetMixingFull    (:      ) 
+     INTEGER,   POINTER :: Map_BudgetMixingTrop    (:      ) 
+     INTEGER,   POINTER :: Map_BudgetMixingPBL     (:      ) 
+     INTEGER,   POINTER :: Map_BudgetConvectionFull(:      ) 
+     INTEGER,   POINTER :: Map_BudgetConvectionTrop(:      ) 
+     INTEGER,   POINTER :: Map_BudgetConvectionPBL (:      ) 
+     INTEGER,   POINTER :: Map_BudgetChemistryFull (:      ) 
+     INTEGER,   POINTER :: Map_BudgetChemistryTrop (:      ) 
+     INTEGER,   POINTER :: Map_BudgetChemistryPBL  (:      ) 
+     INTEGER,   POINTER :: Map_BudgetWetDepFull    (:      ) 
+     INTEGER,   POINTER :: Map_BudgetWetDepTrop    (:      ) 
+     INTEGER,   POINTER :: Map_BudgetWetDepPBL     (:      ) 
+     INTEGER,   POINTER :: Map_BudgetMass1         (:      ) 
+     INTEGER,   POINTER :: Map_BudgetMass2         (:      ) 
      LOGICAL :: Archive_BudgetEmisDryDep
      LOGICAL :: Archive_BudgetEmisDryDepFull  
      LOGICAL :: Archive_BudgetEmisDryDepTrop  
@@ -116,11 +136,14 @@ MODULE State_Diag_Mod
      LOGICAL :: Archive_Budget
 
      ! Dry deposition
-     REAL(f4),  POINTER :: DryDepChm       (:,:,:  ) ! Drydep flux in chemistry
-     REAL(f4),  POINTER :: DryDepMix       (:,:,:  ) ! Drydep flux in mixing
-     REAL(f4),  POINTER :: DryDepVel       (:,:,:  )
-     REAL(f4),  POINTER :: DryDep          (:,:,:  ) ! Total drydep flux
-     INTEGER,   POINTER :: Map_DryDepVel   (:      )
+     REAL(f4),  POINTER :: DryDepChm    (:,:,:)      ! Drydep flux in chemistry
+     REAL(f4),  POINTER :: DryDepMix    (:,:,:)      ! Drydep flux in mixing
+     REAL(f4),  POINTER :: DryDepVel    (:,:,:)      ! Drydep velocity
+     REAL(f4),  POINTER :: DryDep       (:,:,:)      ! Total drydep flux
+     INTEGER,   POINTER :: Map_DryDepChm(:    )
+     INTEGER,   POINTER :: Map_DryDepMix(:    )
+     INTEGER,   POINTER :: Map_DryDepVel(:    )
+     INTEGER,   POINTER :: Map_DryDep   (:    )
      LOGICAL :: Archive_DryDepChm
      LOGICAL :: Archive_DryDepMix
      LOGICAL :: Archive_DryDepVel
@@ -129,37 +152,48 @@ MODULE State_Diag_Mod
      ! Drydep resistances and related quantities
 #if defined( MODEL_GEOS )
      ! GEOS-5 only
-     REAL(f4),  POINTER :: DryDepRa2m      (:,:    ) ! Aerodyn resistance @2m 
-     REAL(f4),  POINTER :: DryDepRa10m     (:,:    ) ! Aerodyn resistance @10m
-     REAL(f4),  POINTER :: MoninObukhov    (:,:    ) ! MoninObukhov length 
-     REAL(f4),  POINTER :: Bry             (:,:,:  ) ! MoninObukhov length 
+     REAL(f4),  POINTER :: DryDepRa2m  (:,:    )     ! Aerodyn resistance @2m 
+     REAL(f4),  POINTER :: DryDepRa10m (:,:    )     ! Aerodyn resistance @10m
+     REAL(f4),  POINTER :: MoninObukhov(:,:    )     ! MoninObukhov length 
+     REAL(f4),  POINTER :: Bry         (:,:,:  )     ! MoninObukhov length 
      LOGICAL :: Archive_DryDepRa2m
      LOGICAL :: Archive_DryDepRa10m
      LOGICAL :: Archive_MoninObukhov
      LOGICAL :: Archive_Bry
 #endif
 
-     ! Chemistry
-     REAL(f4),  POINTER :: JVal            (:,:,:,:) ! J-values, instantaneous
-     REAL(f4),  POINTER :: JNoon           (:,:,:,:) ! Noon J-values
-     REAL(f4),  POINTER :: JNoonFrac       (:,:    ) ! Frac of when it was noon
-     REAL(f4),  POINTER :: RxnRates        (:,:,:,:) ! Reaction rates from KPP
-     REAL(f4),  POINTER :: UVFluxDiffuse   (:,:,:  ) ! Diffuse UV flux per bin
-     REAL(f4),  POINTER :: UVFluxDirect    (:,:,:  ) ! Direct UV flux per bin
-     REAL(f4),  POINTER :: UVFluxNet       (:,:,:  ) ! Net UV flux per bin
-     REAL(f4),  POINTER :: OHconcAfterChem (:,:,:  ) ! OH, HO2, O1D, and O3P
-     REAL(f4),  POINTER :: HO2concAfterChem(:,:,:  ) !  concentrations 
-     REAL(f4),  POINTER :: O1DconcAfterChem(:,:,:  ) !  upon exiting the
-     REAL(f4),  POINTER :: O3PconcAfterChem(:,:,:  ) !  FlexChem solver 
-     REAL(f4),  POINTER :: Loss            (:,:,:,:) ! Chemical loss of species
-     REAL(f4),  POINTER :: Prod            (:,:,:,:) ! Chemical prod of species
-     LOGICAL :: Archive_JVal            
-     LOGICAL :: Archive_JNoon           
+     ! Photolysis (J-values)
+     REAL(f4),  POINTER :: JVal     (:,:,:,:)        ! J-values, instantaneous
+     REAL(f4),  POINTER :: JNoon    (:,:,:,:)        ! Noon J-values
+     REAL(f4),  POINTER :: JNoonFrac(:,:    )        ! Frac of when it was noon
+     INTEGER,   POINTER :: Map_Jval (:      )
+     INTEGER,   POINTER :: Map_JNoon(:      )
+     LOGICAL :: Archive_JVal
+     LOGICAL :: Archive_JNoon
      LOGICAL :: Archive_JNoonFrac
-     LOGICAL :: Archive_RxnRates        
+
+     ! Reaction rates from KPP
+     REAL(f4),  POINTER :: RxnRates    (:,:,:,:)
+     INTEGER,   POINTER :: Map_RxnRates(:      )
+     LOGICAL :: Archive_RxnRates
+
+     ! Radiative fluxes (NOTE: May be not functioning properly)
+     REAL(f4),  POINTER :: UVFluxDiffuse(:,:,:)      ! Diffuse UV flux per bin
+     REAL(f4),  POINTER :: UVFluxDirect (:,:,:)      ! Direct UV flux per bin
+     REAL(f4),  POINTER :: UVFluxNet    (:,:,:)      ! Net UV flux per bin
      LOGICAL :: Archive_UVFluxDiffuse   
      LOGICAL :: Archive_UVFluxDirect    
      LOGICAL :: Archive_UVFluxNet       
+
+     ! Concentration after chemistry
+     REAL(f4),  POINTER :: OHconcAfterChem (:,:,:)   ! OH, HO2, O1D, and O3P
+     REAL(f4),  POINTER :: HO2concAfterChem(:,:,:)   !  concentrations 
+     REAL(f4),  POINTER :: O1DconcAfterChem(:,:,:)   !  upon exiting the
+     REAL(f4),  POINTER :: O3PconcAfterChem(:,:,:)   !  FlexChem solver 
+
+     ! Prod and loss
+     REAL(f4),  POINTER :: Loss            (:,:,:,:) ! Chemical loss of species
+     REAL(f4),  POINTER :: Prod            (:,:,:,:) ! Chemical prod of species
      LOGICAL :: Archive_OHconcAfterChem 
      LOGICAL :: Archive_HO2concAfterChem
      LOGICAL :: Archive_O1DconcAfterChem
@@ -241,27 +275,27 @@ MODULE State_Diag_Mod
      LOGICAL :: Archive_AODPSCWL3       
 
      ! Aerosol mass and PM2.5
-     REAL(f4),  POINTER :: AerMassASOA     (:,:,:  ) ! Aromatic SOA [ug/m3]
-     REAL(f4),  POINTER :: AerMassBC       (:,:,:  ) ! Black carbon [ug/m3]
-     REAL(f4),  POINTER :: AerMassINDIOL   (:,:,:  ) ! INDIOL [ug/m3]
-     REAL(f4),  POINTER :: AerMassISN1OA   (:,:,:  ) ! ISN1OA [ug/m3]
-     REAL(f4),  POINTER :: AerMassLVOCOA   (:,:,:  ) ! LVOCOA [ug/m3]
-     REAL(f4),  POINTER :: AerMassNH4      (:,:,:  ) ! Nitrate [ug/m3]
-     REAL(f4),  POINTER :: AerMassNIT      (:,:,:  ) ! NIT [ug/m3]
-     REAL(f4),  POINTER :: AerMassOPOA     (:,:,:  ) ! OPOA [ug/m3]
-     REAL(f4),  POINTER :: AerMassPOA      (:,:,:  ) ! POA [ug/m3]
-     REAL(f4),  POINTER :: AerMassSAL      (:,:,:  ) ! Total seasalt [ug/m3]
-     REAL(f4),  POINTER :: AerMassSO4      (:,:,:  ) ! Sulfate [ug/m3]
-     REAL(f4),  POINTER :: AerMassSOAGX    (:,:,:  ) ! SOAGX [ug/m3]
-     REAL(f4),  POINTER :: AerMassSOAIE    (:,:,:  ) ! SOAIE [ug/m3]
-     REAL(f4),  POINTER :: AerMassSOAME    (:,:,:  ) ! SOAME [ug/m3]
-     REAL(f4),  POINTER :: AerMassSOAMG    (:,:,:  ) ! SOAMG [ug/m3]
-     REAL(f4),  POINTER :: AerMassTSOA     (:,:,:  ) ! Terpene SOA [ug/m3]
-     REAL(f4),  POINTER :: BetaNO          (:,:,:  ) ! Beta NO [ug C/m3]
-     REAL(f4),  POINTER :: PM25            (:,:,:  ) ! PM (r< 2.5 um) [ug/m3]
-     REAL(f4),  POINTER :: TotalOA         (:,:,:  ) ! Sum of all OA [ug/m3]
-     REAL(f4),  POINTER :: TotalOC         (:,:,:  ) ! Sum of all OC [ug/m3]
-     REAL(f4),  POINTER :: TotalBiogenicOA (:,:,:  ) ! Sum of biog OC [ug/m3]
+     REAL(f4),  POINTER :: AerMassASOA    (:,:,:)    ! Aromatic SOA [ug/m3]
+     REAL(f4),  POINTER :: AerMassBC      (:,:,:)    ! Black carbon [ug/m3]
+     REAL(f4),  POINTER :: AerMassINDIOL  (:,:,:)    ! INDIOL [ug/m3]
+     REAL(f4),  POINTER :: AerMassISN1OA  (:,:,:)    ! ISN1OA [ug/m3]
+     REAL(f4),  POINTER :: AerMassLVOCOA  (:,:,:)    ! LVOCOA [ug/m3]
+     REAL(f4),  POINTER :: AerMassNH4     (:,:,:)    ! Nitrate [ug/m3]
+     REAL(f4),  POINTER :: AerMassNIT     (:,:,:)    ! NIT [ug/m3]
+     REAL(f4),  POINTER :: AerMassOPOA    (:,:,:)    ! OPOA [ug/m3]
+     REAL(f4),  POINTER :: AerMassPOA     (:,:,:)    ! POA [ug/m3]
+     REAL(f4),  POINTER :: AerMassSAL     (:,:,:)    ! Total seasalt [ug/m3]
+     REAL(f4),  POINTER :: AerMassSO4     (:,:,:)    ! Sulfate [ug/m3]
+     REAL(f4),  POINTER :: AerMassSOAGX   (:,:,:)    ! SOAGX [ug/m3]
+     REAL(f4),  POINTER :: AerMassSOAIE   (:,:,:)    ! SOAIE [ug/m3]
+     REAL(f4),  POINTER :: AerMassSOAME   (:,:,:)    ! SOAME [ug/m3]
+     REAL(f4),  POINTER :: AerMassSOAMG   (:,:,:)    ! SOAMG [ug/m3]
+     REAL(f4),  POINTER :: AerMassTSOA    (:,:,:)    ! Terpene SOA [ug/m3]
+     REAL(f4),  POINTER :: BetaNO         (:,:,:)    ! Beta NO [ug C/m3]
+     REAL(f4),  POINTER :: PM25           (:,:,:)    ! PM (r< 2.5 um) [ug/m3]
+     REAL(f4),  POINTER :: TotalOA        (:,:,:)    ! Sum of all OA [ug/m3]
+     REAL(f4),  POINTER :: TotalOC        (:,:,:)    ! Sum of all OC [ug/m3]
+     REAL(f4),  POINTER :: TotalBiogenicOA(:,:,:)    ! Sum of biog OC [ug/m3]
      LOGICAL :: Archive_AerMass        
      LOGICAL :: Archive_AerMassASOA     
      LOGICAL :: Archive_AerMassBC       
@@ -306,40 +340,50 @@ MODULE State_Diag_Mod
      REAL(f4),  POINTER :: AdvFluxZonal    (:,:,:,:) ! EW Advective Flux
      REAL(f4),  POINTER :: AdvFluxMerid    (:,:,:,:) ! NW Advective Flux
      REAL(f4),  POINTER :: AdvFluxVert     (:,:,:,:) ! Vertical Advective Flux
+     INTEGER,   POINTER :: Map_AdvFluxZonal(:      )
+     INTEGER,   POINTER :: Map_AdvFluxMerid(:      )
+     INTEGER,   POINTER :: Map_AdvFluxVert (:      )
      LOGICAL :: Archive_AdvFluxZonal
      LOGICAL :: Archive_AdvFluxMerid
      LOGICAL :: Archive_AdvFluxVert 
 
      ! Mixing
-     REAL(f4),  POINTER :: PBLMixFrac      (:,:,:  ) ! Frac of BL occupied by lev
-     REAL(f4),  POINTER :: PBLFlux         (:,:,:,:) ! BL mixing mass flux
+     REAL(f4),  POINTER :: PBLMixFrac (:,:,:  )      ! Frac of BL occupied by L
+     REAL(f4),  POINTER :: PBLFlux    (:,:,:,:)      ! BL mixing mass flux
+     INTEGER,   POINTER :: Map_PBLFlux(:      )
      LOGICAL :: Archive_PBLMixFrac 
      LOGICAL :: Archive_PBLFlux    
 
-     ! Convection
+     ! Convection and convective scavenging
      REAL(f4),  POINTER :: CloudConvFlux   (:,:,:,:) ! Cloud conv. mass flux
      REAL(f4),  POINTER :: WetLossConvFrac (:,:,:,:) ! Fraction of soluble 
                                                      !  species lost in 
                                                      !  convective updraft
      REAL(f4),  POINTER :: WetLossConv     (:,:,:,:) ! Loss in convect. updraft
+     INTEGER,   POINTER :: Map_CloudConvFlux  (:   )
+     INTEGER,   POINTER :: Map_WetLossConvFrac(:   )
+     INTEGER,   POINTER :: Map_WetLossconv    (:   )
      LOGICAL :: Archive_CloudConvFlux
      LOGICAL :: Archive_WetLossConvFrac
      LOGICAL :: Archive_WetLossConv
 
-     ! Wet deposition
-     REAL(f4),  POINTER :: WetLossLS       (:,:,:,:) ! Loss in LS 
-                                                     ! rainout/washout
+     ! Wet deposition (large-scale)
+     REAL(f4),  POINTER :: WetLossLS       (:,:,:,:) ! Loss in rainout/washout
      REAL(f4),  POINTER :: PrecipFracLS    (:,:,:  ) ! Frac of box in LS precip
      REAL(f4),  POINTER :: RainFracLS      (:,:,:,:) ! Frac lost to LS rainout
      REAL(f4),  POINTER :: WashFracLS      (:,:,:,:) ! Frac lost to LS washout
+     INTEGER,   POINTER :: Map_WetLossLS   (:      )
+     INTEGER,   POINTER :: Map_PrecipFracLS(:      )
+     INTEGER,   POINTER :: Map_RainFracLS  (:      )
+     INTEGER,   POINTER :: Map_WashFracLS  (:      )
      LOGICAL :: Archive_WetLossLS     
      LOGICAL :: Archive_PrecipFracLS
      LOGICAL :: Archive_RainFracLS  
      LOGICAL :: Archive_WashFracLS    
 
      ! Carbon aerosols
-     REAL(f4),  POINTER :: ProdBCPIfromBCPO(:,:,:  ) ! Prod BCPI from BCPO
-     REAL(f4),  POINTER :: ProdOCPIfromOCPO(:,:,:  ) ! Prod OCPI from OCPO
+     REAL(f4),  POINTER :: ProdBCPIfromBCPO(:,:,:)   ! Prod BCPI from BCPO
+     REAL(f4),  POINTER :: ProdOCPIfromOCPO(:,:,:)   ! Prod OCPI from OCPO
      LOGICAL :: Archive_ProdBCPIfromBCPO
      LOGICAL :: Archive_ProdOCPIfromOCPO
 
@@ -395,6 +439,7 @@ MODULE State_Diag_Mod
      ! Radon / Lead / Beryllium specialty simulation
      REAL(f4),  POINTER :: PbFromRnDecay(:,:,:  ) ! Pb emitted from Rn decay
      REAL(f4),  POINTER :: RadDecay     (:,:,:,:) ! Radioactive decay
+     INTEGER,   POINTER :: Map_RadDecay (:      )
      LOGICAL :: Archive_PbFromRnDecay
      LOGICAL :: Archive_RadDecay
 
@@ -836,12 +881,14 @@ CONTAINS
     State_Diag%DryDep                              => NULL()
     State_Diag%DryDepChm                           => NULL()
     State_Diag%DryDepMix                           => NULL()
+    State_Diag%DryDepVel                           => NULL()
+    State_Diag%Map_DryDep                          => NULL()
+    State_Diag%Map_DryDepChm                       => NULL()
+    State_Diag%Map_DryDepMix                       => NULL()
+    State_Diag%Map_DryDepVel                       => NULL()
     State_Diag%Archive_DryDep                      = .FALSE.
     State_Diag%Archive_DryDepChm                   = .FALSE.
     State_Diag%Archive_DryDepMix                   = .FALSE.
-
-    State_Diag%DryDepVel                           => NULL()
-    State_Diag%Map_DryDepVel                       => NULL()
     State_Diag%Archive_DryDepVel                   = .FALSE.
 
 #if defined( MODEL_GEOS )
@@ -1760,58 +1807,112 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%DryDepChm'
     diagID  = 'DryDepChm'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+
+    ! Look for DryDepChm_ species
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
+
     ! Also turn on this diagnostic array if outputting total dry dep flux
     CALL Check_DiagList( am_I_Root, Diag_List, 'DryDep', Found2, RC )
+
     IF ( Found .OR. Found2 ) THEN
        IF ( am_I_Root ) WRITE( 6, 20 ) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%DryDepChm( IM, JM, nDryDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                  State_Chm,     &
+                         nFields,   State_Diag%Map_DrydepChm, fieldList,     &
+                         RC,        IndFlag='D'                             )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+       print*, '### fieldList: ', fieldList
+
+       ! Allocate array and register DryDepChm fields
+       ALLOCATE( State_Diag%DryDepChm( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( ArrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%DryDepChm = 0.0_f4
        State_Diag%Archive_DryDepChm = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%DryDepChm,     &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Dry deposition flux from mixing
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%DryDepMix'
     diagID  = 'DryDepMix'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+
+    ! Look for DryDepMix_ species
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
+
     ! Also turn on this diagnostic array if outputting total dry dep flux
     CALL Check_DiagList( am_I_Root, Diag_List, 'DryDep', Found2, RC )
+
     IF ( Found .OR. Found2 ) THEN
        IF ( am_I_Root ) WRITE( 6, 20 ) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%DryDepMix( IM, JM, nDryDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                  State_Chm,     &
+                         nFields,   State_Diag%Map_DrydepMix, fieldList,     &
+                         RC,        IndFlag='D'                             )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate array and register DryDepMix fields
+       ALLOCATE( State_Diag%DryDepMix( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%DryDepMix = 0.0_f4
        State_Diag%Archive_DryDepMix = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%DryDepMix,     &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Total dry deposition flux
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%DryDep'
     diagID  = 'DryDep'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagID)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%DryDep( IM, JM, nDryDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,               State_Chm,        &
+                         nFields,   State_Diag%Map_Drydep, fieldList,        &
+                         RC,        IndFlag='D'                             )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register Drydep fields
+       ALLOCATE( State_Diag%DryDep( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%DryDep = 0.0_f4
        State_Diag%Archive_DryDep = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%DryDep,        &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Dry deposition velocity
@@ -6764,18 +6865,25 @@ CONTAINS
        State_Diag%DryDepChm => NULL()
     ENDIF
 
-    IF ( ASSOCIATED( State_Diag%DryDepMix ) ) THEN
-       DEALLOCATE( State_Diag%DryDepMix, STAT=RC )
-       CALL GC_CheckVar( 'State_Diag%DryDepMix', 2, RC )
+    IF ( ASSOCIATED( State_Diag%Map_DryDepChm ) ) THEN
+       DEALLOCATE( State_Diag%Map_DryDepChm, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_DryDepChm', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
-       State_Diag%DryDepMix    => NULL()
+       State_Diag%Map_DryDepChm => NULL()
     ENDIF
 
-    IF ( ASSOCIATED( State_Diag%DryDep ) ) THEN
-       DEALLOCATE( State_Diag%DryDep, STAT=RC )
-       CALL GC_CheckVar( 'State_Diag%DryDep', 2, RC )
+    IF ( ASSOCIATED( State_Diag%Map_DryDepMix ) ) THEN
+       DEALLOCATE( State_Diag%Map_DryDepMix, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_DryDepMix', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
-       State_Diag%DryDep => NULL()
+       State_Diag%Map_DryDepMix    => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%Map_DryDep ) ) THEN
+       DEALLOCATE( State_Diag%Map_DryDep, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_DryDep', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%Map_DryDep => NULL()
     ENDIF
 
     IF ( ASSOCIATED( State_Diag%DryDepVel ) ) THEN

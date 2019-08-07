@@ -1942,7 +1942,7 @@ CONTAINS
     CALL GC_CheckVar( 'State_Met%FLASH_DENS', 0, RC )
     IF ( RC /= GC_SUCCESS ) RETURN
     State_Met%FLASH_DENS = 0.0_fp
-    CALL Register_MetField( am_I_Root, 'FLASH_DENS', State_Met%FLASH_DENS, &
+    CALL Register_MetField( am_I_Root, 'FLASHDENS', State_Met%FLASH_DENS, &
                             State_Met, RC )
     IF ( RC /= GC_SUCCESS ) RETURN
 
@@ -1953,7 +1953,7 @@ CONTAINS
     CALL GC_CheckVar( 'State_Met%CONV_DEPTH', 0, RC )
     IF ( RC /= GC_SUCCESS ) RETURN
     State_Met%CONV_DEPTH = 0.0_fp
-    CALL Register_MetField( am_I_Root, 'CONV_DEPTH', State_Met%CONV_DEPTH, &
+    CALL Register_MetField( am_I_Root, 'CONVDEPTH', State_Met%CONV_DEPTH, &
                             State_Met, RC )
     IF ( RC /= GC_SUCCESS ) RETURN
 
@@ -3589,12 +3589,12 @@ CONTAINS
           IF ( isUnits ) Units = 'hours'
           IF ( isRank  ) Rank  = 2
 
-       CASE ( 'FLASH_DENS' )
+       CASE ( 'FLASHDENS' )
           IF ( isDesc  ) Desc  = 'Lightning flash density'
           IF ( isUnits ) Units = 'km-2 s-1'
           IF ( isRank  ) Rank  = 2
 
-       CASE ( 'CONV_DEPTH' )
+       CASE ( 'CONVDEPTH' )
           IF ( isDesc  ) Desc  = 'Convective cloud depth'
           IF ( isUnits ) Units = 'm'
           IF ( isRank  ) Rank  = 2
