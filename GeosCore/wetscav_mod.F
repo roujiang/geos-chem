@@ -3818,7 +3818,7 @@
 ! !LOCAL VARIABLES:
 !
       ! Scalars
-      INTEGER            :: N,        NW
+      INTEGER            :: N,        NW,      Id
       REAL(fp)           :: RAINFRAC, WETLOSS
 
       ! Strings
@@ -3992,9 +3992,18 @@
 
          ! Units: [kg/s], but eventually consider changing to [kg/m2/s]
          IF ( State_Diag%Archive_WetLossLs ) THEN
-            State_Diag%WetLossLs(I,J,L,NW) =
-     &      State_Diag%WetLossLs(I,J,L,NW) + ( WetLoss / DT )
-     &                                     *  State_Grid%Area_M2(I,J)
+
+            ! For soluble species N, find its corresponding slot
+            ! in the State_Diag%WetLossLs diagnostic array
+            Id = State_Diag%Map_WetLossLs(NW)
+
+            ! Only archive the species into the diagnostic if it is
+            ! listed in HISTORY.rc (individually or via wildcard)
+            IF ( Id > 0 ) THEN
+               State_Diag%WetLossLs(I,J,L,Id) =
+     &         State_Diag%WetLossLs(I,J,L,Id) + ( WetLoss / DT )
+     &                                        *  State_Grid%Area_M2(I,J)
+            ENDIF
          ENDIF
 
          ! Archive wet loss in kg/m2/s
@@ -4223,7 +4232,7 @@
 !
       ! Scalars
       LOGICAL            :: KIN,       DO_REEVAP
-      INTEGER            :: N,         NW
+      INTEGER            :: N,         NW,          Id
       REAL(fp)           :: ALPHA,     ALPHA2,      GAINED,   LOST
       REAL(fp)           :: MASS_WASH, MASS_NOWASH, WASHFRAC, WETLOSS
       REAL(fp)           :: TK,        TF  
@@ -4607,9 +4616,18 @@
 
          ! Units: [kg/s], but eventually consider changing to [kg/m2/s]
          IF ( State_Diag%Archive_WetLossLs ) THEN
-            State_Diag%WetLossLS(I,J,L,NW) = 
-     &      State_Diag%WetLossLS(I,J,L,NW) + ( WetLoss / DT )
-     &                                     *  State_Grid%Area_M2(I,J)
+
+	    ! For soluble species N, find its corresponding slot
+            ! in the State_Diag%WetLossLs diagnostic array
+            Id = State_Diag%Map_WetLossLs(NW)
+
+            ! Only archive the species into the diagnostic if it is
+            ! listed in HISTORY.rc (individually or via wildcard)
+            IF ( Id > 0 ) THEN
+               State_Diag%WetLossLS(I,J,L,Id) =
+     &         State_Diag%WetLossLS(I,J,L,Id) + ( WetLoss / DT )
+     &                                        *  State_Grid%Area_M2(I,J)
+            ENDIF
          ENDIF
 
          ! Archive wet loss in kg/m2/s
@@ -4744,7 +4762,7 @@
 ! !LOCAL VARIABLES:
 !
       ! Scalars
-      INTEGER            :: N, NW
+      INTEGER            :: N, NW, Id
       REAL(fp)           :: WETLOSS
 
       ! Strings
@@ -4894,9 +4912,18 @@
 
          ! Units: [kg/s], but eventually consider changing to [kg/m2/s]
          IF ( State_Diag%Archive_WetLossLs ) THEN
-            State_Diag%WetLossLs(I,J,L,NW) = 
-     &      State_Diag%WetLossLs(I,J,L,NW) + ( WetLoss / DT )
-     &                                     *  State_Grid%Area_M2(I,J)
+
+	    ! For soluble species N, find its corresponding slot
+            ! in the State_Diag%WetLossLs diagnostic array
+            Id = State_Diag%Map_WetLossLs(NW)
+
+            ! Only archive the species into the diagnostic if it is
+            ! listed in HISTORY.rc (individually or via wildcard)
+            IF ( Id > 0 ) THEN
+               State_Diag%WetLossLs(I,J,L,Id) =
+     &         State_Diag%WetLossLs(I,J,L,Id) + ( WetLoss / DT )
+     &                                        *  State_Grid%Area_M2(I,J)
+            ENDIF
          ENDIF
 
          ! Archive wet loss in kg/m2/s
@@ -5038,7 +5065,7 @@
 !     
       ! Scalars
       LOGICAL            :: KIN
-      INTEGER            :: N,        NW
+      INTEGER            :: N,        NW,      Id
       REAL(fp)           :: WASHFRAC, WETLOSS, TMP, TK
 
       ! Strings
@@ -5203,9 +5230,18 @@
 
          ! Units: [kg/s], but eventually consider changing to [kg/m2/s]
          IF ( State_Diag%Archive_WetLossLS ) THEN
-            State_Diag%WetLossLS(I,J,L,NW) = 
-     &      State_Diag%WetLossLS(I,J,L,NW) + ( WetLoss / DT )
-     &                                     *  State_Grid%Area_M2(I,J)
+
+	    ! For soluble species N, find its corresponding slot
+            ! in the State_Diag%WetLossLs diagnostic array
+            Id = State_Diag%Map_WetLossLs(NW)
+
+            ! Only archive the species into the diagnostic if it is
+            ! listed in HISTORY.rc (individually or via wildcard)
+            IF ( Id > 0 ) THEN
+               State_Diag%WetLossLS(I,J,L,Id) =
+     &         State_Diag%WetLossLS(I,J,L,Id) + ( WetLoss / DT )
+     &                                        *  State_Grid%Area_M2(I,J)
+            ENDIF
          ENDIF
 
          ! Archive wet loss in kg/m2/s (check source code for this routine

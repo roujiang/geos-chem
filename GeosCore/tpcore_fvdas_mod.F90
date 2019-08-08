@@ -578,7 +578,7 @@ CONTAINS
     INTEGER            :: jn (km)
     INTEGER            :: js (km)
     INTEGER            :: il, ij, ik, iq, k, j, i, Kflip
-    INTEGER            :: num, k2m1
+    INTEGER            :: num, k2m1, AdvId
                        
     REAL(fp)           :: dap   (km)
     REAL(fp)           :: dbk   (km)
@@ -1041,6 +1041,9 @@ CONTAINS
        !======================================================================
        IF ( Do_ND24 .or. State_Diag%Archive_AdvFluxZonal ) THEN
 
+          ! For advected species IQ, find its slot in State_Diag%AdvFluxZonal
+          AdvId = State_Diag%Map_AdvFluxZonal(IQ)
+
           ! Zero temp array
           DTC = 0e+0_fp
 
@@ -1078,9 +1081,9 @@ CONTAINS
 
              ! Units: [kg/s]
              ! But consider changing to area-independent units [kg/m2/s]
-             IF ( State_Diag%Archive_AdvFluxZonal ) THEN
-                Kflip                                 = KM - K + 1 ! flip vert
-                State_Diag%AdvFluxZonal(I,J,Kflip,IQ) = DTC(I,J,K)
+             IF ( State_Diag%Archive_AdvFluxZonal .and. AdvID > 0 ) THEN
+                Kflip                                    = KM - K + 1 ! flip
+                State_Diag%AdvFluxZonal(I,J,Kflip,AdvId) = DTC(I,J,K)
              ENDIF
 
           ENDDO
@@ -1101,6 +1104,9 @@ CONTAINS
        ! fy in Ytp. (ccc, 4/1/09)
        !======================================================================
        IF ( Do_ND25 .or. State_Diag%Archive_AdvFluxMerid ) THEN
+
+          ! For advected species IQ, find its slot in State_Diag%AdvFluxMerid
+          AdvId = State_Diag%Map_AdvFluxMerid(IQ)
 
           ! Zero temp array
           DTC = 0e+0_fp
@@ -1139,9 +1145,9 @@ CONTAINS
 
              ! Units: [kg/s]
              ! But consider changing to area-independent units [kg/m2/s]
-             IF ( State_Diag%Archive_AdvFluxMerid ) THEN
-                Kflip                                 = KM - K + 1  ! flip vert
-                State_Diag%AdvFluxMerid(I,J,Kflip,IQ) = DTC(I,J,K) 
+             IF ( State_Diag%Archive_AdvFluxMerid .and. AdvId > 0 ) THEN
+                Kflip                                    = KM - K + 1 ! flip
+                State_Diag%AdvFluxMerid(I,J,Kflip,AdvId) = DTC(I,J,K)
              ENDIF
 
           ENDDO
@@ -1170,6 +1176,9 @@ CONTAINS
        !======================================================================
        IF ( Do_ND26 .or. State_Diag%Archive_AdvFluxVert ) THEN
           
+          ! For advected species IQ, find its slot in State_Diag%AdvFluxMerid
+          AdvId = State_Diag%Map_AdvFluxVert(IQ)
+
           ! Zero temp array
           DTC = 0e+0_fp
 
@@ -1220,9 +1229,9 @@ CONTAINS
 
              ! Units: [kg/s]
              ! But consider changing to area-independent units [kg/m2/s]
-             IF ( State_Diag%Archive_AdvFluxVert ) THEN
-                Kflip                                = KM - K + 1  !flip vert
-                State_Diag%AdvFluxVert(I,J,Kflip,IQ) = DTC(I,J,K) 
+             IF ( State_Diag%Archive_AdvFluxVert .and. AdvId > 0 ) THEN
+                Kflip                                   = KM - K + 1  ! flip
+                State_Diag%AdvFluxVert(I,J,Kflip,AdvId) = DTC(I,J,K)
              ENDIF
 
           ENDDO

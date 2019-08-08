@@ -1067,6 +1067,9 @@ CONTAINS
     State_Diag%AdvFluxZonal                        => NULL()
     State_Diag%AdvFluxMerid                        => NULL()
     State_Diag%AdvFluxVert                         => NULL()
+    State_Diag%Map_AdvFluxZonal                    => NULL()
+    State_Diag%Map_AdvFluxMerid                    => NULL()
+    State_Diag%Map_AdvFluxVert                     => NULL()
     State_Diag%Archive_AdvFluxZonal                = .FALSE.
     State_Diag%Archive_AdvFluxMerid                = .FALSE.
     State_Diag%Archive_AdvFluxVert                 = .FALSE.
@@ -2038,54 +2041,99 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%AdvFluxZonal'
     diagID  = 'AdvFluxZonal'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%AdvFluxZonal( IM, JM, LM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                     State_Chm,  &
+                         nFields,   State_Diag%Map_AdvFluxZonal, fieldList,  &
+                         RC,        IndFlag='A'                             )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register AdvFluxZonal fields
+       ALLOCATE( State_Diag%AdvFluxZonal( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%AdvFluxZonal = 0.0_f4
        State_Diag%Archive_AdvFluxZonal = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%AdvFluxZonal,  &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
-
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
+ 
     !-----------------------------------------------------------------------
     ! Meridional Advective Flux (south positive)
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%AdvFluxMerid'
     diagID  = 'AdvFluxMerid'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%AdvFluxMerid( IM, JM, LM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                     State_Chm,  &
+                         nFields,   State_Diag%Map_AdvFluxMerid, fieldList,  &
+                         RC,        IndFlag='A'                             )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register AdvFluxMerid fields
+       ALLOCATE( State_Diag%AdvFluxMerid( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%AdvFluxMerid = 0.0_f4
        State_Diag%Archive_AdvFluxMerid = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%AdvFluxMerid,  &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Vertical Advective Flux (downwards positive)
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%AdvFluxVert'
     diagID  = 'AdvFluxVert'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%AdvFluxVert( IM, JM, LM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                    State_Chm,   &
+                         nFields,   State_Diag%Map_AdvFluxVert, fieldList,   &
+                         RC,        IndFlag='A'                             )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register AdvFluxMerid fields
+       ALLOCATE( State_Diag%AdvFluxVert( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%AdvFluxVert = 0.0_f4
        State_Diag%Archive_AdvFluxVert = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%AdvFluxVert,   &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Fraction of BL occupied by level L
@@ -2128,73 +2176,134 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%CloudConvFlux'
     diagID  = 'CloudConvFlux'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%CloudConvFlux( IM, JM, LM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                                 &
+                         State_Chm, nFields, State_Diag%Map_CloudConvFlux,   &
+                         fieldList, RC,      IndFlag='A'                    )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register CloudConvFlux fields
+       ALLOCATE( State_Diag%CloudConvFlux( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%CloudConvFlux = 0.0_f4
        State_Diag%Archive_CloudConvFlux = .TRUE.
-       CALL Register_DiagField( am_I_Root, diagID, State_Diag%CloudConvFlux, &
-                                State_Chm, State_Diag, RC                   )
+       CALL Register_DiagField( am_I_Root, diagID,                           &
+                                State_Diag%CloudConvFlux,                    &
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Fraction of soluble species lost in convective updrafts
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%WetLossConvFrac'
     diagID  = 'WetLossConvFrac'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE( 6, 20 ) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%WetLossConvFrac( IM, JM, LM, nWetDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                                 &
+                         State_Chm, nFields, State_Diag%Map_WetLossConvFrac, &
+                         fieldList, RC,      IndFlag='W'                    )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register WetLossConvFrac fields
+       ALLOCATE( State_Diag%WetLossConvFrac( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%WetLossConvFrac = 0.0_f4
        State_Diag%Archive_WetLossConvFrac = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%WetLossConvFrac,                  & 
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Loss of soluble species in convective updrafts
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%WetLossConv'
     diagID  = 'WetLossConv'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%WetLossConv( IM, JM, LM, nWetDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                                 &
+                         State_Chm, nFields, State_Diag%Map_WetLossConv,     &
+                         fieldList, RC,      IndFlag='W'                    )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register WetLossConv fields
+       ALLOCATE( State_Diag%WetLossConv( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%WetLossConv = 0.0_f4
        State_Diag%Archive_WetLossConv = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%WetLossConv,   &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Loss of solutble species in large-scale rainout/washout
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%WetLossLS'
     diagID  = 'WetLossLS'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%WetLossLS( IM, JM, LM, nWetDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                                 &
+                         State_Chm, nFields, State_Diag%Map_WetLossLS,       &
+                         fieldList, RC,      IndFlag='W'                    )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register WetLossLS fields
+       ALLOCATE( State_Diag%WetLossLS( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%WetLossLS = 0.0_f4
        State_Diag%Archive_WetLossLS = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%WetLossLS,     &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Fraction of grid box undergoing large-scale precipitation
@@ -6988,7 +7097,6 @@ CONTAINS
        CALL GC_CheckVar( 'State_Diag%UvFluxDirect', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%UVFluxDirect => NULL()
-
     ENDIF
 
     IF ( ASSOCIATED( State_Diag%UVFluxNet ) ) THEN
@@ -7005,6 +7113,13 @@ CONTAINS
        State_Diag%AdvFluxZonal => NULL()
     ENDIF
 
+    IF ( ASSOCIATED( State_Diag%Map_AdvFluxZonal ) ) THEN
+       DEALLOCATE( State_Diag%Map_AdvFluxZonal, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_AdvFluxZonal', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%Map_AdvFluxZonal => NULL()
+    ENDIF
+
     IF ( ASSOCIATED( State_Diag%AdvFluxMerid ) ) THEN
        DEALLOCATE( State_Diag%AdvFluxMerid, STAT=RC )
        CALL GC_CheckVar( 'State_Diag%AdvFluxMerid', 2, RC )
@@ -7012,11 +7127,25 @@ CONTAINS
        State_Diag%AdvFluxMerid => NULL()
     ENDIF
 
+    IF ( ASSOCIATED( State_Diag%Map_AdvFluxMerid ) ) THEN
+       DEALLOCATE( State_Diag%Map_AdvFluxMerid, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_AdvFluxMerid', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%Map_AdvFluxMerid => NULL()
+    ENDIF
+
     IF ( ASSOCIATED( State_Diag%AdvFluxVert ) ) THEN
        DEALLOCATE( State_Diag%AdvFluxVert, STAT=RC )
        CALL GC_CheckVar( 'State_Diag%AdvFluxVert', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%AdvFluxVert => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%Map_AdvFluxVert ) ) THEN
+       DEALLOCATE( State_Diag%Map_AdvFluxVert, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_AdvFluxVert', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%Map_AdvFluxVert => NULL()
     ENDIF
 
     IF ( ASSOCIATED( State_Diag%PBLMixFrac ) ) THEN
@@ -11684,6 +11813,13 @@ CONTAINS
     IF ( ALLOCATED( uniqFields ) ) DEALLOCATE( uniqFields )
     CALL Unique( tmpFields, uniqFields )
     nFields = SIZE( UniqFields )
+
+    ! Trap potential errors
+    IF ( nFields < 1 ) THEN
+       ErrMsg = 'Number of unqiue diagnostic fields found is < 1!'
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
 
     !=======================================================================
     ! Create the mapping array
