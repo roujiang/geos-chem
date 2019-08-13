@@ -223,18 +223,30 @@
          ! Full PBL mixing budget diagnostics - Part 1 of 2
          !-------------------------------------------------
          IF ( State_Diag%Archive_BudgetMixing ) THEN
+
             ! Get initial column masses
-            CALL Compute_Column_Mass( am_I_Root, Input_Opt,
-     &                    State_Chm, State_Grid, State_Met,   
-     &                    State_Chm%Map_Advect,                
-     &                    State_Diag%Archive_BudgetMixingFull, 
-     &                    State_Diag%Archive_BudgetMixingTrop, 
-     &                    State_Diag%Archive_BudgetMixingPBL,  
-     &                    State_Diag%BudgetMass1,               
-     &                    RC ) 
+            CALL Compute_Column_Mass(
+     &           am_I_Root   = am_I_Root,
+     &           Input_Opt   = Input_Opt,
+     &           State_Chm   = State_Chm,
+     &           State_Grid  = State_Grid,
+     &           State_Met   = State_Met,
+     &           SpcMapping  = State_Chm%Map_Advect,
+     &           isFull      = State_Diag%Archive_BudgetMixingFull,
+     &           SpcMapFull  = State_Diag%Map_BudgetMixingFull,
+     &           ColMassFull = State_Diag%BudgetMassFull1,
+     &           isTrop      = State_Diag%Archive_BudgetMixingTrop,
+     &           SpcMapTrop  = State_Diag%Map_BudgetMixingTrop,
+     &           ColMassTrop = State_Diag%BudgetMassTrop1,
+     &           isPBL       = State_Diag%Archive_BudgetMixingPBL,
+     &           SpcMapPBL   = State_Diag%Map_BudgetMixingPBL,
+     &           ColMassPBL  = State_Diag%BudgetMassPBL1,
+     &           RC          = RC                                      )
+
+            ! Trap potential errors
             IF ( RC /= GC_SUCCESS ) THEN
-               ErrMsg = 'Mixing budget diagnostics ' //
-     &                  'error 1 (full PBL mixing)'
+               ErrMsg = 
+     &          'Error encountered in "Compute_Column_Mass" (initial)!'
                CALL GC_Error( ErrMsg, RC, ThisLoc )
                RETURN
             ENDIF
@@ -296,43 +308,72 @@
             RETURN
          ENDIF
 
-       !-------------------------------------------------
-       ! Full PBL mixing budget diagnostics - Part 2 of 2
-       !-------------------------------------------------
-       IF ( State_Diag%Archive_BudgetMixing ) THEN
+         !-------------------------------------------------
+         ! Full PBL mixing budget diagnostics - Part 2 of 2
+         !-------------------------------------------------
+         IF ( State_Diag%Archive_BudgetMixing ) THEN
 
-          ! Get dynamics timestep [s]
-          DT_Dyn = Get_Ts_Dyn()
+            ! Get dynamics timestep [s]
+            DT_Dyn = Get_Ts_Dyn()
 
-          ! Get final column masses and compute diagnostics
-          CALL Compute_Column_Mass( am_I_Root, Input_Opt,
-     &                  State_Chm, State_Grid, State_Met,
-     &                  State_Chm%Map_Advect,                
-     &                  State_Diag%Archive_BudgetMixingFull, 
-     &                  State_Diag%Archive_BudgetMixingTrop, 
-     &                  State_Diag%Archive_BudgetMixingPBL,  
-     &                  State_Diag%BudgetMass2,              
-     &                  RC )    
-          CALL Compute_Budget_Diagnostics( am_I_Root,
-     &                  State_Grid,
-     &                  State_Chm%Map_Advect,                
-     &                  DT_Dyn,                              
-     &                  State_Diag%Archive_BudgetMixingFull, 
-     &                  State_Diag%Archive_BudgetMixingTrop, 
-     &                  State_Diag%Archive_BudgetMixingPBL,  
-     &                  State_Diag%BudgetMixingFull,         
-     &                  State_Diag%BudgetMixingTrop,         
-     &                  State_Diag%BudgetMixingPBL,          
-     &                  State_Diag%BudgetMass1,              
-     &                  State_Diag%BudgetMass2,              
-     &                  RC )
-          IF ( RC /= GC_SUCCESS ) THEN
-             ErrMsg = 'Mixing budget diagnostics error 2' //
-     &                ' (full PBL mixing)'
-             CALL GC_Error( ErrMsg, RC, ThisLoc )
-             RETURN
-          ENDIF
-       ENDIF
+            ! Get initial column masses
+            CALL Compute_Column_Mass(
+     &           am_I_Root   = am_I_Root,
+     &           Input_Opt   = Input_Opt,
+     &           State_Chm   = State_Chm,
+     &           State_Grid  = State_Grid,
+     &           State_Met   = State_Met,
+     &           SpcMapping  = State_Chm%Map_Advect,
+     &           isFull      = State_Diag%Archive_BudgetMixingFull,
+     &           SpcMapFull  = State_Diag%Map_BudgetMixingFull,
+     &           ColMassFull = State_Diag%BudgetMassFull2,
+     &           isTrop      = State_Diag%Archive_BudgetMixingTrop,
+     &           SpcMapTrop  = State_Diag%Map_BudgetMixingTrop,
+     &           ColMassTrop = State_Diag%BudgetMassTrop2,
+     &           isPBL       = State_Diag%Archive_BudgetMixingPBL,
+     &           SpcMapPBL   = State_Diag%Map_BudgetMixingPBL,
+     &           ColMassPBL  = State_Diag%BudgetMassPBL2,
+     &           RC          = RC                                      )
+
+            ! Trap potential errors
+            IF ( RC /= GC_SUCCESS ) THEN
+               ErrMsg = 
+     &          'Error encountered in "Compute_Column_Mass" (initial)!'
+               CALL GC_Error( ErrMsg, RC, ThisLoc )
+               RETURN
+            ENDIF
+
+            ! Compute full PBL mixing budget diagnostics
+            CALL Compute_Budget_Diagnostics( 
+     &           am_I_Root     = am_I_Root,
+     &           State_Grid    = State_Grid,
+     &           TS            = DT_Dyn,       
+     &           SpcMapping    = State_Chm%Map_Advect,
+     &           isFull        = State_Diag%Archive_BudgetMixingFull,
+     &           SpcMapFull    = State_Diag%Map_BudgetMixingFull,
+     &           diagFull      = State_Diag%BudgetMixingFull,
+     &           MassInitFull  = State_Diag%BudgetMassFull1,
+     &           MassFinalFull = State_Diag%BudgetMassFull2,
+     &           isTrop        = State_Diag%Archive_BudgetMixingTrop,
+     &           SpcMapTrop    = State_Diag%Map_BudgetMixingTrop,
+     &           diagTrop      = State_Diag%BudgetMixingTrop,
+     &           MassInitTrop  = State_Diag%BudgetMassTrop1,
+     &           MassFinalTrop = State_Diag%BudgetMassTrop2,
+     &           isPBL         = State_Diag%Archive_BudgetMixingPBL,
+     &           SpcMapPBL     = State_Diag%Map_BudgetMixingPBL,
+     &           diagPBL       = State_Diag%BudgetMixingPBL,
+     &           MassInitPBL   = State_Diag%BudgetMassPBL1,
+     &           MassFinalPBL  = State_Diag%BudgetMassPBL2,
+     &           RC            = RC                                   )
+
+            ! Trap potential errors
+            IF ( RC /= GC_SUCCESS ) THEN
+               ErrMsg = 
+     &          'Error encountered in "Compute_Budget_Diagnostics"!'
+               CALL GC_Error( ErrMsg, RC, ThisLoc )
+               RETURN
+            ENDIF
+         ENDIF
 
       ENDIF
 

@@ -505,17 +505,29 @@ CONTAINS
     ! Emissions/dry deposition budget diagnostics - Part 1 of 2
     !----------------------------------------------------------
     IF ( State_Diag%Archive_BudgetEmisDryDep ) THEN
+
        ! Get initial column masses
-       CALL Compute_Column_Mass( am_I_Root, Input_Opt,                    &
-                                 State_Chm, State_Grid, State_Met,        &
-                                 State_Chm%Map_Advect,                    &
-                                 State_Diag%Archive_BudgetEmisDryDepFull, &
-                                 State_Diag%Archive_BudgetEmisDryDepTrop, &
-                                 State_Diag%Archive_BudgetEmisDryDepPBL,  &
-                                 State_Diag%BudgetMass1,                  &
-                                 RC ) 
+       CALL Compute_Column_Mass(                                             &
+            am_I_Root   = am_I_Root,                                         &
+            Input_Opt   = Input_Opt,                                         &
+            State_Chm   = State_Chm,                                         &
+            State_Grid  = State_Grid,                                        &
+            State_Met   = State_Met,                                         &
+            SpcMapping  = State_Chm%Map_Advect,                              &
+            isFull      = State_Diag%Archive_BudgetEmisDryDepFull,           &
+            SpcMapFull  = State_Diag%Map_BudgetEmisDryDepFull,               &
+            ColMassFull = State_Diag%BudgetMassFull1,                        &
+            isTrop      = State_Diag%Archive_BudgetEmisDryDepTrop,           &
+            SpcMapTrop  = State_Diag%Map_BudgetEmisDryDepTrop,               &
+            ColMassTrop = State_Diag%BudgetMassTrop1,                        &
+            isPBL       = State_Diag%Archive_BudgetEmisDryDepPBL,            &
+            SpcMapPBL   = State_Diag%Map_BudgetEmisDryDepPBL,                & 
+            ColMassPBL  = State_Diag%BudgetMassPBL1,                         &
+            RC          = RC                                                )
+
+       ! Trap potential errors
        IF ( RC /= GC_SUCCESS ) THEN
-          ErrMsg = 'Emissions/dry deposition budget diagnostics error 1'
+          ErrMsg = 'Error encountered in "Compute_Column_Mass" (initial)!'
           CALL GC_Error( ErrMsg, RC, ThisLoc )
           RETURN
        ENDIF
@@ -1023,30 +1035,59 @@ CONTAINS
     ! Emissions/dry deposition budget diagnostics - Part 2 of 2
     !----------------------------------------------------------
     IF ( State_Diag%Archive_BudgetEmisDryDep ) THEN
-       ! Get final column masses and compute diagnostics
-       CALL Compute_Column_Mass( am_I_Root, Input_Opt,                        &
-                                 State_Chm, State_Grid, State_Met,            &
-                                 State_Chm%Map_Advect,                        &
-                                 State_Diag%Archive_BudgetEmisDryDepFull,     &
-                                 State_Diag%Archive_BudgetEmisDryDepTrop,     &
-                                 State_Diag%Archive_BudgetEmisDryDepPBL,      &
-                                 State_Diag%BudgetMass2,                      &
-                                 RC )  
-       CALL Compute_Budget_Diagnostics( am_I_Root,                            &
-                                     State_Grid,                              &
-                                     State_Chm%Map_Advect,                    &
-                                     TS,                                      &
-                                     State_Diag%Archive_BudgetEmisDryDepFull, &
-                                     State_Diag%Archive_BudgetEmisDryDepTrop, &
-                                     State_Diag%Archive_BudgetEmisDryDepPBL,  &
-                                     State_Diag%BudgetEmisDryDepFull,         &
-                                     State_Diag%BudgetEmisDryDepTrop,         &
-                                     State_Diag%BudgetEmisDryDepPBL,          &
-                                     State_Diag%BudgetMass1,                  &
-                                     State_Diag%BudgetMass2,                  &
-                                     RC )
+
+       ! Get final column masses
+       CALL Compute_Column_Mass(                                             &
+            am_I_Root   = am_I_Root,                                         &
+            Input_Opt   = Input_Opt,                                         &
+            State_Chm   = State_Chm,                                         &
+            State_Grid  = State_Grid,                                        &
+            State_Met   = State_Met,                                         &
+            SpcMapping  = State_Chm%Map_Advect,                              &
+            isFull      = State_Diag%Archive_BudgetEmisDryDepFull,           &
+            SpcMapFull  = State_Diag%Map_BudgetEmisDryDepFull,               &
+            ColMassFull = State_Diag%BudgetMassFull2,                        &
+            isTrop      = State_Diag%Archive_BudgetEmisDryDepTrop,           &
+            SpcMapTrop  = State_Diag%Map_BudgetEmisDryDepTrop,               &
+            ColMassTrop = State_Diag%BudgetMassTrop2,                        &
+            isPBL       = State_Diag%Archive_BudgetEmisDryDepPBL,            &
+            SpcMapPBL   = State_Diag%Map_BudgetEmisDryDepPBL,                & 
+            ColMassPBL  = State_Diag%BudgetMassPBL2,                         &
+            RC          = RC                                                )
+
+       ! Trap potential errors
        IF ( RC /= GC_SUCCESS ) THEN
-          ErrMsg = 'Emissions/dry deposition budget diagnostics error 2'
+          ErrMsg = 'Error encountered in "Compute_Column_Mass" (final)!'
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Compute emissions & drydep budget diagnostics
+       CALL Compute_Budget_Diagnostics(                                      &
+            am_I_Root     = am_I_Root,                                       &
+            State_Grid    = State_Grid,                                      &
+            TS            = TS,                                              &
+            SpcMapping    = State_Chm%Map_Advect,                            &
+            isFull        = State_Diag%Archive_BudgetEmisDryDepFull,         &
+            SpcMapFull    = State_Diag%Map_BudgetEmisDryDepFull,             &
+            diagFull      = State_Diag%BudgetEmisDryDepFull,                 &
+            MassInitFull  = State_Diag%BudgetMassFull1,                      &
+            MassFinalFull = State_Diag%BudgetMassFull2,                      &
+            isTrop        = State_Diag%Archive_BudgetEmisDryDepTrop,         &
+            SpcMapTrop    = State_Diag%Map_BudgetEmisDryDepTrop,             &
+            diagTrop      = State_Diag%BudgetEmisDryDepTrop,                 &
+            MassInitTrop  = State_Diag%BudgetMassTrop1,                      &
+            MassFinalTrop = State_Diag%BudgetMassTrop2,                      &
+            isPBL         = State_Diag%Archive_BudgetEmisDryDepPBL,          &
+            SpcMapPBL     = State_Diag%Map_BudgetEmisDryDepPBL,              &
+            diagPBL       = State_Diag%BudgetEmisDryDepPBL,                  &
+            MassInitPBL   = State_Diag%BudgetMassPBL1,                       &
+            MassFinalPBL  = State_Diag%BudgetMassPBL2,                       &
+            RC            = RC                                              )
+
+       ! Trap potential errors
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error encountered in "Compute_Budget_Diagnostics!"'
           CALL GC_Error( ErrMsg, RC, ThisLoc )
           RETURN
        ENDIF

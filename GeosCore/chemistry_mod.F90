@@ -164,104 +164,7 @@ CONTAINS
 ! !REMARKS:
 !
 ! !REVISION HISTORY: 
-!  (1 ) Now reference DELP, T from "dao_mod.f" since we need to pass this
-!        to OPTDEPTH for GEOS-1 or GEOS-STRAT met fields (bnd, bmy, 4/14/03)
-!  (2 ) Now references DEBUG_MSG from "error_mod.f" (bmy, 8/7/03)
-!  (3 ) Removed call to CHEMO3, it's obsolete.  Now calls CHEM_TAGGED_OX !
-!        from "tagged_ox_mod.f" when NSRCX==6.  Now calls Kr85 chemistry if 
-!        NSRCX == 12 (jsw, bmy, 8/20/03)
-!  (4 ) Bug fix: added GEOS-4 to the #if block in the call to OPTDEPTH.
-!        (bmy, 1/27/04)
-!  (5 ) Now calls CHEMCARBON and CHEMDUST to do carbon aerosol & dust 
-!        aerosol chemistry (rjp, tdf, bmy, 4/2/04)
-!  (6 ) Now calls CHEMSEASALT to do seasalt aerosol chemistry 
-!        (rjp, bec, bmy, 4/20/04)
-!  (7 ) Now references "logical_mod.f" & "tracer_mod.f".  Now references
-!        AEROSOL_CONC, AEROSOL_RURALBOX, and RDAER from "aerosol_mod.f".  
-!        Now includes "CMN_DIAG" and "comode.h".  Also call READER, READCHEM, 
-!        and INPHOT to initialize the FAST-J arrays so that we can save out !
-!        AOD's to the ND21 diagnostic for offline runs. (bmy, 7/20/04)
-!  (8 ) Now call routine CHEMMERCURY from "mercury_mod.f" for an offline
-!        Hg0/Hg2/HgP simulation. (eck, bmy, 12/7/04)
-!  (9 ) Now do not call DO_RPMARES if we are doing an offline aerosol run
-!        with crystalline sulfur & aqueous tracers (cas, bmy, 1/7/05)
-!  (10) Now use ISORROPIA for aer thermodyn equilibrium if we have seasalt 
-!        tracers defined, or RPMARES if not.  Now call CHEMSEASALT before
-!        CHEMSULFATE.  Now do aerosol thermodynamic equilibrium before
-!        aerosol chemistry for offline aerosol runs.  Now also reference 
-!        CLDF from "dao_mod.f" (bec, bmy, 4/20/05)
-!  (11) Now modified for GCAP met fields.  Now call CHEM_HCN_CH3CN from 
-!        "hcn_ch3cn_mod.f".  Also remove allreferences to the obsolete 
-!         CO-OH param simulation. (xyp, bmy, 6/23/05)
-!  (12) Now make sure all USE statements are USE, ONLY (bmy, 10/3/05)
-!  (13) Now call MAKE_RH from "main.f" (bmy, 3/16/06)
-!  (14) Removed ISOP_PRIOR as a local variable (dkh, bmy, 6/1/06)
-!  (15) Remove support for GEOS-1 and GEOS-STRAT met fields (bmy, 8/4/06)
-!  (16) Now use DRYFLXH2HD and CHEM_H2_HD for H2/HD sim (lyj, phs, 9/18/07)
-!  (17) Bug fix: now hardwired to use RPMARES since ISORROPIA can return very
-!        unphysical values at low RH.  Wait for ISORROPIA II. (bmy, 4/2/08)
-!  (18) The dry deposition diagnostic (ND44) is done in vdiff_mod if using non-
-!        local PBL (lin, ccc, 5/29/09)
-!  (19) Now calls CHEMPOPS from "pops_mod.f" for an offline POPs simulation
-!       (eck, 9/20/10)
-!  17 Dec 2009 - R. Yantosca - Added ProTeX headers
-!  25 Jan 2010 - R. Yantosca - Now call DO_TOMAS for TOMAS microphysics
-!  28 Jan 2010 - C. Carouge, R. Yantosca - Modified for ISORROPIA II
-!  19 Mar 2012 - R. Yantosca - Add C-preprocessor switch to shut off 
-!                              ISORROPIA to facilitate debugging
-!  30 Jul 2012 - R. Yantosca - Now accept am_I_Root as an argument, and pass
-!                              this down to lower-level chem routines for GIGC
-!  08 Aug 2012 - R. Yantosca - Now align IF statements better
-!  10 Aug 2012 - R. Yantosca - Cosmetic changes
-!  18 Oct 2012 - R. Yantosca - Rename GC_MET argument to State_Met
-!  18 Oct 2012 - R. Yantosca - Rename CHEM_STATE argument to State_Chem
-!  19 Oct 2012 - R. Yantosca - Now reference gigc_state_chm_mod.F90
-!  19 Oct 2012 - R. Yantosca - Now reference gigc_state_met_mod.F90
-!  25 Oct 2012 - R. Yantosca - Add comments for GIGC #ifdefs
-!  25 Oct 2012 - R. Yantosca - Add the RC output argument for the GIGC
-!  08 Nov 2012 - R. Yantosca - Now pass Input_Opt argument for the GIGC and
-!                              use fields of Input_Opt to replace logicals
-!  15 Nov 2012 - M. Payer    - Replaced all met field arrays with State_Met
-!                              derived type object
-!  26 Nov 2012 - R. Yantosca - Now pass Input_Opt, State_Chm, RC to routine
-!                              DO_STRAT_CHEM (in GeosCore/strat_chem_mod.F90)
-!  11 Dec 2012 - R. Yantosca - Remove NI, NJ, NL, NCNST arguments; these are
-!                              now obtained either from CMN_SIZE_mod.F or
-!                              from the Input_Opt object
-!  05 Mar 2013 - R. Yantosca - Now pass am_I_Root, Input_Opt, RC to DRYFLX
-!  25 Mar 2013 - H. Amos     - merged C. Friedman's PAH code into v9-01-03
-!  28 Mar 2013 - S.D. Eastham- Updated to use FAST_JX_MOD
-!  31 May 2013 - R. Yantosca - Now pass Input_Opt, State_Chm to DO_TOMAS
-!  19 May 2014 - C. Keller   - Removed call for acetone ocean sink - now done
-!                              in HEMCO.
-!  06 Nov 2014 - M. Yannetti - Added PRECISION_MOD
-!  08 May 2015 - C. Keller   - Added WRITE_STATE_PSC.
-!  18 May 2015 - R. Yantosca - Remove DIAG_STATE_PSC, that is not used anymore
-!  15 Jun 2015 - R. Yantosca - Removed calls to DRYFLXRnPbBe, that's obsolete
-!  04 Sep 2015 - C. Keller   - Added passive tracer call.
-!  17 Mar 2016 - M. Sulprizio- Remove call to OPTDEPTH. The optical depth fields
-!                              are now saved into State_Met%OPTD in the routines
-!                              that read the met fields from disk.
-!  16 May 2016 - M. Sulprizio- Remove call to AEROSOL_RURALBOX. The FlexChem
-!                              implementation has rendered the routine obsolete.
-!  16 Jun 2016 - C. Miller   - Now use Ind_ function to define species ID's
-!  17 Jun 2016 - R. Yantosca - Now define species ID's only on first call
-!  17 Jun 2016 - R. Yantosca - Now reset first-time flag at end of routine
-!  30 Jun 2016 - R. Yantosca - Remove instances of STT.
-!  19 Jul 2016 - R. Yantosca - Now bracket DO_TEND calls with #ifdef USE_TEND
-!  10 Aug 2016 - R. Yantosca - Remove temporary tracer-removal code
-!  11 Aug 2016 - R. Yantosca - Clean up calls to error subroutines
-!  09 Mar 2017 - C. Keller   - Bug fix: call TEND_STAGE1 before unit conversion
-!  28 Sep 2017 - E. Lundgren - Simplify unit conversions with wrapper routine
-!  03 Oct 2017 - E. Lundgren - Pass State_Diag as argument
-!  09 Nov 2017 - R. Yantosca - Reorder arguments for consistency: Input_Opt,
-!                              State_Met, State_Chm, State_Diag
-!  20 Nov 2017 - R. Yantosca - Move ND43 diagnostics to flexchem_mod.F90
-!  03 Jan 2018 - M. Sulprizio- Replace UCX CPP switch with Input_Opt%LUCX
-!  06 Feb 2018 - E. Lundgren - Change GET_ELAPSED_MIN to GET_ELAPSED_SEC to
-!                              match new timestep unit of seconds
-!  28 Aug 2018 - E. Lundgren - Implement budget diagnostics
-!  26 Oct 2018 - M. Sulprizio- Remove calls to read and write STATE_PSC
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -354,17 +257,29 @@ CONTAINS
     ! Chemistry budget diagnostics - Part 1 of 2
     !----------------------------------------------------------
     IF ( State_Diag%Archive_BudgetChemistry ) THEN
+       
        ! Get initial column masses
-       CALL Compute_Column_Mass( am_I_Root, Input_Opt,                   &
-                                 State_Chm, State_Grid, State_Met,       &
-                                 State_Chm%Map_Advect,                   &
-                                 State_Diag%Archive_BudgetChemistryFull, &
-                                 State_Diag%Archive_BudgetChemistryTrop, &
-                                 State_Diag%Archive_BudgetChemistryPBL,  &
-                                 State_Diag%BudgetMass1,                 &
-                                 RC ) 
+       CALL Compute_Column_Mass(                                             &
+            am_I_Root   = am_I_Root,                                         &
+            Input_Opt   = Input_Opt,                                         &
+            State_Chm   = State_Chm,                                         &
+            State_Grid  = State_Grid,                                        &
+            State_Met   = State_Met,                                         &
+            SpcMapping  = State_Chm%Map_Advect,                              &
+            isFull      = State_Diag%Archive_BudgetChemistryFull,            &
+            SpcMapFull  = State_Diag%Map_BudgetChemistryFull,                &
+            ColMassFull = State_Diag%BudgetMassFull1,                        &
+            isTrop      = State_Diag%Archive_BudgetChemistryTrop,            &
+            SpcMapTrop  = State_Diag%Map_BudgetChemistryTrop,                &
+            ColMassTrop = State_Diag%BudgetMassTrop1,                        &
+            isPBL       = State_Diag%Archive_BudgetChemistryPBL,             &
+            SpcMapPBL   = State_Diag%Map_BudgetChemistryPBL,                 & 
+            ColMassPBL  = State_Diag%BudgetMassPBL1,                         &
+            RC          = RC                                                )
+
+       ! Trap potential errors
        IF ( RC /= GC_SUCCESS ) THEN
-          ErrMsg = 'Chemistry budget diagnostics error 1'
+          ErrMsg = 'Error encountered in "Compute_Column_Mass" (initial)!'
           CALL GC_Error( ErrMsg, RC, ThisLoc )
           RETURN
        ENDIF
@@ -1125,30 +1040,59 @@ CONTAINS
     ! Chemistry budget diagnostics - Part 2 of 2
     !----------------------------------------------------------
     IF ( State_Diag%Archive_BudgetChemistry ) THEN
-       ! Get final column masses and compute diagnostics
-       CALL Compute_Column_Mass( am_I_Root, Input_Opt,                   &
-                                 State_Chm, State_Grid, State_Met,       &
-                                 State_Chm%Map_Advect,                   &
-                                 State_Diag%Archive_BudgetChemistryFull, &
-                                 State_Diag%Archive_BudgetChemistryTrop, &
-                                 State_Diag%Archive_BudgetChemistryPBL,  &
-                                 State_Diag%BudgetMass2,                 &
-                                 RC )       
-       CALL Compute_Budget_Diagnostics( am_I_Root,                           &
-                                     State_Grid,                             &
-                                     State_Chm%Map_Advect,                   &
-                                     DT_Chem,                                &
-                                     State_Diag%Archive_BudgetChemistryFull, &
-                                     State_Diag%Archive_BudgetChemistryTrop, &
-                                     State_Diag%Archive_BudgetChemistryPBL,  &
-                                     State_Diag%BudgetChemistryFull,         &
-                                     State_Diag%BudgetChemistryTrop,         &
-                                     State_Diag%BudgetChemistryPBL,          &
-                                     State_Diag%BudgetMass1,                 &
-                                     State_Diag%BudgetMass2,                 &
-                                     RC )
+
+       ! Get final column masses
+       CALL Compute_Column_Mass(                                             &
+            am_I_Root   = am_I_Root,                                         &
+            Input_Opt   = Input_Opt,                                         &
+            State_Chm   = State_Chm,                                         &
+            State_Grid  = State_Grid,                                        &
+            State_Met   = State_Met,                                         &
+            SpcMapping  = State_Chm%Map_Advect,                              &
+            isFull      = State_Diag%Archive_BudgetChemistryFull,            &
+            SpcMapFull  = State_Diag%Map_BudgetChemistryFull,                &
+            ColMassFull = State_Diag%BudgetMassFull2,                        &
+            isTrop      = State_Diag%Archive_BudgetChemistryTrop,            &
+            SpcMapTrop  = State_Diag%Map_BudgetChemistryTrop,                &
+            ColMassTrop = State_Diag%BudgetMassTrop2,                        &
+            isPBL       = State_Diag%Archive_BudgetChemistryPBL,             &
+            SpcMapPBL   = State_Diag%Map_BudgetChemistryPBL,                 & 
+            ColMassPBL  = State_Diag%BudgetMassPBL2,                         &
+            RC          = RC                                                )
+
+       ! Trap potential errors
        IF ( RC /= GC_SUCCESS ) THEN
-          ErrMsg = 'Chemistry budget diagnostics error 2'
+          ErrMsg = 'Error encountered in "Compute_Column_Mass" (final)!'
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF 
+       
+       ! Compute chemistry budget diagnostics
+       CALL Compute_Budget_Diagnostics(                                      &
+            am_I_Root     = am_I_Root,                                       &
+            State_Grid    = State_Grid,                                      &
+            TS            = DT_Chem,                                         &
+            SpcMapping    = State_Chm%Map_Advect,                            &
+            isFull        = State_Diag%Archive_BudgetChemistryFull,          &
+            SpcMapFull    = State_Diag%Map_BudgetChemistryFull,              &
+            diagFull      = State_Diag%BudgetChemistryFull,                  &
+            MassInitFull  = State_Diag%BudgetMassFull1,                      &
+            MassFinalFull = State_Diag%BudgetMassFull2,                      &
+            isTrop        = State_Diag%Archive_BudgetChemistryTrop,          &
+            SpcMapTrop    = State_Diag%Map_BudgetChemistryTrop,              &
+            diagTrop      = State_Diag%BudgetChemistryTrop,                  &
+            MassInitTrop  = State_Diag%BudgetMassTrop1,                      &
+            MassFinalTrop = State_Diag%BudgetMassTrop2,                      &
+            isPBL         = State_Diag%Archive_BudgetChemistryPBL,           &
+            SpcMapPBL     = State_Diag%Map_BudgetChemistryPBL,               &
+            diagPBL       = State_Diag%BudgetChemistryPBL,                   &
+            MassInitPBL   = State_Diag%BudgetMassPBL1,                       &
+            MassFinalPBL  = State_Diag%BudgetMassPBL2,                       &
+            RC            = RC                                               )
+
+       ! Trap potential errors
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error encountered in "Compute_Budget_Diagnostics"!'
           CALL GC_Error( ErrMsg, RC, ThisLoc )
           RETURN
        ENDIF

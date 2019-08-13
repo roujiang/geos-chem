@@ -69,46 +69,50 @@ MODULE State_Diag_Mod
      LOGICAL :: Archive_SpeciesConc
 
      ! Budget diagnostics
-     REAL(f8),  POINTER :: BudgetEmisDryDepFull    (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetEmisDryDepTrop    (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetEmisDryDepPBL     (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetTransportFull     (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetTransportTrop     (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetTransportPBL      (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetMixingFull        (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetMixingTrop        (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetMixingPBL         (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetConvectionFull    (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetConvectionTrop    (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetConvectionPBL     (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetChemistryFull     (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetChemistryTrop     (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetChemistryPBL      (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetWetDepFull        (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetWetDepTrop        (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetWetDepPBL         (:,:,:  ) 
-     REAL(f8),  POINTER :: BudgetMass1             (:,:,:,:) 
-     REAL(f8),  POINTER :: BudgetMass2             (:,:,:,:) 
-     INTEGER,   POINTER :: Map_BudgetEmisDryDepFull(:      ) 
-     INTEGER,   POINTER :: Map_BudgetEmisDryDepTrop(:      ) 
-     INTEGER,   POINTER :: Map_BudgetEmisDryDepPBL (:      ) 
-     INTEGER,   POINTER :: Map_BudgetTransportFull (:      ) 
-     INTEGER,   POINTER :: Map_BudgetTransportTrop (:      ) 
-     INTEGER,   POINTER :: Map_BudgetTransportPBL  (:      ) 
-     INTEGER,   POINTER :: Map_BudgetMixingFull    (:      ) 
-     INTEGER,   POINTER :: Map_BudgetMixingTrop    (:      ) 
-     INTEGER,   POINTER :: Map_BudgetMixingPBL     (:      ) 
-     INTEGER,   POINTER :: Map_BudgetConvectionFull(:      ) 
-     INTEGER,   POINTER :: Map_BudgetConvectionTrop(:      ) 
-     INTEGER,   POINTER :: Map_BudgetConvectionPBL (:      ) 
-     INTEGER,   POINTER :: Map_BudgetChemistryFull (:      ) 
-     INTEGER,   POINTER :: Map_BudgetChemistryTrop (:      ) 
-     INTEGER,   POINTER :: Map_BudgetChemistryPBL  (:      ) 
-     INTEGER,   POINTER :: Map_BudgetWetDepFull    (:      ) 
-     INTEGER,   POINTER :: Map_BudgetWetDepTrop    (:      ) 
-     INTEGER,   POINTER :: Map_BudgetWetDepPBL     (:      ) 
-     INTEGER,   POINTER :: Map_BudgetMass1         (:      ) 
-     INTEGER,   POINTER :: Map_BudgetMass2         (:      ) 
+     REAL(f8),  POINTER :: BudgetEmisDryDepFull    (:,:,:) 
+     REAL(f8),  POINTER :: BudgetEmisDryDepTrop    (:,:,:) 
+     REAL(f8),  POINTER :: BudgetEmisDryDepPBL     (:,:,:) 
+     REAL(f8),  POINTER :: BudgetTransportFull     (:,:,:) 
+     REAL(f8),  POINTER :: BudgetTransportTrop     (:,:,:) 
+     REAL(f8),  POINTER :: BudgetTransportPBL      (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMixingFull        (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMixingTrop        (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMixingPBL         (:,:,:) 
+     REAL(f8),  POINTER :: BudgetConvectionFull    (:,:,:) 
+     REAL(f8),  POINTER :: BudgetConvectionTrop    (:,:,:) 
+     REAL(f8),  POINTER :: BudgetConvectionPBL     (:,:,:) 
+     REAL(f8),  POINTER :: BudgetChemistryFull     (:,:,:) 
+     REAL(f8),  POINTER :: BudgetChemistryTrop     (:,:,:) 
+     REAL(f8),  POINTER :: BudgetChemistryPBL      (:,:,:) 
+     REAL(f8),  POINTER :: BudgetWetDepFull        (:,:,:) 
+     REAL(f8),  POINTER :: BudgetWetDepTrop        (:,:,:) 
+     REAL(f8),  POINTER :: BudgetWetDepPBL         (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMassFull1         (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMassFull2         (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMassTrop1         (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMassTrop2         (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMassPBL1          (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMassPBL2          (:,:,:) 
+     INTEGER,   POINTER :: Map_BudgetEmisDryDepFull(:    ) 
+     INTEGER,   POINTER :: Map_BudgetEmisDryDepTrop(:    ) 
+     INTEGER,   POINTER :: Map_BudgetEmisDryDepPBL (:    ) 
+     INTEGER,   POINTER :: Map_BudgetTransportFull (:    ) 
+     INTEGER,   POINTER :: Map_BudgetTransportTrop (:    ) 
+     INTEGER,   POINTER :: Map_BudgetTransportPBL  (:    ) 
+     INTEGER,   POINTER :: Map_BudgetMixingFull    (:    ) 
+     INTEGER,   POINTER :: Map_BudgetMixingTrop    (:    ) 
+     INTEGER,   POINTER :: Map_BudgetMixingPBL     (:    ) 
+     INTEGER,   POINTER :: Map_BudgetConvectionFull(:    ) 
+     INTEGER,   POINTER :: Map_BudgetConvectionTrop(:    ) 
+     INTEGER,   POINTER :: Map_BudgetConvectionPBL (:    ) 
+     INTEGER,   POINTER :: Map_BudgetChemistryFull (:    ) 
+     INTEGER,   POINTER :: Map_BudgetChemistryTrop (:    ) 
+     INTEGER,   POINTER :: Map_BudgetChemistryPBL  (:    ) 
+     INTEGER,   POINTER :: Map_BudgetWetDepFull    (:    ) 
+     INTEGER,   POINTER :: Map_BudgetWetDepTrop    (:    ) 
+     INTEGER,   POINTER :: Map_BudgetWetDepPBL     (:    ) 
+     INTEGER,   POINTER :: Map_BudgetMass1         (:    ) 
+     INTEGER,   POINTER :: Map_BudgetMass2         (:    )
      LOGICAL :: Archive_BudgetEmisDryDep
      LOGICAL :: Archive_BudgetEmisDryDepFull  
      LOGICAL :: Archive_BudgetEmisDryDepTrop  
@@ -769,19 +773,37 @@ CONTAINS
     CHARACTER(LEN=255)             :: arrayID,  diagID
 
     ! Scalars
+    LOGICAL                        :: EOF,      Found,   Found2
     INTEGER                        :: N,        IM,      JM,      LM
     INTEGER                        :: nSpecies, nAdvect, nDryDep, nKppSpc
     INTEGER                        :: nWetDep,  nPhotol, nProd,   nLoss
     INTEGER                        :: nHygGrth, nRad,    nDryAlt
-    LOGICAL                        :: EOF,      Found,   Found2
+    INTEGER                        :: nTags,    nFields
+
+    ! Scalars for budget diagnostics
+    INTEGER                        :: nEmisDryDepFull
+    INTEGER                        :: nEmisDryDepTrop
+    INTEGER                        :: nEmisDryDepPBL
+    INTEGER                        :: nTransportFull
+    INTEGER                        :: nTransportTrop
+    INTEGER                        :: nTransportPBL
+    INTEGER                        :: nMixingFull
+    INTEGER                        :: nMixingTrop
+    INTEGER                        :: nMixingPBL
+    INTEGER                        :: nConvectionFull
+    INTEGER                        :: nConvectionTrop
+    INTEGER                        :: nConvectionPBL
+    INTEGER                        :: nChemistryFull
+    INTEGER                        :: nChemistryTrop
+    INTEGER                        :: nChemistryPBL
+    INTEGER                        :: nWetDepFull
+    INTEGER                        :: nWetDepTrop
+    INTEGER                        :: nWetDepPBL
 
     ! Arrays
     INTEGER                        :: tagInd(2000)
     CHARACTER(LEN=31), ALLOCATABLE :: tagList(:)
     CHARACTER(LEN=31), ALLOCATABLE :: fieldList(:)
-
-    ! BMY
-    INTEGER                        :: nTags, nFields
 
     !=======================================================================
     ! Initialize
@@ -814,6 +836,26 @@ CONTAINS
     nPhotol   = State_Chm%nPhotol
     nProd     = State_Chm%nProd
     nWetDep   = State_Chm%nWetDep
+
+    ! Sizes of the budget diagnostics arrays
+    nEmisDryDepFull = 0                            
+    nEmisDryDepTrop = 0
+    nEmisDryDepPBL  = 0
+    nTransportFull  = 0
+    nTransportTrop  = 0
+    nTransportPBL   = 0
+    nMixingFull     = 0
+    nMixingTrop     = 0
+    nMixingPBL      = 0
+    nConvectionFull = 0
+    nConvectionTrop = 0
+    nConvectionPBL  = 0
+    nChemistryFull  = 0
+    nChemistryTrop  = 0
+    nChemistryPBL   = 0
+    nWetDepFull     = 0
+    nWetDepTrop     = 0
+    nWetDepPBL      = 0 
 
     ! %%% Free pointers and set logicals %%%
 
@@ -849,8 +891,32 @@ CONTAINS
     State_Diag%BudgetWetDepFull                    => NULL()
     State_Diag%BudgetWetDepTrop                    => NULL()
     State_Diag%BudgetWetDepPBL                     => NULL()          
-    State_Diag%BudgetMass1                         => NULL()          
-    State_Diag%BudgetMass2                         => NULL()          
+    State_Diag%BudgetMassFull1                     => NULL()          
+    State_Diag%BudgetMassFull2                     => NULL()          
+    State_Diag%BudgetMassTrop1                     => NULL()          
+    State_Diag%BudgetMassTrop2                     => NULL()          
+    State_Diag%BudgetMassPBL1                      => NULL()          
+    State_Diag%BudgetMassPBL2                      => NULL()          
+    State_Diag%Map_BudgetEmisDryDepFull            => NULL()          
+    State_Diag%Map_BudgetEmisDryDepTrop            => NULL()
+    State_Diag%Map_BudgetEmisDryDepPBL             => NULL()
+    State_Diag%Map_BudgetTransportFull             => NULL()
+    State_Diag%Map_BudgetTransportTrop             => NULL()
+    State_Diag%Map_BudgetTransportPBL              => NULL()
+    State_Diag%Map_BudgetMixingFull                => NULL()
+    State_Diag%Map_BudgetMixingTrop                => NULL()
+    State_Diag%Map_BudgetMixingPBL                 => NULL()
+    State_Diag%Map_BudgetConvectionFull            => NULL()
+    State_Diag%Map_BudgetConvectionTrop            => NULL()
+    State_Diag%Map_BudgetConvectionPBL             => NULL()
+    State_Diag%Map_BudgetChemistryFull             => NULL()
+    State_Diag%Map_BudgetChemistryTrop             => NULL()
+    State_Diag%Map_BudgetChemistryPBL              => NULL()
+    State_Diag%Map_BudgetWetDepFull                => NULL()
+    State_Diag%Map_BudgetWetDepTrop                => NULL()
+    State_Diag%Map_BudgetWetDepPBL                 => NULL()          
+    State_Diag%Map_BudgetMass1                     => NULL()          
+    State_Diag%Map_BudgetMass2                     => NULL()        
     State_Diag%Archive_BudgetEmisDryDep            = .FALSE.          
     State_Diag%Archive_BudgetEmisDryDepFull        = .FALSE.          
     State_Diag%Archive_BudgetEmisDryDepTrop        = .FALSE.
@@ -902,10 +968,17 @@ CONTAINS
     State_Diag%Archive_Bry                         = .FALSE.
 #endif
 
-    ! Chemistry, J-value, Prod/Loss diagnostics
+    ! Photolysis
     State_Diag%JVal                                => NULL()
     State_Diag%JNoon                               => NULL()
     State_Diag%JNoonFrac                           => NULL()
+    State_Diag%Map_JVal                            => NULL()
+    State_Diag%Map_JNoon                           => NULL()
+    State_Diag%Archive_JVal                        = .FALSE.
+    State_Diag%Archive_JNoon                       = .FALSE.
+    State_Diag%Archive_JNoonFrac                   = .FALSE.
+
+    ! Chemistry, Prod/Loss diagnostics
     State_Diag%RxnRates                            => NULL()
     State_Diag%UVFluxDiffuse                       => NULL()
     State_Diag%UVFluxDirect                        => NULL()
@@ -916,9 +989,6 @@ CONTAINS
     State_Diag%O3PconcAfterChem                    => NULL()
     State_Diag%Loss                                => NULL()
     State_Diag%Prod                                => NULL()
-    State_Diag%Archive_JVal                        = .FALSE.
-    State_Diag%Archive_JNoon                       = .FALSE.
-    State_Diag%Archive_JNoonFrac                   = .FALSE.
     State_Diag%Archive_RxnRates                    = .FALSE.
     State_Diag%Archive_UVFluxDiffuse               = .FALSE.
     State_Diag%Archive_UVFluxDirect                = .FALSE.
@@ -1367,7 +1437,7 @@ CONTAINS
     State_Diag%ObsPack_Species                     => NULL()
     State_Diag%ObsPack_Species_Ind                 => NULL()
     State_Diag%ObsPack_Species_Name                => NULL()
-    State_Diag%ObsPack_Species_LName               => NULL()
+    State_Diag%ObsPack_Species_LName               => NULL()  
 
     ! Write header
     IF ( am_I_Root ) THEN
@@ -1450,53 +1520,107 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%BudgetEmisDryDepFull'
     diagID  = 'BudgetEmisDryDepFull'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetEmisDryDepFull( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetEmisDryDepFull,                &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nEmisDryDepFull = nFields
+
+       ! Allocate and register BudgetEmisDryDepFull
+       ALLOCATE( State_Diag%BudgetEmisDryDepFull( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetEmisDryDepFull = 0.0_f8
        State_Diag%Archive_BudgetEmisDryDepFull = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetEmisDryDepFull,             & 
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Trop-only emissions
     arrayID = 'State_Diag%BudgetEmisDryDepTrop'
     diagID  = 'BudgetEmisDryDepTrop'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetEmisDryDepTrop( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetEmisDryDepTrop,                &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nEmisDryDepTrop = nFields
+
+       ! Allocate and register BudgetEmisDryDepTrop
+       ALLOCATE( State_Diag%BudgetEmisDryDepTrop( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetEmisDryDepTrop = 0.0_f8
        State_Diag%Archive_BudgetEmisDryDepTrop = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetEmisDryDepTrop,             &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! PBL-only emissions
     arrayID = 'State_Diag%BudgetEmisDryDepPBL'
     diagID  = 'BudgetEmisDryDepPBL'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetEmisDryDepPBL( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetEmisDryDepPBL,                 &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nEmisDryDepPBL = nFields
+
+       ! Allocate and register BudgetEmisDryDepTrop
+       ALLOCATE( State_Diag%BudgetEmisDryDepPBL( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetEmisDryDepPBL = 0.0_f8
        State_Diag%Archive_BudgetEmisDryDepPBL = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetEmisDryDepPBL,              &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! High-level logical for emissions budget
     IF ( State_Diag%Archive_BudgetEmisDryDepFull .OR. &
@@ -1510,53 +1634,107 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%BudgetTransportFull'
     diagID  = 'BudgetTransportFull'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetTransportFull( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetTransportFull,                 &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nTransportFull = nFields
+
+       ! Allocate and register BudgetTransportFull
+       ALLOCATE( State_Diag%BudgetTransportFull( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetTransportFull = 0.0_f8
        State_Diag%Archive_BudgetTransportFull = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetTransportFull,              &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Trop-only transport
     arrayID = 'State_Diag%BudgetTransportTrop'
     diagID  = 'BudgetTransportTrop'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetTransportTrop( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetTransportTrop,                 &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nTransportTrop = nFields
+
+       ! Allocate and register BudgetTransportTrop
+       ALLOCATE( State_Diag%BudgetTransportTrop( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetTransportTrop = 0.0_f8
        State_Diag%Archive_BudgetTransportTrop = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetTransportTrop,              &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! PBL-only transport
     arrayID = 'State_Diag%BudgetTransportPBL'
     diagID  = 'BudgetTransportPBL'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetTransportPBL( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetTransportPBL,                  &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nTransportPBL = nFields
+
+       ! Allocate and register BudgetTransportPBL
+       ALLOCATE( State_Diag%BudgetTransportPBL( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetTransportPBL = 0.0_f8
        State_Diag%Archive_BudgetTransportPBL = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetTransportPBL,               &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! High-level logical for transport budget
     IF ( State_Diag%Archive_BudgetTransportFull .OR. &
@@ -1570,53 +1748,107 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%BudgetMixingFull'
     diagID  = 'BudgetMixingFull'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetMixingFull( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetMixingFull,                    &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nMixingFull = nFields
+
+       ! Allocate and register BudgetMixingFull
+       ALLOCATE( State_Diag%BudgetMixingFull( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetMixingFull = 0.0_f8
        State_Diag%Archive_BudgetMixingFull = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                          &
                                 State_Diag%BudgetMixingFull,                &
-                                State_Chm, State_Diag, RC                  )
+                                State_Chm, State_Diag, RC, fieldList       )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Trop-only mixing
     arrayID = 'State_Diag%BudgetMixingTrop'
     diagID  = 'BudgetMixingTrop'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetMixingTrop( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetMixingTrop,                    &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nMixingTrop = nFields
+
+       ! Allocate and register BudgetMixingTrop
+       ALLOCATE( State_Diag%BudgetMixingTrop( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetMixingTrop = 0.0_f8
        State_Diag%Archive_BudgetMixingTrop = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetMixingTrop,                 &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! PBL-only mixing
     arrayID = 'State_Diag%BudgetMixingPBL'
     diagID  = 'BudgetMixingPBL'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetMixingPBL( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetMixingPBL,                     &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nMixingPBL = nFields
+
+       ! Allocate and register BudgetMixingPBL
+       ALLOCATE( State_Diag%BudgetMixingPBL( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetMixingPBL = 0.0_f8
        State_Diag%Archive_BudgetMixingPBL = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetMixingPBL,                  &
-                                State_Chm, State_Diag, RC                    )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! High-level logical for mixing budget
     IF ( State_Diag%Archive_BudgetMixingFull .OR. &
@@ -1630,53 +1862,107 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%BudgetConvectionFull'
     diagID  = 'BudgetConvectionFull'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetConvectionFull( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetConvectionFull,                &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nConvectionFull = nFields
+
+       ! Allocate and register BudgetConvectionFull
+       ALLOCATE( State_Diag%BudgetConvectionFull( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetConvectionFull = 0.0_f8
        State_Diag%Archive_BudgetConvectionFull = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetConvectionFull,             &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Trop-only convection
     arrayID = 'State_Diag%BudgetConvectionTrop'
     diagID  = 'BudgetConvectionTrop'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetConvectionTrop( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetConvectionTrop,                &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nConvectionTrop = nFields
+
+       ! Allocate and register BudgetConvectionTrop
+       ALLOCATE( State_Diag%BudgetConvectionTrop( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetConvectionTrop = 0.0_f8
        State_Diag%Archive_BudgetConvectionTrop = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetConvectionTrop,             &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! PBL-only convection
     arrayID = 'State_Diag%BudgetConvectionPBL'
     diagID  = 'BudgetConvectionPBL'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetConvectionPBL( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetConvectionPBL,                &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nConvectionPBL = nFields
+
+       ! Allocate and register BudgetConvectionPBL
+       ALLOCATE( State_Diag%BudgetConvectionPBL( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetConvectionPBL = 0.0_f8
        State_Diag%Archive_BudgetConvectionPBL = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetConvectionPBL,              &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! High-level logical for convection budget
     IF ( State_Diag%Archive_BudgetConvectionFull .OR. &
@@ -1690,53 +1976,107 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%BudgetChemistryFull'
     diagID  = 'BudgetChemistryFull'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetChemistryFull( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetChemistryFull,                 &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nChemistryFull = nFields
+
+       ! Allocate and register BudgetConvectionPBL
+       ALLOCATE( State_Diag%BudgetChemistryFull( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetChemistryFull = 0.0_f8
        State_Diag%Archive_BudgetChemistryFull = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetChemistryFull,              &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Trop-only chemistry
     arrayID = 'State_Diag%BudgetChemistryTrop'
     diagID  = 'BudgetChemistryTrop'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetChemistryTrop( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetChemistryTrop,                 &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nChemistryTrop = nFields
+
+       ! Allocate and register BudgetConvectionTrop
+       ALLOCATE( State_Diag%BudgetChemistryTrop( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetChemistryTrop = 0.0_f8
        State_Diag%Archive_BudgetChemistryTrop = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetChemistryTrop,              &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! PBL-only chemistry
     arrayID = 'State_Diag%BudgetChemistryPBL'
     diagID  = 'BudgetChemistryPBL'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetChemistryPBL( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetChemistryPBL,                 &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nChemistryPBL = nFields
+
+       ! Allocate and register BudgetConvectionPBL
+       ALLOCATE( State_Diag%BudgetChemistryPBL( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetChemistryPBL = 0.0_f8
        State_Diag%Archive_BudgetChemistryPBL = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetChemistryPBL,               &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Set high-level logical for archiving chemistry budget
     IF ( State_Diag%Archive_BudgetChemistryFull .OR. &
@@ -1750,53 +2090,107 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%BudgetWetDepFull'
     diagID  = 'BudgetWetDepFull'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetWetDepFull( IM, JM, nWetDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetWetDepFull,                    &  
+                         fieldList,  RC,      IndFlag='W'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nWetDepFull = nFields
+
+       ! Allocate and register BudgetWetDepFull
+       ALLOCATE( State_Diag%BudgetWetDepFull( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetWetDepFull = 0.0_f8
        State_Diag%Archive_BudgetWetDepFull = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetWetDepFull,                 &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Trop-only wet deposition
     arrayID = 'State_Diag%BudgetWetDepTrop'
     diagID  = 'BudgetWetDepTrop'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetWetDepTrop( IM, JM, nWetDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetWetDepTrop,                    &  
+                         fieldList,  RC,      IndFlag='W'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nWetDepTrop = nFields
+
+       ! Allocate and register BudgetWetDepTrop
+       ALLOCATE( State_Diag%BudgetWetDepTrop( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetWetDepTrop = 0.0_f8
        State_Diag%Archive_BudgetWetDepTrop = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetWetDepTrop,                 &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! PBL-only wet deposition
     arrayID = 'State_Diag%BudgetWetDepPBL'
     diagID  = 'BudgetWetDepPBL'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetWetDepPBL( IM, JM, nWetDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetWetDepPBL,                    &  
+                         fieldList,  RC,      IndFlag='W'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nWetDepPBL = nFields
+
+       ! Allocate and register BudgetWetDepPBL
+       ALLOCATE( State_Diag%BudgetWetDepPBL( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetWetDepPBL = 0.0_f8
        State_Diag%Archive_BudgetWetDepPBL = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetWetDepPBL,                  &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! High-level logical for wet deposition budget
     IF ( State_Diag%Archive_BudgetWetDepFull .OR. &
@@ -1830,7 +2224,6 @@ CONTAINS
           CALL GC_Error( ErrMsg, RC, ThisLoc )
           RETURN
        ENDIF
-       print*, '### fieldList: ', fieldList
 
        ! Allocate array and register DryDepChm fields
        ALLOCATE( State_Diag%DryDepChm( IM, JM, nFields ), STAT=RC )
@@ -6734,9 +7127,35 @@ CONTAINS
     ! Set arrays used to calculate budget diagnostics, if needed
     !=======================================================================
     IF ( State_Diag%Archive_Budget ) THEN
+
+       ! Full column
+       nFields = MAX( nEmisDryDepFull, nTransportFull, nMixingFull,          &
+                      nConvectionFull, nChemistryFull, nWetDepFull          )
+
+       IF ( nFields > 0 ) THEN
+          ALLOCATE( State_Diag%BudgetMassFull1(IM, JM, nFields ), STAT=RC )
+          ALLOCATE( State_Diag%BudgetMassFull2(IM, JM, nFields ), STAT=RC )
+       ENDIF
+
+       ! Trop column
+       nFields = MAX( nEmisDryDepTrop, nTransportTrop, nMixingTrop,          &
+                      nConvectionTrop, nChemistryTrop, nWetDepTrop          )
+
+       IF ( nFields > 0 ) THEN
+          ALLOCATE( State_Diag%BudgetMassTrop1(IM, JM, nFields ), STAT=RC )
+          ALLOCATE( State_Diag%BudgetMassTrop2(IM, JM, nFields ), STAT=RC )
+       ENDIF
+
+       ! PBL column
+       nFields = MAX( nEmisDryDepFull, nTransportFull, nMixingFull,          &
+                      nConvectionFull, nChemistryFull, nWetDepFull          )
+
+       IF ( nFields > 0 ) THEN
+          ALLOCATE( State_Diag%BudgetMassPBL1(IM, JM, nFields ), STAT=RC)
+          ALLOCATE( State_Diag%BudgetMassPBL2(IM, JM, nFields ), STAT=RC)
+       ENDIF
+
        ! 4th dimension is column region: Full, Trop, PBL respectively
-       ALLOCATE( State_Diag%BudgetMass1( IM, JM, State_Chm%nAdvect,3 ), STAT=RC)
-       ALLOCATE( State_Diag%BudgetMass2( IM, JM, State_Chm%nAdvect,3 ), STAT=RC)
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
 
@@ -6827,18 +7246,46 @@ CONTAINS
        State_Diag%Map_SpeciesConc => NULL()
     ENDIF
 
-    IF ( ASSOCIATED( State_Diag%BudgetMass1 ) ) THEN
-       DEALLOCATE( State_Diag%BudgetMass1, STAT=RC )
-       CALL GC_CheckVar( 'State_Diag%BudgetMass1', 2, RC )
+    IF ( ASSOCIATED( State_Diag%BudgetMassFull1 ) ) THEN
+       DEALLOCATE( State_Diag%BudgetMassFull1, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%BudgetMassFull1', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
-       State_Diag%BudgetMass1 => NULL()
+       State_Diag%BudgetMassFull1 => NULL()
     ENDIF
 
-    IF ( ASSOCIATED( State_Diag%BudgetMass2 ) ) THEN
-       DEALLOCATE( State_Diag%BudgetMass2, STAT=RC )
-       CALL GC_CheckVar( 'State_Diag%BudgetMass2', 2, RC )
+    IF ( ASSOCIATED( State_Diag%BudgetMassFull2 ) ) THEN
+       DEALLOCATE( State_Diag%BudgetMassFull2, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%BudgetMassFull2', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
-       State_Diag%BudgetMass2 => NULL()
+       State_Diag%BudgetMassFull2 => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%BudgetMassTrop1 ) ) THEN
+       DEALLOCATE( State_Diag%BudgetMassTrop1, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%BudgetMassTrop1', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%BudgetMassTrop1 => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%BudgetMassTrop2 ) ) THEN
+       DEALLOCATE( State_Diag%BudgetMassTrop2, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%BudgetMassTrop2', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%BudgetMassTrop2 => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%BudgetMassPBL1 ) ) THEN
+       DEALLOCATE( State_Diag%BudgetMassPBL1, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%BudgetMassPBL1', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%BudgetMassPBL1 => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%BudgetMassPBL2 ) ) THEN
+       DEALLOCATE( State_Diag%BudgetMassPBL2, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%BudgetMassPBL2', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%BudgetMassPBL2 => NULL()
     ENDIF
 
     IF ( ASSOCIATED( State_Diag%BudgetEmisDryDepFull ) ) THEN

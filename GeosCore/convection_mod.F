@@ -188,17 +188,30 @@
       ! Convection budget diagnostics - Part 1 of 2
       !----------------------------------------------------------
       IF ( State_Diag%Archive_BudgetConvection ) THEN
+
          ! Get initial column masses
-         CALL Compute_Column_Mass( am_I_Root, Input_Opt,
-     &                          State_Chm, State_Grid, State_Met, 
-     &                          State_Chm%Map_Advect,        
-     &                          State_Diag%Archive_BudgetConvectionFull, 
-     &                          State_Diag%Archive_BudgetConvectionTrop, 
-     &                          State_Diag%Archive_BudgetConvectionPBL,  
-     &                          State_Diag%BudgetMass1, 
-     &                          RC )
+         CALL Compute_Column_Mass(
+     &        am_I_Root   = am_I_Root,
+     &        Input_Opt   = Input_Opt,
+     &        State_Chm   = State_Chm,
+     &        State_Grid  = State_Grid,
+     &        State_Met   = State_Met,
+     &        SpcMapping  = State_Chm%Map_Advect,
+     &        isFull      = State_Diag%Archive_BudgetConvectionFull, 
+     &        SpcMapFull  = State_Diag%Map_BudgetConvectionFull,
+     &        ColMassFull = State_Diag%BudgetMassFull1, 
+     &        isTrop      = State_Diag%Archive_BudgetConvectionTrop, 
+     &        SpcMapTrop  = State_Diag%Map_BudgetConvectionTrop,
+     &        ColMassTrop = State_Diag%BudgetMassTrop1, 
+     &        isPBL       = State_Diag%Archive_BudgetConvectionPBL,  
+     &        SpcMapPBL   = State_Diag%Map_BudgetConvectionPBL, 
+     &        ColMassPBL  = State_Diag%BudgetMassPBL1, 
+     &        RC          = RC                                       )
+
+         ! Trap potential errors
          IF ( RC /= GC_SUCCESS ) THEN
-            ErrMsg = 'Convection budget diagnostics error 1'
+            ErrMsg = 
+     &         'Error encountered in "Compute_Column_Mass" (initial)!'
             CALL GC_Error( ErrMsg, RC, ThisLoc )
             RETURN
          ENDIF
@@ -479,30 +492,61 @@
       ! Convection budget diagnostics - Part 2 of 2
       !----------------------------------------------------------
       IF ( State_Diag%Archive_BudgetConvection ) THEN
-         ! Get final masses and compute diagnostics
-         CALL Compute_Column_Mass( am_I_Root, Input_Opt,
-     &                          State_Chm, State_Grid, State_Met,
-     &                          State_Chm%Map_Advect,        
-     &                          State_Diag%Archive_BudgetConvectionFull, 
-     &                          State_Diag%Archive_BudgetConvectionTrop, 
-     &                          State_Diag%Archive_BudgetConvectionPBL,  
-     &                          State_Diag%BudgetMass2, 
-     &                          RC )       
-         CALL Compute_Budget_Diagnostics( am_I_Root, 
-     &                          State_Grid,
-     &                          State_Chm%Map_Advect,
-     &                          DT_Conv,                                
-     &                          State_Diag%Archive_BudgetConvectionFull, 
-     &                          State_Diag%Archive_BudgetConvectionTrop, 
-     &                          State_Diag%Archive_BudgetConvectionPBL,  
-     &                          State_Diag%BudgetConvectionFull,         
-     &                          State_Diag%BudgetConvectionTrop,          
-     &                          State_Diag%BudgetConvectionPBL,          
-     &                          State_Diag%BudgetMass1,          
-     &                          State_Diag%BudgetMass2,          
-     &                          RC )
+
+         ! Get final column masses
+         CALL Compute_Column_Mass(
+     &        am_I_Root   = am_I_Root,
+     &        Input_Opt   = Input_Opt,
+     &        State_Chm   = State_Chm,
+     &        State_Grid  = State_Grid,
+     &        State_Met   = State_Met,
+     &        SpcMapping  = State_Chm%Map_Advect,
+     &        isFull      = State_Diag%Archive_BudgetConvectionFull,
+     &        SpcMapFull  = State_Diag%Map_BudgetConvectionFull,
+     &        ColMassFull = State_Diag%BudgetMassFull2,
+     &        isTrop      = State_Diag%Archive_BudgetConvectionTrop,
+     &        SpcMapTrop  = State_Diag%Map_BudgetConvectionTrop,
+     &        ColMassTrop = State_Diag%BudgetMassTrop2,
+     &        isPBL       = State_Diag%Archive_BudgetConvectionPBL,
+     &        SpcMapPBL   = State_Diag%Map_BudgetConvectionPBL,
+     &        ColMassPBL  = State_Diag%BudgetMassPBL2,
+     &        RC          = RC                                       )
+
+         ! Trap potential errors
          IF ( RC /= GC_SUCCESS ) THEN
-            ErrMsg = 'Convection budget diagnostics error 2'
+            ErrMsg = 
+     &         'Error encountered in "Compute_Column_Mass" (final)!'
+            CALL GC_Error( ErrMsg, RC, ThisLoc )
+            RETURN
+         ENDIF
+
+         ! Compute convection budgets
+         CALL Compute_Budget_Diagnostics( 
+     &        am_I_Root     = am_I_Root,
+     &        State_Grid    = State_Grid,
+     &        TS            = DT_Conv,
+     &        SpcMapping    = State_Chm%Map_Advect,
+     &        isFull        = State_Diag%Archive_BudgetConvectionFull,
+     &        SpcMapFull    = State_Diag%Map_BudgetConvectionFull,
+     &        diagFull      = State_Diag%BudgetConvectionFull,
+     &        MassInitFull  = State_Diag%BudgetMassFull1,
+     &        MassFinalFull = State_Diag%BudgetMassFull2,
+     &        isTrop        = State_Diag%Archive_BudgetConvectionTrop, 
+     &        SpcMapTrop    = State_Diag%Map_BudgetConvectionTrop,
+     &        diagTrop      = State_Diag%BudgetConvectionTrop,
+     &        MassInitTrop  = State_Diag%BudgetMassTrop1,
+     &        MassFinalTrop = State_Diag%BudgetMassTrop2,
+     &        isPBL         = State_Diag%Archive_BudgetConvectionPBL,  
+     &        SpcMapPBL     = State_Diag%Map_BudgetConvectionPBL,
+     &        diagPBL       = State_Diag%BudgetConvectionPBL,
+     &        MassInitPBL   = State_Diag%BudgetMassPBL1,
+     &        MassFinalPBL  = State_Diag%BudgetMassPBL2,
+     &        RC            = RC                                       )
+
+         ! Trap potential errors
+         IF ( RC /= GC_SUCCESS ) THEN
+            ErrMsg = 
+     &         'Error encountered in "Compute_Budget_Diagnostics"!'
             CALL GC_Error( ErrMsg, RC, ThisLoc )
             RETURN
          ENDIF
