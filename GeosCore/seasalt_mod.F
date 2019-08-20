@@ -425,6 +425,7 @@
 ! !LOCAL VARIABLES:
 !
       LOGICAL                  :: PrtDebug
+      INTEGER                  :: DdChmId
       INTEGER                  :: I,      J,     L,        ND
       REAL(fp)                 :: DELZ,   DELZ1, REFF,     DEN
       REAL(fp)                 :: P,      DP,    PDP,      TEMP        
@@ -588,6 +589,7 @@
 !$OMP+PRIVATE( TC0,      DELZ,  DELZ1, TOT1,            TOT2       )
 !$OMP+PRIVATE( AREA_CM2, FLUX,  ID,    SALT_MASS_TOTAL, VTS_WEIGHT )
 !$OMP+PRIVATE( DMIDW,    RHO1,  WTP,   SALT_MASS,       ND         )
+!$OMP+PRIVATE( DdChmId                                             )
 !$OMP+SCHEDULE( DYNAMIC )
       DO J = 1, State_Grid%NY
       DO I = 1, State_Grid%NX       
@@ -827,8 +829,15 @@
             ! Drydep index
             ND = IDDEP(N)
 
-            ! Drydep flux in chemistry only
-            State_Diag%DryDepChm(I,J,ND) = FLUX
+            ! For drydep species with index ND, find its slot
+            ! in the State_Diag%DryDepChm diagnostic array.
+            DdChmId = State_Diag%Map_DryDepChm(ND)
+            
+            ! Archive drydep flux in chemistry only to the diagnostic
+            ! only if this species was listed in HISTORY.rc.
+            IF ( DdChmId > 0 ) THEN
+               State_Diag%DryDepChm(I,J,DdChmId) = FLUX
+            ENDIF
          ENDIF
 
       ENDDO ! I

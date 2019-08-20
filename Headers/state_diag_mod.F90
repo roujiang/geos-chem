@@ -20,7 +20,7 @@
 MODULE State_Diag_Mod
 !
 ! USES:
-
+!
   USE CMN_Size_Mod,    ONLY : NDUST
   USE DiagList_Mod
   USE ErrCode_Mod
@@ -55,39 +55,64 @@ MODULE State_Diag_Mod
      ! Standard Simulation Diagnostic Arrays
      !----------------------------------------------------------------------
 
-     ! Restart file fields
-     REAL(f8),  POINTER :: SpeciesRst      (:,:,:,:) ! Spc Conc for GC restart
+     ! Species concentrations for restart files
+     REAL(f8),  POINTER :: SpeciesRst(:,:,:,:)
      LOGICAL :: Archive_SpeciesRst
 
-     ! Boundary condition fields
-     REAL(f8),  POINTER :: SpeciesBC       (:,:,:,:) ! Spc Conc for BCs
+     ! Species concentrations for nested-grid boundary conditions
+     REAL(f8),  POINTER :: SpeciesBC(:,:,:,:)
      LOGICAL :: Archive_SpeciesBC
      
-     ! Concentrations
-     REAL(f8),  POINTER :: SpeciesConc     (:,:,:,:) ! Spc Conc for diag output
+     ! Species concentrations
+     REAL(f8),  POINTER :: SpeciesConc    (:,:,:,:)
+     INTEGER,   POINTER :: Map_SpeciesConc(:      )
      LOGICAL :: Archive_SpeciesConc
 
      ! Budget diagnostics
-     REAL(f8),  POINTER :: BudgetEmisDryDepFull     (:,:,:) 
-     REAL(f8),  POINTER :: BudgetEmisDryDepTrop     (:,:,:) 
-     REAL(f8),  POINTER :: BudgetEmisDryDepPBL      (:,:,:) 
-     REAL(f8),  POINTER :: BudgetTransportFull      (:,:,:) 
-     REAL(f8),  POINTER :: BudgetTransportTrop      (:,:,:) 
-     REAL(f8),  POINTER :: BudgetTransportPBL       (:,:,:) 
-     REAL(f8),  POINTER :: BudgetMixingFull         (:,:,:) 
-     REAL(f8),  POINTER :: BudgetMixingTrop         (:,:,:) 
-     REAL(f8),  POINTER :: BudgetMixingPBL          (:,:,:) 
-     REAL(f8),  POINTER :: BudgetConvectionFull     (:,:,:) 
-     REAL(f8),  POINTER :: BudgetConvectionTrop     (:,:,:) 
-     REAL(f8),  POINTER :: BudgetConvectionPBL      (:,:,:) 
-     REAL(f8),  POINTER :: BudgetChemistryFull      (:,:,:) 
-     REAL(f8),  POINTER :: BudgetChemistryTrop      (:,:,:) 
-     REAL(f8),  POINTER :: BudgetChemistryPBL       (:,:,:) 
-     REAL(f8),  POINTER :: BudgetWetDepFull         (:,:,:) 
-     REAL(f8),  POINTER :: BudgetWetDepTrop         (:,:,:) 
-     REAL(f8),  POINTER :: BudgetWetDepPBL          (:,:,:) 
-     REAL(f8),  POINTER :: BudgetMass1              (:,:,:,:) 
-     REAL(f8),  POINTER :: BudgetMass2              (:,:,:,:) 
+     REAL(f8),  POINTER :: BudgetEmisDryDepFull    (:,:,:) 
+     REAL(f8),  POINTER :: BudgetEmisDryDepTrop    (:,:,:) 
+     REAL(f8),  POINTER :: BudgetEmisDryDepPBL     (:,:,:) 
+     REAL(f8),  POINTER :: BudgetTransportFull     (:,:,:) 
+     REAL(f8),  POINTER :: BudgetTransportTrop     (:,:,:) 
+     REAL(f8),  POINTER :: BudgetTransportPBL      (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMixingFull        (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMixingTrop        (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMixingPBL         (:,:,:) 
+     REAL(f8),  POINTER :: BudgetConvectionFull    (:,:,:) 
+     REAL(f8),  POINTER :: BudgetConvectionTrop    (:,:,:) 
+     REAL(f8),  POINTER :: BudgetConvectionPBL     (:,:,:) 
+     REAL(f8),  POINTER :: BudgetChemistryFull     (:,:,:) 
+     REAL(f8),  POINTER :: BudgetChemistryTrop     (:,:,:) 
+     REAL(f8),  POINTER :: BudgetChemistryPBL      (:,:,:) 
+     REAL(f8),  POINTER :: BudgetWetDepFull        (:,:,:) 
+     REAL(f8),  POINTER :: BudgetWetDepTrop        (:,:,:) 
+     REAL(f8),  POINTER :: BudgetWetDepPBL         (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMassFull1         (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMassFull2         (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMassTrop1         (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMassTrop2         (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMassPBL1          (:,:,:) 
+     REAL(f8),  POINTER :: BudgetMassPBL2          (:,:,:) 
+     INTEGER,   POINTER :: Map_BudgetEmisDryDepFull(:    ) 
+     INTEGER,   POINTER :: Map_BudgetEmisDryDepTrop(:    ) 
+     INTEGER,   POINTER :: Map_BudgetEmisDryDepPBL (:    ) 
+     INTEGER,   POINTER :: Map_BudgetTransportFull (:    ) 
+     INTEGER,   POINTER :: Map_BudgetTransportTrop (:    ) 
+     INTEGER,   POINTER :: Map_BudgetTransportPBL  (:    ) 
+     INTEGER,   POINTER :: Map_BudgetMixingFull    (:    ) 
+     INTEGER,   POINTER :: Map_BudgetMixingTrop    (:    ) 
+     INTEGER,   POINTER :: Map_BudgetMixingPBL     (:    ) 
+     INTEGER,   POINTER :: Map_BudgetConvectionFull(:    ) 
+     INTEGER,   POINTER :: Map_BudgetConvectionTrop(:    ) 
+     INTEGER,   POINTER :: Map_BudgetConvectionPBL (:    ) 
+     INTEGER,   POINTER :: Map_BudgetChemistryFull (:    ) 
+     INTEGER,   POINTER :: Map_BudgetChemistryTrop (:    ) 
+     INTEGER,   POINTER :: Map_BudgetChemistryPBL  (:    ) 
+     INTEGER,   POINTER :: Map_BudgetWetDepFull    (:    ) 
+     INTEGER,   POINTER :: Map_BudgetWetDepTrop    (:    ) 
+     INTEGER,   POINTER :: Map_BudgetWetDepPBL     (:    ) 
+     INTEGER,   POINTER :: Map_BudgetMass1         (:    ) 
+     INTEGER,   POINTER :: Map_BudgetMass2         (:    )
      LOGICAL :: Archive_BudgetEmisDryDep
      LOGICAL :: Archive_BudgetEmisDryDepFull  
      LOGICAL :: Archive_BudgetEmisDryDepTrop  
@@ -115,49 +140,64 @@ MODULE State_Diag_Mod
      LOGICAL :: Archive_Budget
 
      ! Dry deposition
-     REAL(f4),  POINTER :: DryDepChm       (:,:,:  ) ! Drydep flux in chemistry
-     REAL(f4),  POINTER :: DryDepMix       (:,:,:  ) ! Drydep flux in mixing
-     REAL(f4),  POINTER :: DryDep          (:,:,:  ) ! Total drydep flux
-     REAL(f4),  POINTER :: DryDepVel       (:,:,:  ) ! Dry deposition velocity
+     REAL(f4),  POINTER :: DryDepChm    (:,:,:)      ! Drydep flux in chemistry
+     REAL(f4),  POINTER :: DryDepMix    (:,:,:)      ! Drydep flux in mixing
+     REAL(f4),  POINTER :: DryDepVel    (:,:,:)      ! Drydep velocity
+     REAL(f4),  POINTER :: DryDep       (:,:,:)      ! Total drydep flux
+     INTEGER,   POINTER :: Map_DryDepChm(:    )
+     INTEGER,   POINTER :: Map_DryDepMix(:    )
+     INTEGER,   POINTER :: Map_DryDepVel(:    )
+     INTEGER,   POINTER :: Map_DryDep   (:    )
      LOGICAL :: Archive_DryDepChm
      LOGICAL :: Archive_DryDepMix
-     LOGICAL :: Archive_DryDep   
      LOGICAL :: Archive_DryDepVel
+     LOGICAL :: Archive_DryDep
 
      ! Drydep resistances and related quantities
 #if defined( MODEL_GEOS )
      ! GEOS-5 only
-     REAL(f4),  POINTER :: DryDepRa2m      (:,:    ) ! Aerodyn resistance @2m 
-     REAL(f4),  POINTER :: DryDepRa10m     (:,:    ) ! Aerodyn resistance @10m
-     REAL(f4),  POINTER :: MoninObukhov    (:,:    ) ! MoninObukhov length 
-     REAL(f4),  POINTER :: Bry             (:,:,:  ) ! MoninObukhov length 
+     REAL(f4),  POINTER :: DryDepRa2m  (:,:    )     ! Aerodyn resistance @2m 
+     REAL(f4),  POINTER :: DryDepRa10m (:,:    )     ! Aerodyn resistance @10m
+     REAL(f4),  POINTER :: MoninObukhov(:,:    )     ! MoninObukhov length 
+     REAL(f4),  POINTER :: Bry         (:,:,:  )     ! MoninObukhov length 
      LOGICAL :: Archive_DryDepRa2m
      LOGICAL :: Archive_DryDepRa10m
      LOGICAL :: Archive_MoninObukhov
      LOGICAL :: Archive_Bry
 #endif
 
-     ! Chemistry
-     REAL(f4),  POINTER :: JVal            (:,:,:,:) ! J-values, instantaneous
-     REAL(f4),  POINTER :: JNoon           (:,:,:,:) ! Noon J-values
-     REAL(f4),  POINTER :: JNoonFrac       (:,:    ) ! Frac of when it was noon
-     REAL(f4),  POINTER :: RxnRates        (:,:,:,:) ! Reaction rates from KPP
-     REAL(f4),  POINTER :: UVFluxDiffuse   (:,:,:  ) ! Diffuse UV flux per bin
-     REAL(f4),  POINTER :: UVFluxDirect    (:,:,:  ) ! Direct UV flux per bin
-     REAL(f4),  POINTER :: UVFluxNet       (:,:,:  ) ! Net UV flux per bin
-     REAL(f4),  POINTER :: OHconcAfterChem (:,:,:  ) ! OH, HO2, O1D, and O3P
-     REAL(f4),  POINTER :: HO2concAfterChem(:,:,:  ) !  concentrations 
-     REAL(f4),  POINTER :: O1DconcAfterChem(:,:,:  ) !  upon exiting the
-     REAL(f4),  POINTER :: O3PconcAfterChem(:,:,:  ) !  FlexChem solver 
-     REAL(f4),  POINTER :: Loss            (:,:,:,:) ! Chemical loss of species
-     REAL(f4),  POINTER :: Prod            (:,:,:,:) ! Chemical prod of species
-     LOGICAL :: Archive_JVal            
-     LOGICAL :: Archive_JNoon           
+     ! Photolysis (J-values)
+     REAL(f4),  POINTER :: JVal     (:,:,:,:)        ! J-values, instantaneous
+     REAL(f4),  POINTER :: JNoon    (:,:,:,:)        ! Noon J-values
+     REAL(f4),  POINTER :: JNoonFrac(:,:    )        ! Frac of when it was noon
+     INTEGER,   POINTER :: Map_Jval (:      )
+     INTEGER,   POINTER :: Map_JNoon(:      )
+     LOGICAL :: Archive_JVal
+     LOGICAL :: Archive_JNoon
      LOGICAL :: Archive_JNoonFrac
-     LOGICAL :: Archive_RxnRates        
+
+     ! Reaction rates from KPP
+     REAL(f4),  POINTER :: RxnRates    (:,:,:,:)
+     INTEGER,   POINTER :: Map_RxnRates(:      )
+     LOGICAL :: Archive_RxnRates
+
+     ! Radiative fluxes (NOTE: May be not functioning properly)
+     REAL(f4),  POINTER :: UVFluxDiffuse(:,:,:)      ! Diffuse UV flux per bin
+     REAL(f4),  POINTER :: UVFluxDirect (:,:,:)      ! Direct UV flux per bin
+     REAL(f4),  POINTER :: UVFluxNet    (:,:,:)      ! Net UV flux per bin
      LOGICAL :: Archive_UVFluxDiffuse   
      LOGICAL :: Archive_UVFluxDirect    
      LOGICAL :: Archive_UVFluxNet       
+
+     ! Concentration after chemistry
+     REAL(f4),  POINTER :: OHconcAfterChem (:,:,:)   ! OH, HO2, O1D, and O3P
+     REAL(f4),  POINTER :: HO2concAfterChem(:,:,:)   !  concentrations 
+     REAL(f4),  POINTER :: O1DconcAfterChem(:,:,:)   !  upon exiting the
+     REAL(f4),  POINTER :: O3PconcAfterChem(:,:,:)   !  FlexChem solver 
+
+     ! Prod and loss
+     REAL(f4),  POINTER :: Loss            (:,:,:,:) ! Chemical loss of species
+     REAL(f4),  POINTER :: Prod            (:,:,:,:) ! Chemical prod of species
      LOGICAL :: Archive_OHconcAfterChem 
      LOGICAL :: Archive_HO2concAfterChem
      LOGICAL :: Archive_O1DconcAfterChem
@@ -239,27 +279,27 @@ MODULE State_Diag_Mod
      LOGICAL :: Archive_AODPSCWL3       
 
      ! Aerosol mass and PM2.5
-     REAL(f4),  POINTER :: AerMassASOA     (:,:,:  ) ! Aromatic SOA [ug/m3]
-     REAL(f4),  POINTER :: AerMassBC       (:,:,:  ) ! Black carbon [ug/m3]
-     REAL(f4),  POINTER :: AerMassINDIOL   (:,:,:  ) ! INDIOL [ug/m3]
-     REAL(f4),  POINTER :: AerMassISN1OA   (:,:,:  ) ! ISN1OA [ug/m3]
-     REAL(f4),  POINTER :: AerMassLVOCOA   (:,:,:  ) ! LVOCOA [ug/m3]
-     REAL(f4),  POINTER :: AerMassNH4      (:,:,:  ) ! Nitrate [ug/m3]
-     REAL(f4),  POINTER :: AerMassNIT      (:,:,:  ) ! NIT [ug/m3]
-     REAL(f4),  POINTER :: AerMassOPOA     (:,:,:  ) ! OPOA [ug/m3]
-     REAL(f4),  POINTER :: AerMassPOA      (:,:,:  ) ! POA [ug/m3]
-     REAL(f4),  POINTER :: AerMassSAL      (:,:,:  ) ! Total seasalt [ug/m3]
-     REAL(f4),  POINTER :: AerMassSO4      (:,:,:  ) ! Sulfate [ug/m3]
-     REAL(f4),  POINTER :: AerMassSOAGX    (:,:,:  ) ! SOAGX [ug/m3]
-     REAL(f4),  POINTER :: AerMassSOAIE    (:,:,:  ) ! SOAIE [ug/m3]
-     REAL(f4),  POINTER :: AerMassSOAME    (:,:,:  ) ! SOAME [ug/m3]
-     REAL(f4),  POINTER :: AerMassSOAMG    (:,:,:  ) ! SOAMG [ug/m3]
-     REAL(f4),  POINTER :: AerMassTSOA     (:,:,:  ) ! Terpene SOA [ug/m3]
-     REAL(f4),  POINTER :: BetaNO          (:,:,:  ) ! Beta NO [ug C/m3]
-     REAL(f4),  POINTER :: PM25            (:,:,:  ) ! PM (r< 2.5 um) [ug/m3]
-     REAL(f4),  POINTER :: TotalOA         (:,:,:  ) ! Sum of all OA [ug/m3]
-     REAL(f4),  POINTER :: TotalOC         (:,:,:  ) ! Sum of all OC [ug/m3]
-     REAL(f4),  POINTER :: TotalBiogenicOA (:,:,:  ) ! Sum of biog OC [ug/m3]
+     REAL(f4),  POINTER :: AerMassASOA    (:,:,:)    ! Aromatic SOA [ug/m3]
+     REAL(f4),  POINTER :: AerMassBC      (:,:,:)    ! Black carbon [ug/m3]
+     REAL(f4),  POINTER :: AerMassINDIOL  (:,:,:)    ! INDIOL [ug/m3]
+     REAL(f4),  POINTER :: AerMassISN1OA  (:,:,:)    ! ISN1OA [ug/m3]
+     REAL(f4),  POINTER :: AerMassLVOCOA  (:,:,:)    ! LVOCOA [ug/m3]
+     REAL(f4),  POINTER :: AerMassNH4     (:,:,:)    ! Nitrate [ug/m3]
+     REAL(f4),  POINTER :: AerMassNIT     (:,:,:)    ! NIT [ug/m3]
+     REAL(f4),  POINTER :: AerMassOPOA    (:,:,:)    ! OPOA [ug/m3]
+     REAL(f4),  POINTER :: AerMassPOA     (:,:,:)    ! POA [ug/m3]
+     REAL(f4),  POINTER :: AerMassSAL     (:,:,:)    ! Total seasalt [ug/m3]
+     REAL(f4),  POINTER :: AerMassSO4     (:,:,:)    ! Sulfate [ug/m3]
+     REAL(f4),  POINTER :: AerMassSOAGX   (:,:,:)    ! SOAGX [ug/m3]
+     REAL(f4),  POINTER :: AerMassSOAIE   (:,:,:)    ! SOAIE [ug/m3]
+     REAL(f4),  POINTER :: AerMassSOAME   (:,:,:)    ! SOAME [ug/m3]
+     REAL(f4),  POINTER :: AerMassSOAMG   (:,:,:)    ! SOAMG [ug/m3]
+     REAL(f4),  POINTER :: AerMassTSOA    (:,:,:)    ! Terpene SOA [ug/m3]
+     REAL(f4),  POINTER :: BetaNO         (:,:,:)    ! Beta NO [ug C/m3]
+     REAL(f4),  POINTER :: PM25           (:,:,:)    ! PM (r< 2.5 um) [ug/m3]
+     REAL(f4),  POINTER :: TotalOA        (:,:,:)    ! Sum of all OA [ug/m3]
+     REAL(f4),  POINTER :: TotalOC        (:,:,:)    ! Sum of all OC [ug/m3]
+     REAL(f4),  POINTER :: TotalBiogenicOA(:,:,:)    ! Sum of biog OC [ug/m3]
      LOGICAL :: Archive_AerMass        
      LOGICAL :: Archive_AerMassASOA     
      LOGICAL :: Archive_AerMassBC       
@@ -304,40 +344,50 @@ MODULE State_Diag_Mod
      REAL(f4),  POINTER :: AdvFluxZonal    (:,:,:,:) ! EW Advective Flux
      REAL(f4),  POINTER :: AdvFluxMerid    (:,:,:,:) ! NW Advective Flux
      REAL(f4),  POINTER :: AdvFluxVert     (:,:,:,:) ! Vertical Advective Flux
+     INTEGER,   POINTER :: Map_AdvFluxZonal(:      )
+     INTEGER,   POINTER :: Map_AdvFluxMerid(:      )
+     INTEGER,   POINTER :: Map_AdvFluxVert (:      )
      LOGICAL :: Archive_AdvFluxZonal
      LOGICAL :: Archive_AdvFluxMerid
      LOGICAL :: Archive_AdvFluxVert 
 
      ! Mixing
-     REAL(f4),  POINTER :: PBLMixFrac      (:,:,:  ) ! Frac of BL occupied by lev
-     REAL(f4),  POINTER :: PBLFlux         (:,:,:,:) ! BL mixing mass flux
+     REAL(f4),  POINTER :: PBLMixFrac (:,:,:  )      ! Frac of BL occupied by L
+     REAL(f4),  POINTER :: PBLFlux    (:,:,:,:)      ! BL mixing mass flux
+     INTEGER,   POINTER :: Map_PBLFlux(:      )
      LOGICAL :: Archive_PBLMixFrac 
      LOGICAL :: Archive_PBLFlux    
 
-     ! Convection
+     ! Convection and convective scavenging
      REAL(f4),  POINTER :: CloudConvFlux   (:,:,:,:) ! Cloud conv. mass flux
      REAL(f4),  POINTER :: WetLossConvFrac (:,:,:,:) ! Fraction of soluble 
                                                      !  species lost in 
                                                      !  convective updraft
      REAL(f4),  POINTER :: WetLossConv     (:,:,:,:) ! Loss in convect. updraft
+     INTEGER,   POINTER :: Map_CloudConvFlux  (:   )
+     INTEGER,   POINTER :: Map_WetLossConvFrac(:   )
+     INTEGER,   POINTER :: Map_WetLossconv    (:   )
      LOGICAL :: Archive_CloudConvFlux
      LOGICAL :: Archive_WetLossConvFrac
      LOGICAL :: Archive_WetLossConv
 
-     ! Wet deposition
-     REAL(f4),  POINTER :: WetLossLS       (:,:,:,:) ! Loss in LS 
-                                                     ! rainout/washout
+     ! Wet deposition (large-scale)
+     REAL(f4),  POINTER :: WetLossLS       (:,:,:,:) ! Loss in rainout/washout
      REAL(f4),  POINTER :: PrecipFracLS    (:,:,:  ) ! Frac of box in LS precip
      REAL(f4),  POINTER :: RainFracLS      (:,:,:,:) ! Frac lost to LS rainout
      REAL(f4),  POINTER :: WashFracLS      (:,:,:,:) ! Frac lost to LS washout
+     INTEGER,   POINTER :: Map_WetLossLS   (:      )
+     INTEGER,   POINTER :: Map_PrecipFracLS(:      )
+     INTEGER,   POINTER :: Map_RainFracLS  (:      )
+     INTEGER,   POINTER :: Map_WashFracLS  (:      )
      LOGICAL :: Archive_WetLossLS     
      LOGICAL :: Archive_PrecipFracLS
      LOGICAL :: Archive_RainFracLS  
      LOGICAL :: Archive_WashFracLS    
 
      ! Carbon aerosols
-     REAL(f4),  POINTER :: ProdBCPIfromBCPO(:,:,:  ) ! Prod BCPI from BCPO
-     REAL(f4),  POINTER :: ProdOCPIfromOCPO(:,:,:  ) ! Prod OCPI from OCPO
+     REAL(f4),  POINTER :: ProdBCPIfromBCPO(:,:,:)   ! Prod BCPI from BCPO
+     REAL(f4),  POINTER :: ProdOCPIfromOCPO(:,:,:)   ! Prod OCPI from OCPO
      LOGICAL :: Archive_ProdBCPIfromBCPO
      LOGICAL :: Archive_ProdOCPIfromOCPO
 
@@ -393,6 +443,7 @@ MODULE State_Diag_Mod
      ! Radon / Lead / Beryllium specialty simulation
      REAL(f4),  POINTER :: PbFromRnDecay(:,:,:  ) ! Pb emitted from Rn decay
      REAL(f4),  POINTER :: RadDecay     (:,:,:,:) ! Radioactive decay
+     INTEGER,   POINTER :: Map_RadDecay (:      )
      LOGICAL :: Archive_PbFromRnDecay
      LOGICAL :: Archive_RadDecay
 
@@ -682,6 +733,8 @@ CONTAINS
 !
 ! !USES:
 !
+    USE State_Chm_Mod,  ONLY : Ind_
+    USE CharPak_Mod,    ONLY : CntMat
     USE Input_Opt_Mod,  ONLY : OptInput
     USE State_Grid_Mod, ONLY : GrdState
 !
@@ -714,17 +767,43 @@ CONTAINS
 ! !LOCAL VARIABLES:
 !
     ! Strings
-    CHARACTER(LEN=5  )     :: TmpWL
-    CHARACTER(LEN=10 )     :: TmpHt
-    CHARACTER(LEN=255)     :: ErrMsg,   ThisLoc
-    CHARACTER(LEN=255)     :: arrayID,  diagID
+    CHARACTER(LEN=5  )             :: TmpWL
+    CHARACTER(LEN=10 )             :: TmpHt
+    CHARACTER(LEN=255)             :: ErrMsg,   ThisLoc
+    CHARACTER(LEN=255)             :: arrayID,  diagID
 
     ! Scalars
-    INTEGER                :: N,        IM,      JM,      LM
-    INTEGER                :: nSpecies, nAdvect, nDryDep, nKppSpc
-    INTEGER                :: nWetDep,  nPhotol, nProd,   nLoss
-    INTEGER                :: nHygGrth, nRad,    nDryAlt
-    LOGICAL                :: EOF,      Found,   Found2
+    LOGICAL                        :: EOF,      Found,   Found2
+    INTEGER                        :: N,        IM,      JM,      LM
+    INTEGER                        :: nSpecies, nAdvect, nDryDep, nKppSpc
+    INTEGER                        :: nWetDep,  nPhotol, nProd,   nLoss
+    INTEGER                        :: nHygGrth, nRad,    nDryAlt
+    INTEGER                        :: nTags,    nFields
+
+    ! Scalars for budget diagnostics
+    INTEGER                        :: nEmisDryDepFull
+    INTEGER                        :: nEmisDryDepTrop
+    INTEGER                        :: nEmisDryDepPBL
+    INTEGER                        :: nTransportFull
+    INTEGER                        :: nTransportTrop
+    INTEGER                        :: nTransportPBL
+    INTEGER                        :: nMixingFull
+    INTEGER                        :: nMixingTrop
+    INTEGER                        :: nMixingPBL
+    INTEGER                        :: nConvectionFull
+    INTEGER                        :: nConvectionTrop
+    INTEGER                        :: nConvectionPBL
+    INTEGER                        :: nChemistryFull
+    INTEGER                        :: nChemistryTrop
+    INTEGER                        :: nChemistryPBL
+    INTEGER                        :: nWetDepFull
+    INTEGER                        :: nWetDepTrop
+    INTEGER                        :: nWetDepPBL
+
+    ! Arrays
+    INTEGER                        :: tagInd(2000)
+    CHARACTER(LEN=31), ALLOCATABLE :: tagList(:)
+    CHARACTER(LEN=31), ALLOCATABLE :: fieldList(:)
 
     !=======================================================================
     ! Initialize
@@ -758,6 +837,26 @@ CONTAINS
     nProd     = State_Chm%nProd
     nWetDep   = State_Chm%nWetDep
 
+    ! Sizes of the budget diagnostics arrays
+    nEmisDryDepFull = 0                            
+    nEmisDryDepTrop = 0
+    nEmisDryDepPBL  = 0
+    nTransportFull  = 0
+    nTransportTrop  = 0
+    nTransportPBL   = 0
+    nMixingFull     = 0
+    nMixingTrop     = 0
+    nMixingPBL      = 0
+    nConvectionFull = 0
+    nConvectionTrop = 0
+    nConvectionPBL  = 0
+    nChemistryFull  = 0
+    nChemistryTrop  = 0
+    nChemistryPBL   = 0
+    nWetDepFull     = 0
+    nWetDepTrop     = 0
+    nWetDepPBL      = 0 
+
     ! %%% Free pointers and set logicals %%%
 
     ! Restart file fields
@@ -770,6 +869,7 @@ CONTAINS
 
     ! Species concentration diagnostics
     State_Diag%SpeciesConc                         => NULL()
+    State_Diag%Map_SpeciesConc                     => NULL()
     State_Diag%Archive_SpeciesConc                 = .FALSE.
 
     ! Budget diagnostics
@@ -791,8 +891,32 @@ CONTAINS
     State_Diag%BudgetWetDepFull                    => NULL()
     State_Diag%BudgetWetDepTrop                    => NULL()
     State_Diag%BudgetWetDepPBL                     => NULL()          
-    State_Diag%BudgetMass1                         => NULL()          
-    State_Diag%BudgetMass2                         => NULL()          
+    State_Diag%BudgetMassFull1                     => NULL()          
+    State_Diag%BudgetMassFull2                     => NULL()          
+    State_Diag%BudgetMassTrop1                     => NULL()          
+    State_Diag%BudgetMassTrop2                     => NULL()          
+    State_Diag%BudgetMassPBL1                      => NULL()          
+    State_Diag%BudgetMassPBL2                      => NULL()          
+    State_Diag%Map_BudgetEmisDryDepFull            => NULL()          
+    State_Diag%Map_BudgetEmisDryDepTrop            => NULL()
+    State_Diag%Map_BudgetEmisDryDepPBL             => NULL()
+    State_Diag%Map_BudgetTransportFull             => NULL()
+    State_Diag%Map_BudgetTransportTrop             => NULL()
+    State_Diag%Map_BudgetTransportPBL              => NULL()
+    State_Diag%Map_BudgetMixingFull                => NULL()
+    State_Diag%Map_BudgetMixingTrop                => NULL()
+    State_Diag%Map_BudgetMixingPBL                 => NULL()
+    State_Diag%Map_BudgetConvectionFull            => NULL()
+    State_Diag%Map_BudgetConvectionTrop            => NULL()
+    State_Diag%Map_BudgetConvectionPBL             => NULL()
+    State_Diag%Map_BudgetChemistryFull             => NULL()
+    State_Diag%Map_BudgetChemistryTrop             => NULL()
+    State_Diag%Map_BudgetChemistryPBL              => NULL()
+    State_Diag%Map_BudgetWetDepFull                => NULL()
+    State_Diag%Map_BudgetWetDepTrop                => NULL()
+    State_Diag%Map_BudgetWetDepPBL                 => NULL()          
+    State_Diag%Map_BudgetMass1                     => NULL()          
+    State_Diag%Map_BudgetMass2                     => NULL()        
     State_Diag%Archive_BudgetEmisDryDep            = .FALSE.          
     State_Diag%Archive_BudgetEmisDryDepFull        = .FALSE.          
     State_Diag%Archive_BudgetEmisDryDepTrop        = .FALSE.
@@ -824,10 +948,15 @@ CONTAINS
     State_Diag%DryDepChm                           => NULL()
     State_Diag%DryDepMix                           => NULL()
     State_Diag%DryDepVel                           => NULL()
+    State_Diag%Map_DryDep                          => NULL()
+    State_Diag%Map_DryDepChm                       => NULL()
+    State_Diag%Map_DryDepMix                       => NULL()
+    State_Diag%Map_DryDepVel                       => NULL()
     State_Diag%Archive_DryDep                      = .FALSE.
     State_Diag%Archive_DryDepChm                   = .FALSE.
     State_Diag%Archive_DryDepMix                   = .FALSE.
     State_Diag%Archive_DryDepVel                   = .FALSE.
+
 #if defined( MODEL_GEOS )
     State_Diag%DryDepRa2m                          => NULL()
     State_Diag%DryDepRa10m                         => NULL()
@@ -839,10 +968,17 @@ CONTAINS
     State_Diag%Archive_Bry                         = .FALSE.
 #endif
 
-    ! Chemistry, J-value, Prod/Loss diagnostics
+    ! Photolysis
     State_Diag%JVal                                => NULL()
     State_Diag%JNoon                               => NULL()
     State_Diag%JNoonFrac                           => NULL()
+    State_Diag%Map_JVal                            => NULL()
+    State_Diag%Map_JNoon                           => NULL()
+    State_Diag%Archive_JVal                        = .FALSE.
+    State_Diag%Archive_JNoon                       = .FALSE.
+    State_Diag%Archive_JNoonFrac                   = .FALSE.
+
+    ! Chemistry, Prod/Loss diagnostics
     State_Diag%RxnRates                            => NULL()
     State_Diag%UVFluxDiffuse                       => NULL()
     State_Diag%UVFluxDirect                        => NULL()
@@ -853,9 +989,6 @@ CONTAINS
     State_Diag%O3PconcAfterChem                    => NULL()
     State_Diag%Loss                                => NULL()
     State_Diag%Prod                                => NULL()
-    State_Diag%Archive_JVal                        = .FALSE.
-    State_Diag%Archive_JNoon                       = .FALSE.
-    State_Diag%Archive_JNoonFrac                   = .FALSE.
     State_Diag%Archive_RxnRates                    = .FALSE.
     State_Diag%Archive_UVFluxDiffuse               = .FALSE.
     State_Diag%Archive_UVFluxDirect                = .FALSE.
@@ -1004,6 +1137,9 @@ CONTAINS
     State_Diag%AdvFluxZonal                        => NULL()
     State_Diag%AdvFluxMerid                        => NULL()
     State_Diag%AdvFluxVert                         => NULL()
+    State_Diag%Map_AdvFluxZonal                    => NULL()
+    State_Diag%Map_AdvFluxMerid                    => NULL()
+    State_Diag%Map_AdvFluxVert                     => NULL()
     State_Diag%Archive_AdvFluxZonal                = .FALSE.
     State_Diag%Archive_AdvFluxMerid                = .FALSE.
     State_Diag%Archive_AdvFluxVert                 = .FALSE.
@@ -1301,7 +1437,7 @@ CONTAINS
     State_Diag%ObsPack_Species                     => NULL()
     State_Diag%ObsPack_Species_Ind                 => NULL()
     State_Diag%ObsPack_Species_Name                => NULL()
-    State_Diag%ObsPack_Species_LName               => NULL()
+    State_Diag%ObsPack_Species_LName               => NULL()  
 
     ! Write header
     IF ( am_I_Root ) THEN
@@ -1351,71 +1487,140 @@ CONTAINS
     !------------------------------------------------------------------------
     arrayID = 'State_Diag%SpeciesConc'
     diagID  = 'SpeciesConc'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%SpeciesConc( IM, JM, LM, nSpecies ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                    State_Chm,   &
+                         nFields,   State_Diag%Map_SpeciesConc, fieldList,   &
+                         RC                                                 )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate array and register SpeciesConc fields
+       ALLOCATE( State_Diag%SpeciesConc( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayId, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%SpeciesConc = 0.0_f8
        State_Diag%Archive_SpeciesConc = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%SpeciesConc,   &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Budget for emissions  (average kg/m2/s across single timestep)
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%BudgetEmisDryDepFull'
     diagID  = 'BudgetEmisDryDepFull'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetEmisDryDepFull( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetEmisDryDepFull,                &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nEmisDryDepFull = nFields
+
+       ! Allocate and register BudgetEmisDryDepFull
+       ALLOCATE( State_Diag%BudgetEmisDryDepFull( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetEmisDryDepFull = 0.0_f8
        State_Diag%Archive_BudgetEmisDryDepFull = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetEmisDryDepFull,             & 
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Trop-only emissions
     arrayID = 'State_Diag%BudgetEmisDryDepTrop'
     diagID  = 'BudgetEmisDryDepTrop'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetEmisDryDepTrop( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetEmisDryDepTrop,                &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nEmisDryDepTrop = nFields
+
+       ! Allocate and register BudgetEmisDryDepTrop
+       ALLOCATE( State_Diag%BudgetEmisDryDepTrop( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetEmisDryDepTrop = 0.0_f8
        State_Diag%Archive_BudgetEmisDryDepTrop = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetEmisDryDepTrop,             &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! PBL-only emissions
     arrayID = 'State_Diag%BudgetEmisDryDepPBL'
     diagID  = 'BudgetEmisDryDepPBL'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetEmisDryDepPBL( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetEmisDryDepPBL,                 &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nEmisDryDepPBL = nFields
+
+       ! Allocate and register BudgetEmisDryDepTrop
+       ALLOCATE( State_Diag%BudgetEmisDryDepPBL( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetEmisDryDepPBL = 0.0_f8
        State_Diag%Archive_BudgetEmisDryDepPBL = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetEmisDryDepPBL,              &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! High-level logical for emissions budget
     IF ( State_Diag%Archive_BudgetEmisDryDepFull .OR. &
@@ -1429,53 +1634,107 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%BudgetTransportFull'
     diagID  = 'BudgetTransportFull'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetTransportFull( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetTransportFull,                 &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nTransportFull = nFields
+
+       ! Allocate and register BudgetTransportFull
+       ALLOCATE( State_Diag%BudgetTransportFull( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetTransportFull = 0.0_f8
        State_Diag%Archive_BudgetTransportFull = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetTransportFull,              &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Trop-only transport
     arrayID = 'State_Diag%BudgetTransportTrop'
     diagID  = 'BudgetTransportTrop'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetTransportTrop( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetTransportTrop,                 &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nTransportTrop = nFields
+
+       ! Allocate and register BudgetTransportTrop
+       ALLOCATE( State_Diag%BudgetTransportTrop( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetTransportTrop = 0.0_f8
        State_Diag%Archive_BudgetTransportTrop = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetTransportTrop,              &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! PBL-only transport
     arrayID = 'State_Diag%BudgetTransportPBL'
     diagID  = 'BudgetTransportPBL'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetTransportPBL( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetTransportPBL,                  &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nTransportPBL = nFields
+
+       ! Allocate and register BudgetTransportPBL
+       ALLOCATE( State_Diag%BudgetTransportPBL( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetTransportPBL = 0.0_f8
        State_Diag%Archive_BudgetTransportPBL = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetTransportPBL,               &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! High-level logical for transport budget
     IF ( State_Diag%Archive_BudgetTransportFull .OR. &
@@ -1489,53 +1748,107 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%BudgetMixingFull'
     diagID  = 'BudgetMixingFull'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetMixingFull( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetMixingFull,                    &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nMixingFull = nFields
+
+       ! Allocate and register BudgetMixingFull
+       ALLOCATE( State_Diag%BudgetMixingFull( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetMixingFull = 0.0_f8
        State_Diag%Archive_BudgetMixingFull = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                          &
                                 State_Diag%BudgetMixingFull,                &
-                                State_Chm, State_Diag, RC                  )
+                                State_Chm, State_Diag, RC, fieldList       )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Trop-only mixing
     arrayID = 'State_Diag%BudgetMixingTrop'
     diagID  = 'BudgetMixingTrop'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetMixingTrop( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetMixingTrop,                    &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nMixingTrop = nFields
+
+       ! Allocate and register BudgetMixingTrop
+       ALLOCATE( State_Diag%BudgetMixingTrop( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetMixingTrop = 0.0_f8
        State_Diag%Archive_BudgetMixingTrop = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetMixingTrop,                 &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! PBL-only mixing
     arrayID = 'State_Diag%BudgetMixingPBL'
     diagID  = 'BudgetMixingPBL'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetMixingPBL( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetMixingPBL,                     &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nMixingPBL = nFields
+
+       ! Allocate and register BudgetMixingPBL
+       ALLOCATE( State_Diag%BudgetMixingPBL( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetMixingPBL = 0.0_f8
        State_Diag%Archive_BudgetMixingPBL = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetMixingPBL,                  &
-                                State_Chm, State_Diag, RC                    )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! High-level logical for mixing budget
     IF ( State_Diag%Archive_BudgetMixingFull .OR. &
@@ -1549,53 +1862,107 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%BudgetConvectionFull'
     diagID  = 'BudgetConvectionFull'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetConvectionFull( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetConvectionFull,                &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nConvectionFull = nFields
+
+       ! Allocate and register BudgetConvectionFull
+       ALLOCATE( State_Diag%BudgetConvectionFull( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetConvectionFull = 0.0_f8
        State_Diag%Archive_BudgetConvectionFull = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetConvectionFull,             &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Trop-only convection
     arrayID = 'State_Diag%BudgetConvectionTrop'
     diagID  = 'BudgetConvectionTrop'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetConvectionTrop( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetConvectionTrop,                &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nConvectionTrop = nFields
+
+       ! Allocate and register BudgetConvectionTrop
+       ALLOCATE( State_Diag%BudgetConvectionTrop( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetConvectionTrop = 0.0_f8
        State_Diag%Archive_BudgetConvectionTrop = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetConvectionTrop,             &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! PBL-only convection
     arrayID = 'State_Diag%BudgetConvectionPBL'
     diagID  = 'BudgetConvectionPBL'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetConvectionPBL( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetConvectionPBL,                &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nConvectionPBL = nFields
+
+       ! Allocate and register BudgetConvectionPBL
+       ALLOCATE( State_Diag%BudgetConvectionPBL( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetConvectionPBL = 0.0_f8
        State_Diag%Archive_BudgetConvectionPBL = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetConvectionPBL,              &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! High-level logical for convection budget
     IF ( State_Diag%Archive_BudgetConvectionFull .OR. &
@@ -1609,53 +1976,108 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%BudgetChemistryFull'
     diagID  = 'BudgetChemistryFull'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetChemistryFull( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetChemistryFull,                 &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nChemistryFull = nFields
+
+       ! Allocate and register BudgetConvectionPBL
+       ALLOCATE( State_Diag%BudgetChemistryFull( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetChemistryFull = 0.0_f8
        State_Diag%Archive_BudgetChemistryFull = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetChemistryFull,              &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Trop-only chemistry
     arrayID = 'State_Diag%BudgetChemistryTrop'
     diagID  = 'BudgetChemistryTrop'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetChemistryTrop( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetChemistryTrop,                 &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nChemistryTrop = nFields
+
+       ! Allocate and register BudgetConvectionTrop
+       ALLOCATE( State_Diag%BudgetChemistryTrop( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetChemistryTrop = 0.0_f8
        State_Diag%Archive_BudgetChemistryTrop = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetChemistryTrop,              &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! PBL-only chemistry
     arrayID = 'State_Diag%BudgetChemistryPBL'
     diagID  = 'BudgetChemistryPBL'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetChemistryPBL( IM, JM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       ! NOTE: Use IndFlag='A' to be consistent with other budgets
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetChemistryPBL,                 &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nChemistryPBL = nFields
+
+       ! Allocate and register BudgetConvectionPBL
+       ALLOCATE( State_Diag%BudgetChemistryPBL( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetChemistryPBL = 0.0_f8
        State_Diag%Archive_BudgetChemistryPBL = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetChemistryPBL,               &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Set high-level logical for archiving chemistry budget
     IF ( State_Diag%Archive_BudgetChemistryFull .OR. &
@@ -1669,53 +2091,109 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%BudgetWetDepFull'
     diagID  = 'BudgetWetDepFull'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetWetDepFull( IM, JM, nWetDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       ! NOTE: Use IndFlag='A' to be consistent with other budgets
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetWetDepFull,                    &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nWetDepFull = nFields
+
+       ! Allocate and register BudgetWetDepFull
+       ALLOCATE( State_Diag%BudgetWetDepFull( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetWetDepFull = 0.0_f8
        State_Diag%Archive_BudgetWetDepFull = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetWetDepFull,                 &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! Trop-only wet deposition
     arrayID = 'State_Diag%BudgetWetDepTrop'
     diagID  = 'BudgetWetDepTrop'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetWetDepTrop( IM, JM, nWetDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetWetDepTrop,                    &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nWetDepTrop = nFields
+
+       ! Allocate and register BudgetWetDepTrop
+       ALLOCATE( State_Diag%BudgetWetDepTrop( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetWetDepTrop = 0.0_f8
        State_Diag%Archive_BudgetWetDepTrop = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetWetDepTrop,                 &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! PBL-only wet deposition
     arrayID = 'State_Diag%BudgetWetDepPBL'
     diagID  = 'BudgetWetDepPBL'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%BudgetWetDepPBL( IM, JM, nWetDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       ! NOTE: Use IndFlag='A' to be consistent with other budgets
+       CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
+                         State_Diag%Map_BudgetWetDepPBL,                    &  
+                         fieldList,  RC,      IndFlag='A'                   )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Save array size for use below
+       nWetDepPBL = nFields
+
+       ! Allocate and register BudgetWetDepPBL
+       ALLOCATE( State_Diag%BudgetWetDepPBL( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%BudgetWetDepPBL = 0.0_f8
        State_Diag%Archive_BudgetWetDepPBL = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%BudgetWetDepPBL,                  &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     ! High-level logical for wet deposition budget
     IF ( State_Diag%Archive_BudgetWetDepFull .OR. &
@@ -1729,80 +2207,150 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%DryDepChm'
     diagID  = 'DryDepChm'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+
+    ! Look for DryDepChm_ species
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
+
     ! Also turn on this diagnostic array if outputting total dry dep flux
     CALL Check_DiagList( am_I_Root, Diag_List, 'DryDep', Found2, RC )
+
     IF ( Found .OR. Found2 ) THEN
        IF ( am_I_Root ) WRITE( 6, 20 ) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%DryDepChm( IM, JM, nDryDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                  State_Chm,     &
+                         nFields,   State_Diag%Map_DrydepChm, fieldList,     &
+                         RC,        IndFlag='D'                             )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate array and register DryDepChm fields
+       ALLOCATE( State_Diag%DryDepChm( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( ArrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%DryDepChm = 0.0_f4
        State_Diag%Archive_DryDepChm = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%DryDepChm,     &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Dry deposition flux from mixing
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%DryDepMix'
     diagID  = 'DryDepMix'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+
+    ! Look for DryDepMix_ species
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
+
     ! Also turn on this diagnostic array if outputting total dry dep flux
     CALL Check_DiagList( am_I_Root, Diag_List, 'DryDep', Found2, RC )
+
     IF ( Found .OR. Found2 ) THEN
        IF ( am_I_Root ) WRITE( 6, 20 ) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%DryDepMix( IM, JM, nDryDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                  State_Chm,     &
+                         nFields,   State_Diag%Map_DrydepMix, fieldList,     &
+                         RC,        IndFlag='D'                             )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate array and register DryDepMix fields
+       ALLOCATE( State_Diag%DryDepMix( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%DryDepMix = 0.0_f4
        State_Diag%Archive_DryDepMix = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%DryDepMix,     &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Total dry deposition flux
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%DryDep'
     diagID  = 'DryDep'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagID)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%DryDep( IM, JM, nDryDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,               State_Chm,        &
+                         nFields,   State_Diag%Map_Drydep, fieldList,        &
+                         RC,        IndFlag='D'                             )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register Drydep fields
+       ALLOCATE( State_Diag%DryDep( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%DryDep = 0.0_f4
        State_Diag%Archive_DryDep = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%DryDep,        &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Dry deposition velocity
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%DryDepVel'
     diagID  = 'DryDepVel'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagID)//'_',            &
+                         Found,     RC,        tagList=tagList              )
 #if defined( MODEL_GEOS )
     ! DryDepVel is needed by some other diagnostics, always use with GEOS-5
     Found = .TRUE.
 #endif
+
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%DryDepVel( IM, JM, nDryDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       ! NOTE: Return drydep indices, not model indices!
+       CALL Get_Mapping( am_I_Root,  tagList,                  State_Chm,    &
+                         nFields,    State_Diag%Map_DryDepVel, fieldList,    &
+                         RC,         IndFlag='D'                            )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate array and register DryDepVel fields
+       ALLOCATE( State_Diag%DryDepVel( IM, JM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%DryDepVel = 0.0_f4
        State_Diag%Archive_DryDepVel = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%DryDepVel,     &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
 #if defined( MODEL_GEOS )
     !--------------------------------------------
@@ -1889,54 +2437,99 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%AdvFluxZonal'
     diagID  = 'AdvFluxZonal'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%AdvFluxZonal( IM, JM, LM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                     State_Chm,  &
+                         nFields,   State_Diag%Map_AdvFluxZonal, fieldList,  &
+                         RC,        IndFlag='A'                             )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register AdvFluxZonal fields
+       ALLOCATE( State_Diag%AdvFluxZonal( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%AdvFluxZonal = 0.0_f4
        State_Diag%Archive_AdvFluxZonal = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%AdvFluxZonal,  &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
-
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
+ 
     !-----------------------------------------------------------------------
     ! Meridional Advective Flux (south positive)
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%AdvFluxMerid'
     diagID  = 'AdvFluxMerid'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%AdvFluxMerid( IM, JM, LM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                     State_Chm,  &
+                         nFields,   State_Diag%Map_AdvFluxMerid, fieldList,  &
+                         RC,        IndFlag='A'                             )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register AdvFluxMerid fields
+       ALLOCATE( State_Diag%AdvFluxMerid( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%AdvFluxMerid = 0.0_f4
        State_Diag%Archive_AdvFluxMerid = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%AdvFluxMerid,  &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Vertical Advective Flux (downwards positive)
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%AdvFluxVert'
     diagID  = 'AdvFluxVert'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%AdvFluxVert( IM, JM, LM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                    State_Chm,   &
+                         nFields,   State_Diag%Map_AdvFluxVert, fieldList,   &
+                         RC,        IndFlag='A'                             )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register AdvFluxMerid fields
+       ALLOCATE( State_Diag%AdvFluxVert( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%AdvFluxVert = 0.0_f4
        State_Diag%Archive_AdvFluxVert = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%AdvFluxVert,   &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Fraction of BL occupied by level L
@@ -1979,73 +2572,134 @@ CONTAINS
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%CloudConvFlux'
     diagID  = 'CloudConvFlux'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%CloudConvFlux( IM, JM, LM, nAdvect ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                                 &
+                         State_Chm, nFields, State_Diag%Map_CloudConvFlux,   &
+                         fieldList, RC,      IndFlag='A'                    )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register CloudConvFlux fields
+       ALLOCATE( State_Diag%CloudConvFlux( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%CloudConvFlux = 0.0_f4
        State_Diag%Archive_CloudConvFlux = .TRUE.
-       CALL Register_DiagField( am_I_Root, diagID, State_Diag%CloudConvFlux, &
-                                State_Chm, State_Diag, RC                   )
+       CALL Register_DiagField( am_I_Root, diagID,                           &
+                                State_Diag%CloudConvFlux,                    &
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Fraction of soluble species lost in convective updrafts
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%WetLossConvFrac'
     diagID  = 'WetLossConvFrac'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE( 6, 20 ) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%WetLossConvFrac( IM, JM, LM, nWetDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                                 &
+                         State_Chm, nFields, State_Diag%Map_WetLossConvFrac, &
+                         fieldList, RC,      IndFlag='W'                    )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register WetLossConvFrac fields
+       ALLOCATE( State_Diag%WetLossConvFrac( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%WetLossConvFrac = 0.0_f4
        State_Diag%Archive_WetLossConvFrac = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID,                           &
                                 State_Diag%WetLossConvFrac,                  & 
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Loss of soluble species in convective updrafts
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%WetLossConv'
     diagID  = 'WetLossConv'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%WetLossConv( IM, JM, LM, nWetDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                                 &
+                         State_Chm, nFields, State_Diag%Map_WetLossConv,     &
+                         fieldList, RC,      IndFlag='W'                    )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register WetLossConv fields
+       ALLOCATE( State_Diag%WetLossConv( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%WetLossConv = 0.0_f4
        State_Diag%Archive_WetLossConv = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%WetLossConv,   &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Loss of solutble species in large-scale rainout/washout
     !-----------------------------------------------------------------------
     arrayID = 'State_Diag%WetLossLS'
     diagID  = 'WetLossLS'
-    CALL Check_DiagList( am_I_Root, Diag_List, diagID, Found, RC )
+    CALL Check_DiagList( am_I_Root, Diag_List, TRIM(diagId)//'_',            &
+                         Found,     RC,        tagList=tagList              )
     IF ( Found ) THEN
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
-       ALLOCATE( State_Diag%WetLossLS( IM, JM, LM, nWetDep ), STAT=RC )
+
+       ! Get the number of species and the mapping array
+       CALL Get_Mapping( am_I_Root, tagList,                                 &
+                         State_Chm, nFields, State_Diag%Map_WetLossLS,       &
+                         fieldList, RC,      IndFlag='W'                    )
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       ! Allocate and register WetLossLS fields
+       ALLOCATE( State_Diag%WetLossLS( IM, JM, LM, nFields ), STAT=RC )
        CALL GC_CheckVar( arrayID, 0, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%WetLossLS = 0.0_f4
        State_Diag%Archive_WetLossLS = .TRUE.
        CALL Register_DiagField( am_I_Root, diagID, State_Diag%WetLossLS,     &
-                                State_Chm, State_Diag, RC                   )
+                                State_Chm, State_Diag, RC, fieldList        )
        IF ( RC /= GC_SUCCESS ) RETURN
     ENDIF
+    IF ( ALLOCATED( tagList   ) ) DEALLOCATE( tagList   )
+    IF ( ALLOCATED( fieldList ) ) DEALLOCATE( fieldList )
 
     !-----------------------------------------------------------------------
     ! Fraction of grid box undergoing large-scale precipitation
@@ -6476,10 +7130,60 @@ CONTAINS
     ! Set arrays used to calculate budget diagnostics, if needed
     !=======================================================================
     IF ( State_Diag%Archive_Budget ) THEN
-       ! 4th dimension is column region: Full, Trop, PBL respectively
-       ALLOCATE( State_Diag%BudgetMass1( IM, JM, State_Chm%nAdvect,3 ), STAT=RC)
-       ALLOCATE( State_Diag%BudgetMass2( IM, JM, State_Chm%nAdvect,3 ), STAT=RC)
-       IF ( RC /= GC_SUCCESS ) RETURN
+
+       !--------------------
+       ! Full column
+       !--------------------
+       nFields = MAX( nEmisDryDepFull, nTransportFull, nMixingFull,          &
+                      nConvectionFull, nChemistryFull, nWetDepFull          )
+
+       IF ( nFields > 0 ) THEN
+          ALLOCATE( State_Diag%BudgetMassFull1( IM, JM, nFields ), STAT=RC )
+          CALL GC_CheckVar( 'State_Diag%BudgetMassFull1', 0, RC )
+          IF ( RC /= GC_SUCCESS ) RETURN
+          State_Diag%BudgetMassFull1 = 0.0_f8
+          
+          ALLOCATE( State_Diag%BudgetMassFull2( IM, JM, nFields ), STAT=RC )
+          CALL GC_CheckVar( 'State_Diag%BudgetMassFull2', 0, RC )
+          IF ( RC /= GC_SUCCESS ) RETURN
+          State_Diag%BudgetMassFull2 = 0.0_f8
+       ENDIF
+
+       !--------------------
+       ! Trop column
+       !--------------------
+       nFields = MAX( nEmisDryDepTrop, nTransportTrop, nMixingTrop,          &
+                      nConvectionTrop, nChemistryTrop, nWetDepTrop          )
+
+       IF ( nFields > 0 ) THEN
+          ALLOCATE( State_Diag%BudgetMassTrop1( IM, JM, nFields ), STAT=RC )
+          CALL GC_CheckVar( 'State_Diag%BudgetMassTrop1', 0, RC )
+          IF ( RC /= GC_SUCCESS ) RETURN
+          State_Diag%BudgetMassFull1 = 0.0_f8
+
+          ALLOCATE( State_Diag%BudgetMassTrop2( IM, JM, nFields ), STAT=RC )
+          CALL GC_CheckVar( 'State_Diag%BudgetMassTrop2', 0, RC )
+          IF ( RC /= GC_SUCCESS ) RETURN
+          State_Diag%BudgetMassTrop2 = 0.0_f8
+       ENDIF
+ 
+       !--------------------
+       ! PBL column
+       !--------------------
+       nFields = MAX( nEmisDryDepFull, nTransportFull, nMixingFull,          &
+                      nConvectionFull, nChemistryFull, nWetDepFull          )
+
+       IF ( nFields > 0 ) THEN
+          ALLOCATE( State_Diag%BudgetMassPBL1( IM, JM, nFields ), STAT=RC )
+          CALL GC_CheckVar( 'State_Diag%BudgetMassPBL1', 0, RC )
+          IF ( RC /= GC_SUCCESS ) RETURN
+          State_Diag%BudgetMassPBL1 = 0.0_f8
+
+          ALLOCATE( State_Diag%BudgetMassPBL2( IM, JM, nFields ), STAT=RC )
+          CALL GC_CheckVar( 'State_Diag%BudgetMassPBL2', 0, RC )
+          IF ( RC /= GC_SUCCESS ) RETURN
+          State_Diag%BudgetMassPBL2 = 0.0_f8
+       ENDIF
     ENDIF
 
     ! Trap potential errors
@@ -6562,18 +7266,53 @@ CONTAINS
        State_Diag%SpeciesConc => NULL()
     ENDIF
 
-    IF ( ASSOCIATED( State_Diag%BudgetMass1 ) ) THEN
-       DEALLOCATE( State_Diag%BudgetMass1, STAT=RC )
-       CALL GC_CheckVar( 'State_Diag%BudgetMass1', 2, RC )
+    IF ( ASSOCIATED( State_Diag%Map_SpeciesConc ) ) THEN
+       DEALLOCATE( State_Diag%Map_SpeciesConc, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_SpeciesConc', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
-       State_Diag%BudgetMass1 => NULL()
+       State_Diag%Map_SpeciesConc => NULL()
     ENDIF
 
-    IF ( ASSOCIATED( State_Diag%BudgetMass2 ) ) THEN
-       DEALLOCATE( State_Diag%BudgetMass2, STAT=RC )
-       CALL GC_CheckVar( 'State_Diag%BudgetMass2', 2, RC )
+    IF ( ASSOCIATED( State_Diag%BudgetMassFull1 ) ) THEN
+       DEALLOCATE( State_Diag%BudgetMassFull1, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%BudgetMassFull1', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
-       State_Diag%BudgetMass2 => NULL()
+       State_Diag%BudgetMassFull1 => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%BudgetMassFull2 ) ) THEN
+       DEALLOCATE( State_Diag%BudgetMassFull2, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%BudgetMassFull2', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%BudgetMassFull2 => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%BudgetMassTrop1 ) ) THEN
+       DEALLOCATE( State_Diag%BudgetMassTrop1, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%BudgetMassTrop1', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%BudgetMassTrop1 => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%BudgetMassTrop2 ) ) THEN
+       DEALLOCATE( State_Diag%BudgetMassTrop2, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%BudgetMassTrop2', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%BudgetMassTrop2 => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%BudgetMassPBL1 ) ) THEN
+       DEALLOCATE( State_Diag%BudgetMassPBL1, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%BudgetMassPBL1', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%BudgetMassPBL1 => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%BudgetMassPBL2 ) ) THEN
+       DEALLOCATE( State_Diag%BudgetMassPBL2, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%BudgetMassPBL2', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%BudgetMassPBL2 => NULL()
     ENDIF
 
     IF ( ASSOCIATED( State_Diag%BudgetEmisDryDepFull ) ) THEN
@@ -6709,18 +7448,25 @@ CONTAINS
        State_Diag%DryDepChm => NULL()
     ENDIF
 
-    IF ( ASSOCIATED( State_Diag%DryDepMix ) ) THEN
-       DEALLOCATE( State_Diag%DryDepMix, STAT=RC )
-       CALL GC_CheckVar( 'State_Diag%DryDepMix', 2, RC )
+    IF ( ASSOCIATED( State_Diag%Map_DryDepChm ) ) THEN
+       DEALLOCATE( State_Diag%Map_DryDepChm, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_DryDepChm', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
-       State_Diag%DryDepMix    => NULL()
+       State_Diag%Map_DryDepChm => NULL()
     ENDIF
 
-    IF ( ASSOCIATED( State_Diag%DryDep ) ) THEN
-       DEALLOCATE( State_Diag%DryDep, STAT=RC )
-       CALL GC_CheckVar( 'State_Diag%DryDep', 2, RC )
+    IF ( ASSOCIATED( State_Diag%Map_DryDepMix ) ) THEN
+       DEALLOCATE( State_Diag%Map_DryDepMix, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_DryDepMix', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
-       State_Diag%DryDep => NULL()
+       State_Diag%Map_DryDepMix    => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%Map_DryDep ) ) THEN
+       DEALLOCATE( State_Diag%Map_DryDep, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_DryDep', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%Map_DryDep => NULL()
     ENDIF
 
     IF ( ASSOCIATED( State_Diag%DryDepVel ) ) THEN
@@ -6728,6 +7474,13 @@ CONTAINS
        CALL GC_CheckVar( 'State_Diag%DryDepVel', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%DryDepVel => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%Map_DryDepVel ) ) THEN
+       DEALLOCATE( State_Diag%Map_DryDepVel, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_DryDepVel', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%Map_DryDepVel => NULL()
     ENDIF
 
 #if defined( MODEL_GEOS )
@@ -6818,7 +7571,6 @@ CONTAINS
        CALL GC_CheckVar( 'State_Diag%UvFluxDirect', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%UVFluxDirect => NULL()
-
     ENDIF
 
     IF ( ASSOCIATED( State_Diag%UVFluxNet ) ) THEN
@@ -6835,6 +7587,13 @@ CONTAINS
        State_Diag%AdvFluxZonal => NULL()
     ENDIF
 
+    IF ( ASSOCIATED( State_Diag%Map_AdvFluxZonal ) ) THEN
+       DEALLOCATE( State_Diag%Map_AdvFluxZonal, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_AdvFluxZonal', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%Map_AdvFluxZonal => NULL()
+    ENDIF
+
     IF ( ASSOCIATED( State_Diag%AdvFluxMerid ) ) THEN
        DEALLOCATE( State_Diag%AdvFluxMerid, STAT=RC )
        CALL GC_CheckVar( 'State_Diag%AdvFluxMerid', 2, RC )
@@ -6842,11 +7601,25 @@ CONTAINS
        State_Diag%AdvFluxMerid => NULL()
     ENDIF
 
+    IF ( ASSOCIATED( State_Diag%Map_AdvFluxMerid ) ) THEN
+       DEALLOCATE( State_Diag%Map_AdvFluxMerid, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_AdvFluxMerid', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%Map_AdvFluxMerid => NULL()
+    ENDIF
+
     IF ( ASSOCIATED( State_Diag%AdvFluxVert ) ) THEN
        DEALLOCATE( State_Diag%AdvFluxVert, STAT=RC )
        CALL GC_CheckVar( 'State_Diag%AdvFluxVert', 2, RC )
        IF ( RC /= GC_SUCCESS ) RETURN
        State_Diag%AdvFluxVert => NULL()
+    ENDIF
+
+    IF ( ASSOCIATED( State_Diag%Map_AdvFluxVert ) ) THEN
+       DEALLOCATE( State_Diag%Map_AdvFluxVert, STAT=RC )
+       CALL GC_CheckVar( 'State_Diag%Map_AdvFluxVert', 2, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       State_Diag%Map_AdvFluxVert => NULL()
     ENDIF
 
     IF ( ASSOCIATED( State_Diag%PBLMixFrac ) ) THEN
@@ -9945,7 +10718,8 @@ CONTAINS
 ! !INTERFACE:
 !
   SUBROUTINE Register_DiagField_R4_2D( am_I_Root, metadataID, Ptr2Data,      &
-                                       State_Chm, State_Diag, RC            )
+                                       State_Chm, State_Diag, RC,            &
+                                       fieldList                            )
 !
 ! !USES:
 !
@@ -9953,17 +10727,16 @@ CONTAINS
 !
 ! !INPUT PARAMETERS:
 !
-    LOGICAL,           INTENT(IN)    :: am_I_Root       ! Root CPU?
-    CHARACTER(LEN=*),  INTENT(IN)    :: metadataID      ! Name
-    REAL(f4),          POINTER       :: Ptr2Data(:,:)   ! pointer to data
-    TYPE(ChmState),    INTENT(IN)    :: State_Chm       ! Obj for chem state
-    TYPE(DgnState),    INTENT(IN)    :: State_Diag      ! Obj for diag state
+    LOGICAL,           INTENT(IN)  :: am_I_Root       ! Root CPU?
+    CHARACTER(LEN=*),  INTENT(IN)  :: metadataID      ! Name
+    REAL(f4),          POINTER     :: Ptr2Data(:,:)   ! pointer to data
+    TYPE(ChmState),    INTENT(IN)  :: State_Chm       ! Obj for chem state
+    TYPE(DgnState),    INTENT(IN)  :: State_Diag      ! Obj for diag state
+    CHARACTER(LEN=*),  OPTIONAL    :: fieldList(:)    ! List of fields
 !
 ! !OUTPUT PARAMETERS:
 !
-    INTEGER,           INTENT(OUT)   :: RC              ! Success/failure
-!
-! !REMARKS:
+    INTEGER,           INTENT(OUT) :: RC              ! Success/failure
 !
 ! !REVISION HISTORY:
 !  20 Sep 2017 - E. Lundgren - Initial version
@@ -9974,20 +10747,26 @@ CONTAINS
 !
 ! !LOCAL VARIABLES:
 !   
-    CHARACTER(LEN=512)     :: ErrMsg
-    CHARACTER(LEN=255)     :: ErrMsg_reg, ThisLoc
-    CHARACTER(LEN=255)     :: desc, units, tagId, tagName
-    CHARACTER(LEN=255)     :: diagName, diagDesc
-    INTEGER                :: N, nTags, rank, type, vloc
-    LOGICAL                :: found
+    ! Strings
+    CHARACTER(LEN=512) :: ErrMsg
+    CHARACTER(LEN=255) :: ErrMsg_reg, ThisLoc
+    CHARACTER(LEN=255) :: desc,       units,    tagId
+    CHARACTER(LEN=255) :: tagName,    diagName, diagDesc
+
+    ! Scalars
+    INTEGER            :: N,          nTags,    rank
+    INTEGER            :: type,       vloc
+    LOGICAL            :: found,      hasFields
 
     !-----------------------------------------------------------------------
     ! Initialize
     !-----------------------------------------------------------------------
-    RC = GC_SUCCESS
-    ThisLoc = ' -> at Register_DiagField_R4_2D (in Headers/state_diag_mod.F90)'
-    ErrMsg  = ''
+    RC         = GC_SUCCESS
+    ThisLoc    = &
+         ' -> at Register_DiagField_R4_2D (in Headers/state_diag_mod.F90)'
+    ErrMsg     = ''
     ErrMsg_reg = 'Error encountered while registering State_Diag%'
+    hasFields  = PRESENT( fieldList )
 
     !-----------------------------------------------------------------------
     ! Get metadata for this diagnostic
@@ -10020,41 +10799,79 @@ CONTAINS
     !-----------------------------------------------------------------------   
     IF ( tagId /= '' ) THEN
 
-       ! Get number of tags
-       CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC,             &
-                         nTags=nTags )
+       !-----------------------------------------------------------------------
+       ! Get number of tags (or passed fields)
+       !-----------------------------------------------------------------------
+       IF ( hasFields ) THEN
 
-       ! Trap potential errors
-       IF ( RC /= GC_SUCCESS ) THEN
-          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
-                '; Abnormal exit from routine "Get_TagInfo", could not '  // &
-                ' get nTags!'
-          CALL GC_Error( ErrMsg, RC, ThisLoc )
-          RETURN
-       ENDIF
-       
-       ! Check that number of tags is consistent with array size
-       IF ( nTags /=  SIZE(Ptr2Data,2) ) THEN
-          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
-                '; number of tags is inconsistent with array size'
-          CALL GC_Error( ErrMsg, RC, ThisLoc )
-          RETURN
-       ENDIF
+          ! If we have passed the optional fieldList argument, then get
+          ! the number of tags from the size of the fieldList array.
+          nTags = SIZE( fieldList )
+          IF ( nTags < 1 ) THEN
+             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )            // &
+                      '; Could not get nFields from fieldList!'
+             CALL GC_Error( ErrMsg, RC, ThisLoc )
+             RETURN
+          ENDIF
 
-       ! Register each tagged name as a separate diagnostic
-       DO N = 1, nTags   
+       ELSE
 
-          ! Get the tag name
-          CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC, &
-                            N=N, tagName=tagName )
+          ! If we have not passed the optional fieldList argument, then call
+          ! Get_TagInfo to get the number of tags associated w/ tagID.
+          ! If tagId is a single species (e.g. SpeciesConc_O3), then nTags=1,
+          ! but if tagID is a wildcard (e.g. "ADV"), then nTags will be
+          ! the number of species or fields associated with that wildcard.
+          CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC,          &
+                            nTags=nTags )
 
           ! Trap potential errors
           IF ( RC /= GC_SUCCESS ) THEN
-             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( metaDataId ) //            &
-                      ' where tagID is ' // TRIM( tagID      ) //            &
-                      '; Abnormal exit from routine "Get_TagInfo"!'       
+             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )            // &
+                      '; Abnormal exit from routine "Get_TagInfo", '      // &
+                      'could not get nTags!'
              CALL GC_Error( ErrMsg, RC, ThisLoc )
              RETURN
+          ENDIF
+
+       ENDIF
+          
+       !--------------------------------------------------------------------
+       ! Check that number of tags or fields is consistent with array size
+       !--------------------------------------------------------------------
+       IF ( nTags /=  SIZE(Ptr2Data,2) ) THEN
+          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
+                   '; number of tags is inconsistent with array size'
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       !--------------------------------------------------------------------
+       ! Register each tagged name (or field name) as a separate diagnostic
+       !--------------------------------------------------------------------
+       DO N = 1, nTags   
+
+          IF ( hasFields ) THEN
+
+             ! If we have passed the optional fieldList argument, then this
+             ! is the list of fields that need to be registered.  Use this
+             ! to set the tagName variable for use below.
+             tagName = TRIM( fieldList(N) )
+
+          ELSE
+
+             ! Otherwise, call Get_TagInfo to get the name for each tag.
+             CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC, &
+                               N=N, tagName=tagName )
+
+             ! Trap potential errors
+             IF ( RC /= GC_SUCCESS ) THEN
+                ErrMsg = TRIM( ErrMsg_reg ) // TRIM( metaDataId )         // &
+                         ' where tagID is ' // TRIM( tagID      )         // &
+                         '; Abnormal exit from routine "Get_TagInfo"!'       
+                CALL GC_Error( ErrMsg, RC, ThisLoc )
+                RETURN
+             ENDIF
+
           ENDIF
 
           ! Add taginfo to diagnostic name and description
@@ -10123,7 +10940,8 @@ CONTAINS
 ! !INTERFACE:
 !
   SUBROUTINE Register_DiagField_R4_3D( am_I_Root, metadataID, Ptr2Data,      &
-                                       State_Chm, State_Diag, RC            )
+                                       State_Chm, State_Diag, RC,            &
+                                       fieldList                            )
 !
 ! !USES:
 !
@@ -10135,13 +10953,12 @@ CONTAINS
     CHARACTER(LEN=*),  INTENT(IN)    :: metadataID      ! Name
     REAL(f4),          POINTER       :: Ptr2Data(:,:,:) ! pointer to data
     TYPE(ChmState),    INTENT(IN)    :: State_Chm       ! Obj for chem state
-    TYPE(DgnState),    INTENT(INOUT) :: State_Diag      ! Obj for diag state
+    TYPE(DgnState),    INTENT(IN)    :: State_Diag      ! Obj for diag state
+    CHARACTER(LEN=*),  OPTIONAL      :: fieldList(:)    ! Mapping array
 !
 ! !OUTPUT PARAMETERS:
 !
     INTEGER,           INTENT(OUT)   :: RC              ! Success/failure
-!
-! !REMARKS:
 !
 ! !REVISION HISTORY:
 !  20 Sep 2017 - E. Lundgren - Initial version
@@ -10152,20 +10969,26 @@ CONTAINS
 !
 ! !LOCAL VARIABLES:
 !   
-    CHARACTER(LEN=512)     :: ErrMsg
-    CHARACTER(LEN=255)     :: ErrMsg_reg, ThisLoc
-    CHARACTER(LEN=255)     :: desc, units, tagID, tagName
-    CHARACTER(LEN=255)     :: diagName, diagDesc
-    INTEGER                :: N, nTags, rank, type,  vloc
-    LOGICAL                :: Found, onEdges
+    ! Strings
+    CHARACTER(LEN=512) :: ErrMsg
+    CHARACTER(LEN=255) :: ErrMsg_reg, ThisLoc
+    CHARACTER(LEN=255) :: desc,       units,    tagID
+    CHARACTER(LEN=255) :: tagName,    diagName, diagDesc
+
+    ! Scalars
+    INTEGER            :: N,          nTags,    rank
+    INTEGER            :: type,       vloc
+    LOGICAL            :: Found,      onEdges,  hasFields
 
     !-----------------------------------------------------------------------
     ! Initialize
     !-----------------------------------------------------------------------
-    RC      = GC_SUCCESS
-    ThisLoc = ' -> at Register_DiagField_R4_3D (in Headers/state_diag_mod.F90)'
-    ErrMsg  = '' 
+    RC         = GC_SUCCESS
+    ThisLoc    = & 
+     ' -> at Register_DiagField_R4_3D (in Headers/state_diag_mod.F90)'
+    ErrMsg     = ''
     ErrMsg_reg = 'Error encountered while registering State_Diag%'
+    hasFields  = PRESENT( fieldList )
 
     !-----------------------------------------------------------------------
     ! Get metadata for this diagnostic
@@ -10202,41 +11025,79 @@ CONTAINS
     !-----------------------------------------------------------------------
     IF ( tagID /= '' ) THEN
 
-       ! Get the number of tags
-       CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC,             &
-                         nTags=nTags )
+       !-----------------------------------------------------------------------
+       ! Get number of tags (or passed fields)
+       !-----------------------------------------------------------------------
+       IF ( hasFields ) THEN
 
-       ! Trap potential errors
-       IF ( RC /= GC_SUCCESS ) THEN
-          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
-                '; Abnormal exit from routine "Get_TagInfo", could not '  // &
-                'get nTags!'
-          CALL GC_Error( ErrMsg, RC, ThisLoc )
-          RETURN
-       ENDIF
+          ! If we have passed the optional fieldList argument, then get
+          ! the number of tags from the size of the fieldList array.
+          nTags = SIZE( fieldList )
+          IF ( nTags < 1 ) THEN
+             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )            // &
+                      '; Could not get nFields from fieldList!'
+             CALL GC_Error( ErrMsg, RC, ThisLoc )
+             RETURN
+          ENDIF
 
-       ! Check that number of tags is consistent with array size
-       IF ( nTags /=  SIZE(Ptr2Data,3) ) THEN
-          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
-                '; number of tags is inconsistent with array size'
-          CALL GC_Error( ErrMsg, RC, ThisLoc )
-          RETURN
-       ENDIF
+       ELSE
 
-       ! Register each tagged name as a separate diagnostic
-       DO N = 1, nTags 
-
-          ! Get the tag name
-          CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC, &
-                            N=N, tagName=tagName )
+          ! If we have not passed the optional fieldList argument, then call
+          ! Get_TagInfo to get the number of tags associated w/ tagID.
+          ! If tagId is a single species (e.g. SpeciesConc_O3), then nTags=1,
+          ! but if tagID is a wildcard (e.g. "ADV"), then nTags will be
+          ! the number of species or fields associated with that wildcard.
+          CALL Get_TagInfo( am_I_Root, tagId, State_Chm,                     &
+                            Found,     RC,    nTags=nTags )
 
           ! Trap potential errors
           IF ( RC /= GC_SUCCESS ) THEN
-             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( metaDataId )            // &
-                      ' where tagID is ' // TRIM( tagID      )            // &
-                      '; Abnormal exit from routine "Get_TagInfo"!'       
+             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )            // &
+                     '; Abnormal exit from routine "Get_TagInfo", '       // &
+                     'could not get nTags!'
              CALL GC_Error( ErrMsg, RC, ThisLoc )
              RETURN
+          ENDIF
+
+       ENDIF
+
+       !--------------------------------------------------------------------
+       ! Check that number of tags or fields is consistent with array size
+       !--------------------------------------------------------------------
+       IF ( nTags /=  SIZE(Ptr2Data,3) ) THEN
+          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
+                   '; number of tags is inconsistent with array size'
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       !--------------------------------------------------------------------
+       ! Register each tagged name (or field name) as a separate diagnostic
+       !--------------------------------------------------------------------
+       DO N = 1, nTags 
+
+          IF ( hasFields ) THEN
+
+             ! If we have passed the optional fieldList argument, then this
+             ! is the list of fields that need to be registered.  Use this
+             ! to set the tagName variable for use below.
+             tagName = TRIM( fieldList(N) )
+
+          ELSE
+
+             ! Otherwise, call Get_TagInfo to get the name for each tag.
+             CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC, &
+                               N=N, tagName=tagName )
+
+             ! Trap potential errors
+             IF ( RC /= GC_SUCCESS ) THEN
+                ErrMsg = TRIM( ErrMsg_reg ) // TRIM( metaDataId )         // &
+                         ' where tagID is ' // TRIM( tagID      )         // &
+                         '; Abnormal exit from routine "Get_TagInfo"!'
+                CALL GC_Error( ErrMsg, RC, ThisLoc )
+                RETURN
+             ENDIF
+
           ENDIF
 
           ! Add the tag name to the diagnostic name and description
@@ -10308,7 +11169,8 @@ CONTAINS
 ! !INTERFACE:
 !
   SUBROUTINE Register_DiagField_R4_4D( am_I_Root, metadataID, Ptr2Data,      &
-                                       State_Chm, State_Diag, RC )
+                                       State_Chm, State_Diag, RC,            &
+                                       fieldList )
 !
 ! !USES:
 !
@@ -10316,20 +11178,16 @@ CONTAINS
 !
 ! !INPUT PARAMETERS:
 !
-    LOGICAL,           INTENT(IN)    :: am_I_Root         ! Root CPU?
-    CHARACTER(LEN=*),  INTENT(IN)    :: metadataID        ! Name
-    REAL(f4),          POINTER       :: Ptr2Data(:,:,:,:) ! pointer to data
-    TYPE(ChmState),    INTENT(IN)    :: State_Chm         ! Obj for chem state
-    TYPE(DgnState),    INTENT(IN)    :: State_Diag        ! Obj for diag state
-!
-! !INPUT/OUTPUT PARAMETERS:
-!
-!
-! !OUTPUT PARAMETERS:
-!
-    INTEGER,           INTENT(OUT)   :: RC                ! Success/failure
-!
-! !REMARKS:
+    LOGICAL,           INTENT(IN)  :: am_I_Root         ! Root CPU?
+    CHARACTER(LEN=*),  INTENT(IN)  :: metadataID        ! Name
+    REAL(f4),          POINTER     :: Ptr2Data(:,:,:,:) ! pointer to data
+    TYPE(ChmState),    INTENT(IN)  :: State_Chm         ! Obj for chem state
+    TYPE(DgnState),    INTENT(IN)  :: State_Diag        ! Obj for diag state
+    CHARACTER(LEN=*),  OPTIONAL    :: fieldList(:)      ! List of fields
+!                                  
+! !OUTPUT PARAMETERS: 
+!                                  
+    INTEGER,           INTENT(OUT) :: RC                ! Success/failure
 !
 ! !REVISION HISTORY:
 !  20 Sep 2017 - E. Lundgren - Initial version
@@ -10340,20 +11198,26 @@ CONTAINS
 !
 ! !LOCAL VARIABLES:
 !   
-    CHARACTER(LEN=512)     :: ErrMsg
-    CHARACTER(LEN=255)     :: ErrMsg_reg, ThisLoc
-    CHARACTER(LEN=255)     :: desc, units, tagId, tagName
-    CHARACTER(LEN=255)     :: diagName, diagDesc
-    INTEGER                :: N, nTags, rank, type, vloc
-    LOGICAL                :: found, onEdges
+    ! Strings
+    CHARACTER(LEN=512) :: ErrMsg
+    CHARACTER(LEN=255) :: ErrMsg_reg, ThisLoc
+    CHARACTER(LEN=255) :: desc,       units,    tagId
+    CHARACTER(LEN=255) :: tagName,    diagName, diagDesc
+
+    ! Scalars
+    INTEGER            :: N,          nTags,    rank
+    INTEGER            :: type,       vloc
+    LOGICAL            :: found,      onEdges,  hasFields
 
     !-----------------------------------------------------------------------
     ! Initialize
     !-----------------------------------------------------------------------
-    RC = GC_SUCCESS
-    ThisLoc = ' -> at Register_DiagField_R4_4D (in Headers/state_diag_mod.F90)'
-    ErrMsg  = ''
+    RC         = GC_SUCCESS
+    ThisLoc    = &
+       ' -> at Register_DiagField_R4_4D (in Headers/state_diag_mod.F90)'
+    ErrMsg     = ''
     ErrMsg_reg = 'Error encountered while registering State_Diag%'
+    hasFields  = PRESENT( fieldList )
 
     !-----------------------------------------------------------------------
     ! Get metadata for this diagnostic
@@ -10384,44 +11248,78 @@ CONTAINS
     ENDIF
     
     !-----------------------------------------------------------------------
-    ! Assume always tagged if 4D, get number of tags
+    ! Assume always tagged if 4D, get number of tags (or passed fields)
     !-----------------------------------------------------------------------
-    CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC,                &
-                      nTags=nTags )
+    IF ( hasFields ) THEN
 
-    ! Trap potential errors
-    IF ( RC /= GC_SUCCESS ) THEN
-       ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )                  // &
-               '; Abnormal exit from routine "Get_TagInfo", could not '   // &
-               'get nTags!'
-       CALL GC_Error( ErrMsg, RC, ThisLoc )
-       RETURN
-    ENDIF
+       ! If we have passed the optional fieldList argument, then get
+       ! the number of tags from the size of the fieldList array.
+       nTags = SIZE( fieldList )
+       IF ( nTags < 1 ) THEN
+          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
+                   '; Could not get nFields from fieldList!'
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
 
-    ! Check that number of tags is consistent with array size
-    IF ( nTags /=  SIZE(Ptr2Data,4) ) THEN
-       ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
-             '; number of tags is inconsistent with array size'
-       CALL GC_Error( ErrMsg, RC, ThisLoc )
-       RETURN
-    ENDIF
+    ELSE
 
-    !-----------------------------------------------------------------------
-    ! Register each tagged name as a separate diagnostic
-    !-----------------------------------------------------------------------
-    DO N = 1, nTags        
-
-       ! Get the tag name
-       CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC, &
-                         N=N, tagName=tagName )
+       ! If we have not passed the optional fieldList argument, then call
+       ! Get_TagInfo to get the number of tags associated w/ tagID.
+       ! If tagId is a single species (e.g. SpeciesConc_O3), then nTags=1,
+       ! but if tagID is a wildcard (e.g. "ADV"), then nTags will be
+       ! the number of species or fields associated with that wildcard.
+       CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC,             &
+                         nTags=nTags )
 
        ! Trap potential errors
        IF ( RC /= GC_SUCCESS ) THEN
-          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( metaDataId )               // &
-                   ' where tagID is ' // TRIM( tagID      )               // &
-                   '; Abnormal exit from routine "Get_TagInfo"!'       
+          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
+                  '; Abnormal exit from routine "Get_TagInfo", '          // &
+                  'could not get nTags!'
           CALL GC_Error( ErrMsg, RC, ThisLoc )
           RETURN
+       ENDIF
+
+    ENDIF
+
+    !-----------------------------------------------------------------------
+    ! Check that number of tags or fields is consistent with array size
+    !-----------------------------------------------------------------------
+    IF ( nTags /=  SIZE(Ptr2Data,4) ) THEN
+       ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
+                '; number of tags is inconsistent with array size'
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+
+    !-----------------------------------------------------------------------
+    ! Register each tagged name (or field name) as a separate diagnostic
+    !-----------------------------------------------------------------------
+    DO N = 1, nTags        
+
+       IF ( hasFields ) THEN
+
+          ! If we have passed the optional fieldList argument, then this
+          ! is the list of fields that need to be registered.  Use this
+          ! to set the tagName variable for use below.
+          tagName = TRIM( fieldList(N) )
+
+       ELSE
+
+          ! Otherwise, call Get_TagInfo to get the name for each tag.
+          CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC, &
+                            N=N, tagName=tagName )
+
+          ! Trap potential errors
+          IF ( RC /= GC_SUCCESS ) THEN
+             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( metaDataId )            // &
+                      ' where tagID is ' // TRIM( tagID      )            // &
+                      '; Abnormal exit from routine "Get_TagInfo"!'       
+             CALL GC_Error( ErrMsg, RC, ThisLoc )
+             RETURN
+          ENDIF
+
        ENDIF
 
        ! Add the tag name to the diagnostic name and description
@@ -10466,7 +11364,8 @@ CONTAINS
 ! !INTERFACE:
 !
   SUBROUTINE Register_DiagField_R8_2D( am_I_Root, metadataID, Ptr2Data,      &
-                                       State_Chm, State_Diag, RC            )
+                                       State_Chm, State_Diag, RC,            &
+                                       fieldList                            )
 !
 ! !USES:
 !
@@ -10474,17 +11373,16 @@ CONTAINS
 !
 ! !INPUT PARAMETERS:
 !
-    LOGICAL,           INTENT(IN)    :: am_I_Root       ! Root CPU?
-    CHARACTER(LEN=*),  INTENT(IN)    :: metadataID      ! Name
-    REAL(f8),          POINTER       :: Ptr2Data(:,:)   ! pointer to data
-    TYPE(ChmState),    INTENT(IN)    :: State_Chm       ! Obj for chem state
-    TYPE(DgnState),    INTENT(IN)    :: State_Diag      ! Obj for diag state
-!
+    LOGICAL,           INTENT(IN)  :: am_I_Root       ! Root CPU?
+    CHARACTER(LEN=*),  INTENT(IN)  :: metadataID      ! Name
+    REAL(f8),          POINTER     :: Ptr2Data(:,:)   ! pointer to data
+    TYPE(ChmState),    INTENT(IN)  :: State_Chm       ! Obj for chem state
+    TYPE(DgnState),    INTENT(IN)  :: State_Diag      ! Obj for diag state
+    CHARACTER(LEN=*),  OPTIONAL    :: fieldList(:)    ! List of fields
+!                                  
 ! !OUTPUT PARAMETERS:
-!
-    INTEGER,           INTENT(OUT)   :: RC              ! Success/failure
-!
-! !REMARKS:
+!                                  
+    INTEGER,           INTENT(OUT) :: RC              ! Success/failure
 !
 ! !REVISION HISTORY:
 !  20 Sep 2017 - E. Lundgren - Initial version
@@ -10495,20 +11393,26 @@ CONTAINS
 !
 ! !LOCAL VARIABLES:
 !   
-    CHARACTER(LEN=512)     :: ErrMsg
-    CHARACTER(LEN=255)     :: ErrMsg_reg, ThisLoc
-    CHARACTER(LEN=255)     :: desc, units, tagId, tagName
-    CHARACTER(LEN=255)     :: diagName, diagDesc
-    INTEGER                :: N, nTags, rank, type, vloc
-    LOGICAL                :: found
+    ! Strings
+    CHARACTER(LEN=512) :: ErrMsg
+    CHARACTER(LEN=255) :: ErrMsg_reg, ThisLoc
+    CHARACTER(LEN=255) :: desc,       units,    tagId
+    CHARACTER(LEN=255) :: tagName,    diagName, diagDesc
+
+    ! Scalars
+    INTEGER            :: N,          nTags,    rank
+    INTEGER            :: type,       vloc
+    LOGICAL            :: found,      hasFields
 
     !-----------------------------------------------------------------------
     ! Initialize
     !-----------------------------------------------------------------------
-    RC = GC_SUCCESS
-    ThisLoc = ' -> at Register_DiagField_R4_2D (in Headers/state_diag_mod.F90)'
-    ErrMsg  = ''
+    RC         = GC_SUCCESS
+    ThisLoc    =  &
+       ' -> at Register_DiagField_R4_2D (in Headers/state_diag_mod.F90)'
+    ErrMsg     = ''
     ErrMsg_reg = 'Error encountered while registering State_Diag%'
+    hasFields  = PRESENT( fieldList )
 
     !-----------------------------------------------------------------------
     ! Get metadata for this diagnostic
@@ -10541,43 +11445,81 @@ CONTAINS
     !-----------------------------------------------------------------------   
     IF ( tagId /= '' ) THEN
 
-       ! Get number of tags
-       CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC,             &
-                         nTags=nTags )
+       !--------------------------------------------------------------------
+       ! Get number of tags (or passed field names )
+       !--------------------------------------------------------------------
+       IF ( hasFields ) THEN
 
-       ! Trap potential errors
-       IF ( RC /= GC_SUCCESS ) THEN
-          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
-                '; Abnormal exit from routine "Get_TagInfo", could not '  // &
-                ' get nTags!'
-          CALL GC_Error( ErrMsg, RC, ThisLoc )
-          RETURN
-       ENDIF
-       
-       ! Check that number of tags is consistent with array size
-       IF ( nTags /=  SIZE(Ptr2Data,2) ) THEN
-          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
-                '; number of tags is inconsistent with array size'
-          CALL GC_Error( ErrMsg, RC, ThisLoc )
-          RETURN
-       ENDIF
-
-       ! Register each tagged name as a separate diagnostic
-       DO N = 1, nTags   
-
-          ! Get the tag name
-          CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC, &
-                            N=N, tagName=tagName )
-
-          ! Trap potential errors
-          IF ( RC /= GC_SUCCESS ) THEN
-             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( metaDataId ) //            &
-                      ' where tagID is ' // TRIM( tagID      ) //            &
-                      '; Abnormal exit from routine "Get_TagInfo"!'       
+          ! If we have passed the optional fieldList argument, then get
+          ! the number of tags from the size of the fieldList array.
+          nTags = SIZE( fieldList )
+          IF ( nTags < 1 ) THEN
+             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )            // &
+                      '; Could not get nFields from fieldList!'
              CALL GC_Error( ErrMsg, RC, ThisLoc )
              RETURN
           ENDIF
 
+       ELSE       
+
+          ! If we have not passed the optional fieldList argument, then call
+          ! Get_TagInfo to get the number of tags associated w/ tagID.
+          ! If tagId is a single species (e.g. SpeciesConc_O3), then nTags=1,
+          ! but if tagID is a wildcard (e.g. "ADV"), then nTags will be
+          ! the number of species or fields associated with that wildcard.
+          CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC,          &
+                            nTags=nTags )
+
+          ! Trap potential errors
+          IF ( RC /= GC_SUCCESS ) THEN
+             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )            // &
+                      '; Abnormal exit from routine "Get_TagInfo", '      // &
+                      'could not get nTags!'
+             CALL GC_Error( ErrMsg, RC, ThisLoc )
+             RETURN
+          ENDIF
+
+       ENDIF
+
+       !--------------------------------------------------------------------
+       ! Check that number of tags or fields is consistent with array size
+       !--------------------------------------------------------------------
+       IF ( nTags /=  SIZE(Ptr2Data,2) ) THEN
+          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
+                   '; number of tags is inconsistent with array size'
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       !--------------------------------------------------------------------
+       ! Register each tagged name (or field name) as a separate diagnostic
+       !--------------------------------------------------------------------
+       DO N = 1, nTags   
+
+          IF ( hasFields ) THEN
+
+             ! If we have passed the optional fieldList argument, then this
+             ! is the list of fields that need to be registered.  Use this
+             ! to set the tagName variable for use below.
+             tagName = TRIM( fieldList(N) )
+
+          ELSE
+
+             ! Otherwise, call Get_TagInfo to get the name for each tag.
+             CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC, &
+                               N=N, tagName=tagName )
+
+             ! Trap potential errors
+             IF ( RC /= GC_SUCCESS ) THEN
+                ErrMsg = TRIM( ErrMsg_reg ) // TRIM( metaDataId )         // &
+                        ' where tagID is ' // TRIM( tagID      )          // &
+                        '; Abnormal exit from routine "Get_TagInfo"!'       
+                CALL GC_Error( ErrMsg, RC, ThisLoc )
+                RETURN
+             ENDIF
+
+          ENDIF
+             
           ! Add taginfo to diagnostic name and description
           diagName = TRIM( metadataID ) // '_' // TRIM( tagName )
           diagDesc = TRIM( Desc      ) // ' '  // TRIM( tagName )
@@ -10644,7 +11586,8 @@ CONTAINS
 ! !INTERFACE:
 !
   SUBROUTINE Register_DiagField_R8_3D( am_I_Root, metadataID, Ptr2Data,      &
-                                       State_Chm, State_Diag, RC            )
+                                       State_Chm, State_Diag, RC,            &
+                                       fieldList                            )
 !
 ! !USES:
 !
@@ -10652,17 +11595,16 @@ CONTAINS
 !
 ! !INPUT PARAMETERS:
 !
-    LOGICAL,           INTENT(IN)    :: am_I_Root       ! Root CPU?
-    CHARACTER(LEN=*),  INTENT(IN)    :: metadataID      ! Name
-    REAL(f8),          POINTER       :: Ptr2Data(:,:,:) ! pointer to data
-    TYPE(ChmState),    INTENT(IN)    :: State_Chm       ! Obj for chem state
-    TYPE(DgnState),    INTENT(INOUT) :: State_Diag      ! Obj for diag state
+    LOGICAL,           INTENT(IN)  :: am_I_Root       ! Root CPU?
+    CHARACTER(LEN=*),  INTENT(IN)  :: metadataID      ! Name
+    REAL(f8),          POINTER     :: Ptr2Data(:,:,:) ! pointer to data
+    TYPE(ChmState),    INTENT(IN)  :: State_Chm       ! Obj for chem state
+    TYPE(DgnState),    INTENT(IN)  :: State_Diag      ! Obj for diag state
+    CHARACTER(LEN=*),  OPTIONAL    :: fieldList(:)    ! List of fields
 !
 ! !OUTPUT PARAMETERS:
 !
-    INTEGER,           INTENT(OUT)   :: RC              ! Success/failure
-!
-! !REMARKS:
+    INTEGER,           INTENT(OUT) :: RC              ! Success/failure
 !
 ! !REVISION HISTORY:
 !  20 Sep 2017 - E. Lundgren - Initial version
@@ -10673,20 +11615,26 @@ CONTAINS
 !
 ! !LOCAL VARIABLES:
 !   
-    CHARACTER(LEN=512)     :: ErrMsg
-    CHARACTER(LEN=255)     :: ErrMsg_reg, ThisLoc
-    CHARACTER(LEN=255)     :: desc, units, tagID, tagName
-    CHARACTER(LEN=255)     :: diagName, diagDesc
-    INTEGER                :: N, nTags, rank, type,  vloc
-    LOGICAL                :: Found, onEdges
+    ! Strings
+    CHARACTER(LEN=512) :: ErrMsg
+    CHARACTER(LEN=255) :: ErrMsg_reg, ThisLoc
+    CHARACTER(LEN=255) :: desc,       units,    tagID
+    CHARACTER(LEN=255) :: tagName,    diagName, diagDesc
+
+    ! Scalars
+    INTEGER            :: N,          nTags,    rank
+    INTEGER            :: type,       vloc
+    LOGICAL            :: Found,      onEdges,  hasFields
 
     !-----------------------------------------------------------------------
     ! Initialize
     !-----------------------------------------------------------------------
-    RC      = GC_SUCCESS
-    ThisLoc = ' -> at Register_DiagField_R4_3D (in Headers/state_diag_mod.F90)'
-    ErrMsg  = '' 
+    RC         = GC_SUCCESS
+    ThisLoc    =  &
+       ' -> at Register_DiagField_R4_3D (in Headers/state_diag_mod.F90)'
+    ErrMsg     = '' 
     ErrMsg_reg = 'Error encountered while registering State_Diag%'
+    hasFields  = PRESENT( fieldList )
 
     !-----------------------------------------------------------------------
     ! Get metadata for this diagnostic
@@ -10723,41 +11671,78 @@ CONTAINS
     !-----------------------------------------------------------------------
     IF ( tagID /= '' ) THEN
 
-       ! Get the number of tags
-       CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC,             &
+       !--------------------------------------------------------------------
+       ! Get number of tags (or passed fields)
+       !--------------------------------------------------------------------
+       IF ( hasFields ) THEN
+
+          ! If we have passed the optional fieldList argument, then get
+          ! the number of tags from the size of the fieldList array.
+          nTags = SIZE( fieldList )
+          IF ( nTags < 1 ) THEN
+             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )            // &
+                      '; Could not get nFields from fieldList!'
+             CALL GC_Error( ErrMsg, RC, ThisLoc )
+             RETURN
+          ENDIF
+
+       ELSE
+
+          ! If we have not passed the optional fieldList argument, then call
+          ! Get_TagInfo to get the number of tags associated w/ tagID.
+          ! If tagId is a single species (e.g. SpeciesConc_O3), then nTags=1,
+          ! but if tagID is a wildcard (e.g. "ADV"), then nTags will be
+          ! the number of species or fields associated with that wildcard.
+          CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC,          &
                          nTags=nTags )
-
-       ! Trap potential errors
-       IF ( RC /= GC_SUCCESS ) THEN
-          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
-                '; Abnormal exit from routine "Get_TagInfo", could not '  // &
-                'get nTags!'
-          CALL GC_Error( ErrMsg, RC, ThisLoc )
-          RETURN
-       ENDIF
-
-       ! Check that number of tags is consistent with array size
-       IF ( nTags /=  SIZE(Ptr2Data,3) ) THEN
-          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
-                '; number of tags is inconsistent with array size'
-          CALL GC_Error( ErrMsg, RC, ThisLoc )
-          RETURN
-       ENDIF
-
-       ! Register each tagged name as a separate diagnostic
-       DO N = 1, nTags 
-
-          ! Get the tag name
-          CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC, &
-                            N=N, tagName=tagName )
 
           ! Trap potential errors
           IF ( RC /= GC_SUCCESS ) THEN
-             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( metaDataId )            // &
-                      ' where tagID is ' // TRIM( tagID      )            // &
-                      '; Abnormal exit from routine "Get_TagInfo"!'       
+             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )            // &
+                      '; Abnormal exit from routine "Get_TagInfo", '  // &
+                      'could not get nTags!'
              CALL GC_Error( ErrMsg, RC, ThisLoc )
              RETURN
+          ENDIF
+
+       ENDIF
+
+       !--------------------------------------------------------------------
+       ! Check that number of tags or fields is consistent with array size
+       !--------------------------------------------------------------------
+       IF ( nTags /=  SIZE(Ptr2Data,3) ) THEN
+          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
+                   '; number of tags is inconsistent with array size'
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+       !--------------------------------------------------------------------
+       ! Register each tagged name (or field name) as a separate diagnostic
+       !--------------------------------------------------------------------
+       DO N = 1, nTags 
+
+          IF ( hasFields ) THEN
+
+             ! If we have passed the optional fieldList argument, then this
+             ! is the list of fields that need to be registered.  Use this
+             ! to set the tagName variable for use below.
+             tagName = TRIM( fieldList(N) )
+
+          ELSE
+
+              ! Otherwise, call Get_TagInfo to get the name for each tag.
+             CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC, &
+                               N=N, tagName=tagName )
+ 
+             ! Trap potential errors
+             IF ( RC /= GC_SUCCESS ) THEN
+                ErrMsg = TRIM( ErrMsg_reg ) // TRIM( metaDataId )         // &
+                         ' where tagID is ' // TRIM( tagID      )         // &
+                         '; Abnormal exit from routine "Get_TagInfo"!'       
+                CALL GC_Error( ErrMsg, RC, ThisLoc )
+                RETURN
+             ENDIF
           ENDIF
 
           ! Add the tag name to the diagnostic name and description
@@ -10829,7 +11814,8 @@ CONTAINS
 ! !INTERFACE:
 !
   SUBROUTINE Register_DiagField_R8_4D( am_I_Root, metadataID, Ptr2Data,      &
-                                       State_Chm, State_Diag, RC            )
+                                       State_Chm, State_Diag, RC,            &
+                                       fieldList                            )
 !
 ! !USES:
 !
@@ -10837,20 +11823,16 @@ CONTAINS
 !
 ! !INPUT PARAMETERS:
 !
-    LOGICAL,           INTENT(IN)    :: am_I_Root         ! Root CPU?
-    CHARACTER(LEN=*),  INTENT(IN)    :: metadataID        ! Name
-    REAL(f8),          POINTER       :: Ptr2Data(:,:,:,:) ! pointer to data
-    TYPE(ChmState),    INTENT(IN)    :: State_Chm         ! Obj for chem state
-    TYPE(DgnState),    INTENT(IN)    :: State_Diag        ! Obj for diag state
-!
-! !INPUT/OUTPUT PARAMETERS:
-!
+    LOGICAL,           INTENT(IN)  :: am_I_Root         ! Root CPU?
+    CHARACTER(LEN=*),  INTENT(IN)  :: metadataID        ! Name
+    REAL(f8),          POINTER     :: Ptr2Data(:,:,:,:) ! pointer to data
+    TYPE(ChmState),    INTENT(IN)  :: State_Chm         ! Obj for chem state
+    TYPE(DgnState),    INTENT(IN)  :: State_Diag        ! Obj for diag state
+    CHARACTER(LEN=*),  OPTIONAL    :: fieldList(:)      ! List of fields
 !
 ! !OUTPUT PARAMETERS:
 !
-    INTEGER,           INTENT(OUT)   :: RC                ! Success/failure
-!
-! !REMARKS:
+    INTEGER,           INTENT(OUT) :: RC                ! Success/failure
 !
 ! !REVISION HISTORY:
 !  20 Sep 2017 - E. Lundgren - Initial version
@@ -10861,20 +11843,26 @@ CONTAINS
 !
 ! !LOCAL VARIABLES:
 !   
-    CHARACTER(LEN=512)     :: ErrMsg
-    CHARACTER(LEN=255)     :: ErrMsg_reg, ThisLoc
-    CHARACTER(LEN=255)     :: desc, units, tagId, tagName
-    CHARACTER(LEN=255)     :: diagName, diagDesc
-    INTEGER                :: N, nTags, rank, type,  vloc
-    LOGICAL                :: found, onEdges
+    ! Strings
+    CHARACTER(LEN=512) :: ErrMsg
+    CHARACTER(LEN=255) :: ErrMsg_reg, ThisLoc
+    CHARACTER(LEN=255) :: desc,       units,    tagId
+    CHARACTER(LEN=255) :: tagName,    diagName, diagDesc
+
+    ! Scalars
+    INTEGER            :: N,          nTags,    rank
+    INTEGER            :: type,       vloc,     S
+    LOGICAL            :: found,      onEdges,  hasFields
 
     !-----------------------------------------------------------------------
     ! Initialize
     !-----------------------------------------------------------------------
-    RC      = GC_SUCCESS
-    ThisLoc = ' -> at Register_DiagField_R8_4D (in Headers/state_diag_mod.F90)'
-    ErrMsg  = ''
+    RC         = GC_SUCCESS
+    ThisLoc    = &
+         ' -> at Register_DiagField_R8_4D (in Headers/state_diag_mod.F90)'
+    ErrMsg     = ''
     ErrMsg_reg = 'Error encountered while registering State_Diag%'
+    hasFields  = PRESENT( fieldList )
 
     !-----------------------------------------------------------------------
     ! Get metadata for this diagnostic
@@ -10902,44 +11890,80 @@ CONTAINS
        CALL GC_Error( ErrMsg, RC, ThisLoc )
        RETURN
     ENDIF
-    
-    !-----------------------------------------------------------------------
-    ! Assume always tagged. Get number of tags.
-    !-----------------------------------------------------------------------
-    CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC, nTags=nTags   )
 
-    ! Trap potential errors
-    IF ( RC /= GC_SUCCESS ) THEN
-       ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )                  // &
-                '; Abnormal exit from routine "Get_TagInfo", could not '  // &
-                'get nTags!'
-       CALL GC_Error( ErrMsg, RC, ThisLoc )
-       RETURN
+    !-----------------------------------------------------------------------
+    ! Assume always tagged. Get number of tags or (passed fields).
+    !-----------------------------------------------------------------------
+    IF ( hasFields ) THEN
+
+       ! If we have passed the optional fieldList argument, then get
+       ! the number of tags from the size of the fieldList array.
+       nTags = SIZE( fieldList )
+       IF ( nTags < 1 ) THEN
+          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
+                   '; Could not get nFields from fieldList!'
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
+    ELSE
+
+       ! If we have not passed the optional fieldList argument, then call
+       ! Get_TagInfo to get the number of tags associated w/ tagID.
+       ! If tagId is a single species (e.g. SpeciesConc_O3), then nTags=1,
+       ! but if tagID is a wildcard (e.g. "ADV"), then nTags will be
+       ! the number of species or fields associated with that wildcard.
+       CALL Get_TagInfo( am_I_Root, tagId, State_Chm,                        &
+                         Found,     RC,    nTags=nTags )
+
+       ! Trap potential errors
+       IF ( RC /= GC_SUCCESS ) THEN
+          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
+                  '; Abnormal exit from routine "Get_TagInfo", '          // &
+                  'could not get nTags!'
+          CALL GC_Error( ErrMsg, RC, ThisLoc )
+          RETURN
+       ENDIF
+
     ENDIF
 
-    ! Check that number of tags is consistent with array size
+    !-----------------------------------------------------------------------
+    ! Check that number of tags or fields is consistent with array size
+    !-----------------------------------------------------------------------
     IF ( nTags /=  SIZE(Ptr2Data,4) ) THEN
        ErrMsg = TRIM( ErrMsg_reg ) // TRIM( MetadataID )               // &
-             '; number of tags is inconsistent with array size'
+                '; number of tags is inconsistent with array size'
        CALL GC_Error( ErrMsg, RC, ThisLoc )
        RETURN
     ENDIF
 
     !-----------------------------------------------------------------------
-    ! Register each tagged name as a separate diagnostic
+    ! Register each tagged name (or field name) as a separate diagnostic
     !-----------------------------------------------------------------------
     DO N = 1, nTags      
 
-       ! Get the tag name
-       CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC,             &
-                         N=N, tagName=tagName )
-       ! Trap potential errors
-       IF ( RC /= GC_SUCCESS ) THEN
-          ErrMsg = TRIM( ErrMsg_reg ) // TRIM( metaDataId )               // &
-                   ' where tagID is ' // TRIM( tagID      )               // &
-                   '; Abnormal exit from routine "Get_TagInfo"!'       
-          CALL GC_Error( ErrMsg, RC, ThisLoc )
-          RETURN
+       IF ( hasFields ) THEN
+
+          ! If we have passed the optional fieldList argument, then this
+          ! is the list of fields that need to be registered.  Use this
+          ! to set the tagName variable for use below.
+          tagName = TRIM( fieldList(N) )
+
+       ELSE
+
+          ! Otherwise, call Get_TagInfo to get the name for each tag.
+          CALL Get_TagInfo( am_I_Root, tagId, State_Chm, Found, RC,          &
+                            N=N, tagName=tagName )
+
+          ! Trap potential errors
+          IF ( RC /= GC_SUCCESS ) THEN
+             ErrMsg = TRIM( ErrMsg_reg ) // TRIM( metaDataId )            // &
+                      ' where tagID is ' // TRIM( tagID      )            // &
+                      '; Abnormal exit from routine "Get_TagInfo"!'
+             CALL GC_Error( ErrMsg, RC, ThisLoc )
+             RETURN
+          ENDIF
+
        ENDIF
 
        ! Add the tag name to the diagnostic name and description
@@ -11129,5 +12153,190 @@ CONTAINS
 110 FORMAT( a, a                )
 
   END SUBROUTINE Init_RRTMG_Indices
+!EOC
+!EOC
+!------------------------------------------------------------------------------
+!                  GEOS-Chem Global Chemical Transport Model                  !
+!------------------------------------------------------------------------------
+!BOP
+!
+! !IROUTINE: Get_Mapping
+!
+! !DESCRIPTION: Computes a mapping array which contains the index of each
+!  species in its State_Diag array.
+!\\
+!\\
+! !INTERFACE:
+!
+  SUBROUTINE Get_Mapping( am_I_Root,  tagList,    State_Chm, nFields,        &
+                          Map_Fields, uniqFields, RC,        IndFlag        )
+!
+! !USES:
+!   
+    USE CharPak_Mod,   ONLY : CntMat
+    USE CharPak_Mod,   ONLY : Unique
+    USE State_Chm_Mod, ONLY : Ind_
+    USE State_Chm_Mod, ONLY : NumSpecies_
+!
+! !INPUT PARAMETERS:
+!
+    LOGICAL,           INTENT(IN)                :: am_I_Root     ! Root CPU?
+    CHARACTER(LEN=*),  INTENT(IN)                :: tagList(:)    ! List of tags
+    TYPE(ChmState),    INTENT(IN)                :: State_Chm     ! Chem State
+    CHARACTER(LEN=1),  OPTIONAL                  :: IndFlag       ! Ind_ arg.
+!
+! !OUTPUT PARAMETERS:
+!
+    INTEGER,           INTENT(OUT)               :: nFields       ! # species
+    INTEGER, POINTER,  INTENT(OUT)               :: Map_Fields(:) ! Map array
+    CHARACTER(LEN=*),  INTENT(OUT), ALLOCATABLE  :: uniqFields(:) ! Field list
+    INTEGER,           INTENT(OUT)               :: RC            ! Success?
+!
+! !REVISION HISTORY:
+!  23 Jul 2019 - R. Yantosca - Initial version
+!  See the subsequent Git history with the gitk browser!
+!EOP
+!------------------------------------------------------------------------------
+!BOC
+!
+! !LOCAL VARIABLES:
+!
+    ! Scalars
+    LOGICAL            :: Found,     hasIndFlag
+    INTEGER            :: N,         NN,          nMap
+    INTEGER            :: nTags,     nSpc,        S
+    INTEGER            :: Indx
+
+    ! Strings
+    CHARACTER(LEN=31 ) :: spcName
+    CHARACTER(LEN=255) :: ErrMsg,    ThisLoc
+    CHARACTER(LEN=255) :: tagId,     tagName
+
+    ! Arrays
+    CHARACTER(LEN=31)  :: tmpFields(5000)
+    
+    !=======================================================================
+    ! Get_Mapping begins here!
+    !=======================================================================
+
+    ! Initialize
+    RC         = GC_SUCCESS
+    ErrMsg     = ''
+    ThisLoc    = ' -> at Get_Mapping (in module Headers/state_diag_mod.F90)'
+    tmpFields  = ''
+    S          = 0
+    hasIndFlag = PRESENT( IndFlag )
+    nTags      = SIZE( tagList )
+
+    !=======================================================================
+    ! Create a unique list of tags.  Here a "tag" is either a species name
+    ! (e.g. O3, NO, DST1), or a wildcard (e.g. ?ADV?, ?DRY?).
+    ! If the tag is a wildcard, find all of its associated fields.
+    !=======================================================================
+
+    ! Loop over the number of tags in tagList
+    DO N = 1, nTags
+
+       ! Get the tag name.  This will either be the species name 
+       ! (e.g. "NO", "O3"), or a wildcard (e.g. "?ADV?").
+       tagId = TRIM( tagList(N) )
+       
+       ! Test if the tagID is a wilcard
+       IF ( INDEX( tagId, '?' ) > 0 ) THEN
+
+          ! If it is a wildcard, then discard the ? characters
+          tagId = tagId(2:LEN_TRIM(tagId)-1)
+
+          ! Find the number of fields associated with this wildcard
+          CALL Get_TagInfo( am_I_Root, tagId, State_Chm,                    &
+                            Found,     RC,    nTags=nSpc                   )
+
+          ! Trap potential errors
+          IF ( RC /= GC_SUCCESS ) THEN
+             ErrMsg = 'No fields associated with wildcard: '// TRIM( tagID )
+             CALL GC_Error( ErrMsg, RC, ThisLoc )
+             RETURN
+          ENDIF
+
+          ! Loop over the number of species associated with the wildcard
+          DO NN = 1, nSpc
+          
+             ! Find the model ID associated with each species name
+             CALL Get_TagInfo( am_I_Root, tagId, State_Chm,       Found,    &
+                               RC,        N=NN,  tagname=tagName           )
+
+             ! Add the species name to the tmpFields array
+             IF ( Found ) THEN
+                S             = S + 1
+                tmpFields(S) = TRIM( tagName )
+             ENDIF
+             
+          ENDDO
+
+       ELSE
+
+          ! If tagID is not a wildcard, then it will be the species
+          ! name itself.  Add tagId to the tmpFields array.
+          S             = S + 1
+          tmpFields(S) = tagID
+       ENDIF
+    ENDDO
+
+    ! Get the unique list of species
+    ! Also drop off the last element, which is the null space value
+    IF ( ALLOCATED( uniqFields ) ) DEALLOCATE( uniqFields )
+    CALL Unique( tmpFields, uniqFields )
+    nFields = SIZE( UniqFields )
+
+    ! Trap potential errors
+    IF ( nFields < 1 ) THEN
+       ErrMsg = 'Number of unqiue diagnostic fields found is < 1!'
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+
+    !=======================================================================
+    ! Create the mapping array
+    !=======================================================================
+
+    ! Get the number of species of the given type
+    ! found in the species database
+    IF ( hasIndFlag ) THEN
+       nMap = NumSpecies_( State_Chm, IndFlag )
+    ELSE
+       nMap = NumSpecies_( State_Chm          )
+    ENDIF
+
+    ! Trap potential errors
+    IF ( nMap < 1 ) THEN
+       ErrMsg = 'Invalid number of species for IndFlag = ' // TRIM(IndFlag)
+       CALL GC_Error( ErrMsg, RC, ThisLoc )
+       RETURN
+    ENDIF
+
+    ! Initialize the mapping array
+    IF ( ASSOCIATED( Map_Fields ) ) DEALLOCATE( Map_Fields )
+    ALLOCATE( Map_Fields( nMap ), STAT=RC )
+    CALL GC_CheckVar( 'Map_Fields', 0, RC )
+    IF ( RC /= GC_SUCCESS ) RETURN
+    Map_Fields = -1
+
+    ! Loop over the number of unique field names
+    DO S = 1, nFields
+
+       ! Get the index for the given species type
+       ! (e.g. modelId, advectId, drydepId, etc...)
+       IF ( hasIndFlag ) THEN
+          Indx = Ind_( TRIM( uniqFields(S) ), IndFlag )
+       ELSE
+          Indx = Ind_( TRIM( uniqFields(S) )          )
+       ENDIF
+
+       ! Save model ID into mapping array
+       Map_Fields(Indx) = S
+
+    ENDDO
+
+  END SUBROUTINE Get_Mapping
 !EOC
 END MODULE State_Diag_Mod

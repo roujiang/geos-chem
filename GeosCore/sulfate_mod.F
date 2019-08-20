@@ -1697,7 +1697,7 @@
       ! VTS  Settling velocity of particle (m/s)
       LOGICAL                :: IS_UPTAKE_SPC
       INTEGER                :: I,         J,      L
-      INTEGER                :: DryDep_ID
+      INTEGER                :: DryDep_ID, DdChmId
       REAL(fp)               :: DTCHEM
       REAL(fp)               :: DELZ,      DELZ1,  REFF
       REAL(fp)               :: P,         DP,     PDP,      TEMP        
@@ -1775,7 +1775,7 @@
 !$OMP+PRIVATE( I,       J,     L,    VTS,  P,        TEMP, RHB,  RWET ) 
 !$OMP+PRIVATE( RATIO_R, RHO,   DP,   PDP,  CONST,    SLIP, VISC, TC0  )
 !$OMP+PRIVATE( DELZ,    DELZ1, TOT1, TOT2, AREA_CM2, FLUX             )
-!$OMP+PRIVATE( RHO1,    WTP                                           ) 
+!$OMP+PRIVATE( DdChmId, RHO1,  WTP                                    ) 
 !$OMP+SCHEDULE( DYNAMIC )
       DO J = 1, State_Grid%NY
       DO I = 1, State_Grid%NX       
@@ -1998,8 +1998,15 @@
      &               / ( EmMW_g * 1.e-3_fp ) 
      &               / AREA_CM2 
 
-            ! Drydep flux in chemistry only
-            State_Diag%DryDepChm(I,J,DryDep_Id) = FLUX
+            ! For the species with DryDepId, find its slot
+            ! in the State_Diag%DryDepChm diagnostic array
+            DdChmId = State_Diag%Map_DryDepChm(DryDep_Id)
+
+            ! Archive to the diagnostic only if this species was
+            ! listed in HISTORY.rc (individually or via wildcard)
+            IF ( DdChmId > 0 ) THEN
+               State_Diag%DryDepChm(I,J,DryDep_Id) = FLUX
+            ENDIF
          ENDIF
 
       ENDDO ! I

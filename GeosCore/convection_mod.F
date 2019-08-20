@@ -142,68 +142,7 @@
 ! 
 ! !REVISION HISTORY: 
 !  25 May 2005 - S. Wu       - Initial version
-!  08 Feb 2007 - R. Yantosca - Now reference "CMN_SIZE".  Now references 
-!                              CLDMAS, CMFMC, DTRAIN from "dao_mod.f" so that 
-!                              we can pass either GEOS-5 or GEOS-3 meteorology
-!                              to NFCLDMX. 
-!  13 Aug 2010 - R. Yantosca - Added ProTeX headers
-!  13 Aug 2010 - R. Yantosca - Treat MERRA in the same way as for GEOS-5
-!  29 Sep 2010 - R. Yantosca - Now call DO_MERRA_CONVECTION for MERRA met
-!  05 Oct 2010 - R. Yantosca - Now attach diagnostics to MERRA conv routine
-!  06 Oct 2010 - R. Yantosca - Parallelized call to DO_MERRA_CONVECTION
-!  15 Oct 2010 - H. Amos     - Now get BXHEIGHT, T from dao_mod.f
-!  15 Oct 2010 - R. Yantosca - Now get LDYNOCEAN from logical_mod.f
-!  15 Oct 2010 - R. Yantosca - Now get ITS_A_MERCURY_SIM from tracer_mod.f
-!  15 Oct 2010 - R. Yantosca - Now get IDTHg2, IDTHgP from tracerid_mod.f
-!  15 Oct 2010 - R. Yantosca - Now get H2O2s, SO2s from wetscav_mod.f
-!  15 Oct 2010 - H. Amos     - Now pass BXHEIGHT, T, to DO_MERRA_CONVECTION
-!  15 Oct 2010 - R. Yantosca - Now pass H2O2s, SO2s to DO_MERRA_CONVECTION
-!  15 Feb 2011 - R. Yantosca - Add modifications for APM from G. Luo
-!  29 Aug 2011 - R. Yantosca - Bug fix: reposition #if defined(APM) statement
-!  09 Feb 2012 - R. Yantosca - For GEOS-5.7, PFICU and PFLCU fields are
-!                              defined on level edges.  Pass the top edge
-!                              of each level to DO_MERRA_CONVECTION
-!  28 Feb 2012 - R. Yantosca - Removed support for GEOS-3
-!  01 Mar 2012 - R. Yantosca - Now use GET_AREA_M2(I,J,L) from grid_mod.F90
-!  21 Jun 2012 - R. Yantosca - Now use poiners to pass array slices to routines
-!  09 Nov 2012 - M. Payer    - Replaced all met field arrays with State_Met
-!                              derived type object
-!  04 Feb 2013 - S. Kim      - Bug fix: H2O2s, SO2s, STT are not in State_Met
-!  25 Mar 2013 - R. Yantosca - Now accept am_I_Root, Input_Opt, State_Chm, RC
-!  31 May 2013 - R. Yantosca - Now pass objects to NFCLDMX
-!  03 Jun 2013 - R. Yantosca - Bug fix: pass State_Chm to DO_MERRA_CONVECTION
-!  26 Sep 2013 - R. Yantosca - Renamed GEOS_57 Cpp switch to GEOS_FP
-!  17 Apr 2014 - R. Yantosca - Speed up MERRA and GEOS-FP convection by
-!                              adding !$OMP+SCHEDULE( DYNAMIC )
-!  17 Apr 2014 - R. Yantosca - Test if (ND14>0) and (ND38>0) outside OMP loop
-!  18 Apr 2014 - R. Yantosca - Now use a pointer to pass a slice of the
-!                              F array to subroutine COMPUTE_F
-!  18 Apr 2014 - R. Yantosca - Clean up call to DO_MERRA_CONVECTION, remove
-!                              stuff that was leftover from the column code
-!  18 Apr 2014 - R. Yantosca - Now use proper # of tracers for APM in the
-!                              call to DO_MERRA_CONVECTION (MERRA & GEOS-FP)
-!  25 Jun 2014 - R. Yantosca - Now pass Input_Opt to COMPUTE_F
-!  26 Feb 2015 - E. Lundgren - Replace GET_PEDGE with State_Met%PEDGE.
-!                              Remove dependency on pressure_mod
-!  28 Apr 2015 - E. Lundgren - Consolidate NFCLDMX arguments to remove 
-!                              passing State_Met array slice
-!  15 Jun 2015 - E. Lundgren - Now use kg/kg total air as tracer units
-!                              (previously v/v)
-!  10 Aug 2015 - E. Lundgren - Incoming tracer units are now kg/kg dry air
-!  11 Aug 2015 - R. Yantosca - Added support for MERRA2 data
-!  29 Apr 2016 - R. Yantosca - Don't initialize pointers in declaration stmts
-!  30 Jun 2016 - R. Yantosca - Remove instances of STT.  Now get the advected
-!                              species ID from State_Chm%Map_Advect.
-!  06 Jul 2016 - R. Yantosca - Use State_Chm%Map_WetDep to get species ID's
-!  07 Jul 2016 - R. Yantosca - Now dimension DIAG14 and DIAG38 for the #
-!                              of soluble species (State_Chm%nWetDep)
-!  07 Jul 2016 - E. Lundgren - Now use spc kg/kg dry instead of kg/kg total
-!  08 Aug 2016 - R. Yantosca - Remove temporary tracer-removal code
-!  26 Jun 2017 - R. Yantosca - GC_ERROR is now contained in errcode_mod.F90
-!  03 Nov 2017 - R. Yantosca - Now accept State_Diag as an argument
-!  06 Nov 2017 - R. Yantosca - Bug fix: ND14 should use 1..nAdvect species
-!  09 Nov 2017 - R. Yantosca - Return error condition to calling program
-!  27 Aug 2018 - E. Lundgren - Implement budget diagnostics
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -212,7 +151,7 @@
 !
       ! Scalars
       INTEGER            :: N, NA, nAdvect, NW, EC, ISOL
-      INTEGER            :: I, J, L, NN, TS_DYN
+      INTEGER            :: I, J, L, NN, TS_DYN, Id
       REAL(fp)           :: AREA_M2, DT
       LOGICAL            :: DO_ND14, DoConvFlux
       LOGICAL            :: DO_ND38, DoWetLoss
@@ -249,17 +188,30 @@
       ! Convection budget diagnostics - Part 1 of 2
       !----------------------------------------------------------
       IF ( State_Diag%Archive_BudgetConvection ) THEN
+
          ! Get initial column masses
-         CALL Compute_Column_Mass( am_I_Root, Input_Opt,
-     &                          State_Chm, State_Grid, State_Met, 
-     &                          State_Chm%Map_Advect,        
-     &                          State_Diag%Archive_BudgetConvectionFull, 
-     &                          State_Diag%Archive_BudgetConvectionTrop, 
-     &                          State_Diag%Archive_BudgetConvectionPBL,  
-     &                          State_Diag%BudgetMass1, 
-     &                          RC )
+         CALL Compute_Column_Mass(
+     &        am_I_Root   = am_I_Root,
+     &        Input_Opt   = Input_Opt,
+     &        State_Chm   = State_Chm,
+     &        State_Grid  = State_Grid,
+     &        State_Met   = State_Met,
+     &        SpcMapping  = State_Chm%Map_Advect,
+     &        isFull      = State_Diag%Archive_BudgetConvectionFull, 
+     &        SpcMapFull  = State_Diag%Map_BudgetConvectionFull,
+     &        ColMassFull = State_Diag%BudgetMassFull1, 
+     &        isTrop      = State_Diag%Archive_BudgetConvectionTrop, 
+     &        SpcMapTrop  = State_Diag%Map_BudgetConvectionTrop,
+     &        ColMassTrop = State_Diag%BudgetMassTrop1, 
+     &        isPBL       = State_Diag%Archive_BudgetConvectionPBL,  
+     &        SpcMapPBL   = State_Diag%Map_BudgetConvectionPBL, 
+     &        ColMassPBL  = State_Diag%BudgetMassPBL1, 
+     &        RC          = RC                                       )
+
+         ! Trap potential errors
          IF ( RC /= GC_SUCCESS ) THEN
-            ErrMsg = 'Convection budget diagnostics error 1'
+            ErrMsg = 
+     &         'Error encountered in "Compute_Column_Mass" (initial)!'
             CALL GC_Error( ErrMsg, RC, ThisLoc )
             RETURN
          ENDIF
@@ -303,7 +255,7 @@
       ! Loop over advected species
 !$OMP PARALLEL DO
 !$OMP+DEFAULT( SHARED )
-!$OMP+PRIVATE( NA, N, p_FSOL, EC, ISOL )
+!$OMP+PRIVATE( NA, N, p_FSOL, EC, ISOL, Id )
       DO NA = 1, nAdvect
          
          ! Species ID
@@ -342,7 +294,16 @@
          ! Fraction of soluble species lost in convective updrafts
          !--------------------------------------------------------------
          IF ( State_Diag%Archive_WetLossConvFrac .and. ISOL > 0 ) THEN
-            State_Diag%WetLossConvFrac(:,:,:,ISOL) = p_FSOL
+
+            ! For soluble species index ISOL, find its corresponding
+            ! slot in the State_Diag%WetLossConvFrac array
+            Id = State_Diag%Map_WetLossConvFrac(ISOL)
+
+            ! Only archive the species into the diagnostic if it was
+            ! listed in HISTORY.rc (individually or via wildcard)
+            IF ( Id > 0 ) THEN
+               State_Diag%WetLossConvFrac(:,:,:,Id) = p_FSOL
+            ENDIF
          ENDIF
 
          ! Free pointer memory
@@ -367,8 +328,8 @@
 
 !$OMP PARALLEL DO
 !$OMP+DEFAULT( SHARED )
-!$OMP+PRIVATE( J,      I,      AREA_M2, L, F,  EC ) 
-!$OMP+PRIVATE( DIAG14, DIAG38, RC,      N, NA, NW )
+!$OMP+PRIVATE( J,      I,      AREA_M2, L, F,  EC     )
+!$OMP+PRIVATE( DIAG14, DIAG38, RC,      N, NA, NW, Id )
 !$OMP+SCHEDULE( DYNAMIC )
       DO J = 1, State_Grid%NY
       DO I = 1, State_Grid%NX
@@ -453,10 +414,21 @@
          ! NOTE: May be replaced soon with better flux diagnostics
          !--------------------------------------------------------------
          IF ( State_Diag%Archive_CloudConvFlux ) THEN
+
+            ! Loop over advected species
             DO N = 1, State_Chm%nAdvect
-            DO L = 1, State_Grid%NZ
-               State_Diag%CloudConvFlux(I,J,L,N) = Diag14(L,N)
-            ENDDO
+
+               ! For each advected species N, find its corresponding
+               ! slot in the State_Diag%CloudConvFlux array
+               Id = State_Diag%Map_CloudConvFlux(N)
+
+               ! Only archive into the CloudConvFlux diagnostic if this
+               ! species was listed in HISTORY.rc (individually or wildcard)
+               IF ( Id > 0 ) THEN
+                  DO L = 1, State_Grid%NZ
+                     State_Diag%CloudConvFlux(I,J,L,Id) = Diag14(L,N)
+                  ENDDO
+               ENDIF
             ENDDO
          ENDIF
 
@@ -467,10 +439,21 @@
          ! NOTE: May be replaced soon with better flux diagnostics
          !--------------------------------------------------------------
          IF ( State_Diag%Archive_WetLossConv ) THEN
+
+            ! Loop over each soluble species
             DO NW = 1, State_Chm%nWetDep 
-            DO L  = 1, State_Grid%NZ
-               State_Diag%WetLossConv(I,J,L,NW) = Diag38(L,NW)
-            ENDDO
+
+               ! For each soluble species NW, find its corresponding
+               ! slot in the State_Diag%WetLossConv array
+               Id = State_Diag%Map_WetLossConv(NW)
+
+               ! Only archive into the WetLossConv diagnostic if this
+               ! species was listed in HISTORY.rc (individually or wildcard)
+               IF ( Id > 0 ) THEN
+                  DO L  = 1, State_Grid%NZ
+                     State_Diag%WetLossConv(I,J,L,Id) = Diag38(L,NW)
+                  ENDDO
+               ENDIF
             ENDDO
          ENDIF
 
@@ -509,30 +492,61 @@
       ! Convection budget diagnostics - Part 2 of 2
       !----------------------------------------------------------
       IF ( State_Diag%Archive_BudgetConvection ) THEN
-         ! Get final masses and compute diagnostics
-         CALL Compute_Column_Mass( am_I_Root, Input_Opt,
-     &                          State_Chm, State_Grid, State_Met,
-     &                          State_Chm%Map_Advect,        
-     &                          State_Diag%Archive_BudgetConvectionFull, 
-     &                          State_Diag%Archive_BudgetConvectionTrop, 
-     &                          State_Diag%Archive_BudgetConvectionPBL,  
-     &                          State_Diag%BudgetMass2, 
-     &                          RC )       
-         CALL Compute_Budget_Diagnostics( am_I_Root, 
-     &                          State_Grid,
-     &                          State_Chm%Map_Advect,
-     &                          DT_Conv,                                
-     &                          State_Diag%Archive_BudgetConvectionFull, 
-     &                          State_Diag%Archive_BudgetConvectionTrop, 
-     &                          State_Diag%Archive_BudgetConvectionPBL,  
-     &                          State_Diag%BudgetConvectionFull,         
-     &                          State_Diag%BudgetConvectionTrop,          
-     &                          State_Diag%BudgetConvectionPBL,          
-     &                          State_Diag%BudgetMass1,          
-     &                          State_Diag%BudgetMass2,          
-     &                          RC )
+
+         ! Get final column masses
+         CALL Compute_Column_Mass(
+     &        am_I_Root   = am_I_Root,
+     &        Input_Opt   = Input_Opt,
+     &        State_Chm   = State_Chm,
+     &        State_Grid  = State_Grid,
+     &        State_Met   = State_Met,
+     &        SpcMapping  = State_Chm%Map_Advect,
+     &        isFull      = State_Diag%Archive_BudgetConvectionFull,
+     &        SpcMapFull  = State_Diag%Map_BudgetConvectionFull,
+     &        ColMassFull = State_Diag%BudgetMassFull2,
+     &        isTrop      = State_Diag%Archive_BudgetConvectionTrop,
+     &        SpcMapTrop  = State_Diag%Map_BudgetConvectionTrop,
+     &        ColMassTrop = State_Diag%BudgetMassTrop2,
+     &        isPBL       = State_Diag%Archive_BudgetConvectionPBL,
+     &        SpcMapPBL   = State_Diag%Map_BudgetConvectionPBL,
+     &        ColMassPBL  = State_Diag%BudgetMassPBL2,
+     &        RC          = RC                                       )
+
+         ! Trap potential errors
          IF ( RC /= GC_SUCCESS ) THEN
-            ErrMsg = 'Convection budget diagnostics error 2'
+            ErrMsg = 
+     &         'Error encountered in "Compute_Column_Mass" (final)!'
+            CALL GC_Error( ErrMsg, RC, ThisLoc )
+            RETURN
+         ENDIF
+
+         ! Compute convection budgets
+         CALL Compute_Budget_Diagnostics( 
+     &        am_I_Root     = am_I_Root,
+     &        State_Grid    = State_Grid,
+     &        TS            = DT_Conv,
+     &        SpcMapping    = State_Chm%Map_Advect,
+     &        isFull        = State_Diag%Archive_BudgetConvectionFull,
+     &        SpcMapFull    = State_Diag%Map_BudgetConvectionFull,
+     &        diagFull      = State_Diag%BudgetConvectionFull,
+     &        MassInitFull  = State_Diag%BudgetMassFull1,
+     &        MassFinalFull = State_Diag%BudgetMassFull2,
+     &        isTrop        = State_Diag%Archive_BudgetConvectionTrop, 
+     &        SpcMapTrop    = State_Diag%Map_BudgetConvectionTrop,
+     &        diagTrop      = State_Diag%BudgetConvectionTrop,
+     &        MassInitTrop  = State_Diag%BudgetMassTrop1,
+     &        MassFinalTrop = State_Diag%BudgetMassTrop2,
+     &        isPBL         = State_Diag%Archive_BudgetConvectionPBL,  
+     &        SpcMapPBL     = State_Diag%Map_BudgetConvectionPBL,
+     &        diagPBL       = State_Diag%BudgetConvectionPBL,
+     &        MassInitPBL   = State_Diag%BudgetMassPBL1,
+     &        MassFinalPBL  = State_Diag%BudgetMassPBL2,
+     &        RC            = RC                                       )
+
+         ! Trap potential errors
+         IF ( RC /= GC_SUCCESS ) THEN
+            ErrMsg = 
+     &         'Error encountered in "Compute_Budget_Diagnostics"!'
             CALL GC_Error( ErrMsg, RC, ThisLoc )
             RETURN
          ENDIF

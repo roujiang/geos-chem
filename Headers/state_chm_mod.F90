@@ -35,6 +35,7 @@ MODULE State_Chm_Mod
   PUBLIC :: Init_State_Chm
   PUBLIC :: Cleanup_State_Chm
   PUBLIC :: Get_Metadata_State_Chm
+  PUBLIC :: NumSpecies_
   PUBLIC :: Ind_
 !
 ! !PRIVATE MEMBER FUNCTIONS
@@ -3656,9 +3657,90 @@ CONTAINS
 
     ENDDO
 
-    RETURN
-
   END FUNCTION Ind_
+!EOC
+!------------------------------------------------------------------------------
+!                  GEOS-Chem Global Chemical Transport Model                  !
+!------------------------------------------------------------------------------
+!BOP
+!
+! !IROUTINE: NumSpecies_
+!
+! !DESCRIPTION: Function NumSpecies\_ returns the the number of species
+!  found in the species database of a given type (e.g. advected, drydep,
+!  all species, etc.)
+!\\
+!\\
+! !INTERFACE:
+!
+  FUNCTION NumSpecies_( State_Chm, flag ) RESULT( N )
+!
+! !INPUT PARAMETERS:
+!
+    TYPE(ChmState),   INTENT(IN) :: State_Chm   ! Chemistry state object
+    CHARACTER(LEN=*), OPTIONAL   :: flag        ! Species type
+!
+! !RETURN VALUE:
+!
+    INTEGER                      :: N           ! # of species for this type
+!
+! !REMARKS
+!
+! !REVISION HISTORY:
+!  25 Jul 2019 - R. Yantosca - Initial version
+!  See the subsequent Git history with the gitk browser!
+!EOP
+!------------------------------------------------------------------------------
+!BOC
+!
+! !LOCAL VARIABLES:
+!
+    !=====================================================================
+    ! NumSpecies_ begins here!
+    !=====================================================================
+
+    ! Initialize
+    N = -1
+
+    IF ( PRESENT( Flag ) ) THEN
+
+       ! If Flag is passed, then return the number of species
+       ! for the given type found in the species database
+       ! Uses the same flags as in the Ind_ routine
+       SELECT CASE( Flag(1:1) )
+          CASE( 'A', 'a' )
+             N = State_Chm%nAdvect
+          CASE( 'D', 'd' )
+             N = State_Chm%nDryDep
+          CASE( 'F', 'f' )
+             N = State_Chm%nKppFix
+          CASE( 'G', 'g' )
+             N = State_Chm%nGasSpc
+          CASE( 'H', 'h' )
+             N = State_Chm%nHygGrth
+          CASE( 'K', 'k' )
+             N = State_Chm%nKppSpc
+          CASE( 'P', 'p' )
+             N = State_Chm%nPhotol
+          CASE( 'S', 's' )
+             N = State_Chm%nSpecies
+          CASE( 'V', 'v' )
+             N = State_Chm%nKppVar
+          CASE( 'W', 'w' )
+             N = State_Chm%nWetDep
+          CASE DEFAULT
+             N = - 1
+       END SELECT
+
+    ELSE
+
+       ! If Flag is not passed, then assume that the user
+       ! wishes to obtain the total number of species
+       N = State_Chm%nSpecies
+
+    ENDIF
+
+  END FUNCTION NumSpecies_
 !EOC
 !------------------------------------------------------------------------------
 !                  GEOS-Chem Global Chemical Transport Model                  !

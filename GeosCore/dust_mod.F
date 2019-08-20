@@ -871,6 +871,7 @@
 !
 ! !LOCAL VARIABLES:
 !
+      INTEGER                :: DdChmId
       INTEGER                :: I,        J,     L
       INTEGER                :: N,        NA,    ND
       REAL(fp)               :: DT_SETTL, DELZ,  DELZ1
@@ -903,7 +904,6 @@
       ! Pointers
       TYPE(Species), POINTER :: ThisSpc
       REAL(fp),      POINTER :: TC(:,:,:,:)
-
 !
 ! !DEFINED PARAMETERS:
 !      
@@ -926,10 +926,10 @@
 
 !$OMP PARALLEL DO
 !$OMP+DEFAULT( SHARED )
-!$OMP+PRIVATE( I,     J,        L,    N,     DEN,  REFF, DP    )
-!$OMP+PRIVATE( CONST, AREA_CM2, VTS,  TEMP,  P,    PDP,  SLIP  )
-!$OMP+PRIVATE( VISC,  TC0,      DELZ, DELZ1, TOT1, TOT2, FLUX  )
-!$OMP+PRIVATE( NA,    ThisSpc,  ND                             )
+!$OMP+PRIVATE( I,     J,        L,    N,      DEN,  REFF, DP    )
+!$OMP+PRIVATE( CONST, AREA_CM2, VTS,  TEMP,   P,    PDP,  SLIP  )
+!$OMP+PRIVATE( VISC,  TC0,      DELZ, DELZ1,  TOT1, TOT2, FLUX  )
+!$OMP+PRIVATE( NA,    ThisSpc,  ND,   DdChmId                   )
 
       ! Loop over only the advected dust species
       DO NA = Ind0, Ind1
@@ -1087,8 +1087,15 @@
      &                    ThisSpc%emMw_g    ) /
      &                   ( AIRMW * 1.e-3_fp ) / AREA_CM2 
 
-                  ! Drydep flux in chemistry only
-                  State_Diag%DryDepChm(I,J,ND) = FLUX
+                  ! For the species with DryDepId ND, find its slot
+                  ! in the State_Diag%DryDepChm diagnostic array
+                  DdChmId = State_Diag%Map_DryDepChm(ND)
+
+                  ! Archive to the diagnostic only if this species was
+                  ! listed in HISTORY.rc (individually or via wildcard).
+                  IF ( DdChmId > 0 ) THEN
+                     State_Diag%DryDepChm(I,J,DdChmId) = FLUX
+                  ENDIF
                ENDIF
             ENDDO 
          ENDDO    

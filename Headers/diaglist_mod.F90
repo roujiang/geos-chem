@@ -1274,7 +1274,8 @@ CONTAINS
 !\\
 ! !INTERFACE:
 !
-  SUBROUTINE Check_DiagList( am_I_Root, DiagList, substr, found, RC, exact )
+  SUBROUTINE Check_DiagList( am_I_Root, DiagList, substr, found,             &
+                             RC,        exact,    tagList                   )
 !
 ! !USES:
 !
@@ -1282,19 +1283,21 @@ CONTAINS
 !
 ! !INPUT PARAMETERS:
 !
-    LOGICAL,           INTENT(IN)  :: am_I_Root   ! Are we on the root CPU?
-    TYPE(DgnList),     INTENT(IN)  :: DiagList    ! Diagnostic list object
-    CHARACTER(LEN=*),  INTENT(IN)  :: substr      ! Substring
-    LOGICAL,           OPTIONAL    :: exact       ! Force exact name match?
+    LOGICAL,                     INTENT(IN)  :: am_I_Root  ! Is this root core?
+    TYPE(DgnList),               INTENT(IN)  :: DiagList   ! DiagList object
+    CHARACTER(LEN=*),            INTENT(IN)  :: substr     ! Substring
+    LOGICAL,                     OPTIONAL    :: exact      ! Force exact match?
 !
 ! !OUTPUT PARAMETERS:
 !
-    LOGICAL,           INTENT(OUT) :: found       ! Was a match found (T/F)?
-    INTEGER,           INTENT(OUT) :: RC          ! Success or failure?
+    LOGICAL,                     INTENT(OUT) :: found      ! Found a match?
+    INTEGER,                     INTENT(OUT) :: RC         ! Success/failure?
+    CHARACTER(LEN=*),ALLOCATABLE,OPTIONAL    :: tagList(:) ! List of tags
 !
+
 ! !REVISION HISTORY:
 !  22 Sep 2017 - E. Lundgren - Initial version
-!  01 Nov 2017 - R. Yantosca - Now use To_UpperCase from charpak_mod.F90
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -1302,11 +1305,12 @@ CONTAINS
 ! !LOCAL VARIABLES:
 !
     ! Scalars
-    LOGICAL                :: doExactMatch
-    INTEGER                :: matchInd
-    INTEGER                :: matchLen
+    LOGICAL                :: doExactMatch, hasTagList
+    INTEGER                :: matchInd,     matchLen
+    INTEGER                :: nTags,        T
 
     ! Strings
+    CHARACTER(LEN=14)      :: tmpList(5000)
     CHARACTER(LEN=255)     :: thisLoc
     CHARACTER(LEN=255)     :: substr_AllCaps
     CHARACTER(LEN=255)     :: currentName_AllCaps
@@ -1315,9 +1319,17 @@ CONTAINS
     TYPE(DgnItem), POINTER :: current
 
     ! Initialize
-    RC      = GC_SUCCESS
-    thisLoc = ' -> at Check_DiagList (in module Headers/diaglist_mod.F90)'
-    found   = .FALSE.
+    RC         = GC_SUCCESS
+    thisLoc    = ' -> at Check_DiagList (in module Headers/diaglist_mod.F90)'
+    found      = .FALSE.
+
+    ! If we are going to return the optional tagList argument,
+    ! then initialize all related variables (bmy, 7/24/19)
+    hasTagList = PRESENT( tagList )
+    IF ( hasTagList ) THEN
+       T       = 0
+       tmpList = ''
+    ENDIF
 
     ! Get the optional exactMatch argument, whichg determines
     ! if we should force an exact name match or not (bmy, 10/29/18)
@@ -1352,7 +1364,15 @@ CONTAINS
           IF ( ( matchInd == 1                               )   .and.       &
                ( matchLen == LEN_TRIM( currentName_AllCaps ) ) ) THEN
              found = .TRUE.
-             EXIT
+
+             ! If we are looking for the tags, then keep searching the list.
+             ! Otherwise, exit as soon as we have found a match.
+             IF ( hasTagList ) THEN
+                T          = T + 1
+                tmpList(T) = TRIM( current%name(matchLen+1:) )
+             ELSE
+                EXIT
+             ENDIF
           ENDIF
 
        ELSE
@@ -1362,7 +1382,15 @@ CONTAINS
           ! starting from the beginning).
           IF ( matchInd > 0 ) THEN
              found = .TRUE.
-             EXIT
+
+             ! If we are looking for the tags, then keep searching the list.
+             ! Otherwise, exit as soon as we have found a match.
+             IF ( hasTagList ) THEN
+                T          = T + 1
+                tmpList(T) = TRIM( current%name(matchLen+1:) )
+             ELSE
+                EXIT
+             ENDIF
           ENDIF
          
        ENDIF
@@ -1370,6 +1398,17 @@ CONTAINS
        ! Move to next diagnostic in the linked list
        current => current%next    
     ENDDO
+
+    ! If tagList is passed as an optional argument,
+    ! then allocate it to the size of the # of tags found
+    IF ( hasTagList ) THEN
+       IF ( ALLOCATED( tagList ) ) DEALLOCATE( tagList )
+       ALLOCATE( tagList(T), STAT=RC )
+       CALL GC_CheckVar( 'tagList', 0, RC )
+       IF ( RC /= GC_SUCCESS ) RETURN
+       tagList(1:T)  = tmpList(1:T)
+       tagList(T+1:) = ''
+    ENDIF
 
     ! Free pointer
     current => NULL()

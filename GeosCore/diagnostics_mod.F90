@@ -98,7 +98,7 @@ CONTAINS
 ! !LOCAL VARIABLES:
 !
     ! Scalars
-    INTEGER                 :: I, J, L, N
+    INTEGER                 :: I, J, L, N, D
     REAL(fp)                :: ToPptv
 
     ! SAVEd scalars
@@ -155,16 +155,26 @@ CONTAINS
     ! Set total dry deposition flux
     !-----------------------------------------------------------------------
     IF ( State_Diag%Archive_DryDep ) THEN
-       !$OMP PARALLEL DO          &
-       !$OMP DEFAULT( SHARED  )   &
-       !$OMP PRIVATE( I, J, N )
+       !$OMP PARALLEL DO            &
+       !$OMP DEFAULT( SHARED      ) &
+       !$OMP PRIVATE( I, J, N, D  ) &
+       !$OMP SCHEDULE( DYNAMIC, 2 )
        DO N = 1, State_Chm%nDryDep
-       DO J = 1, State_Grid%NY
-       DO I = 1, State_Grid%NX
-          State_Diag%DryDep(I,J,N) = State_Diag%DryDepChm(I,J,N)             &
-                                   + State_Diag%DryDepMix(I,J,N)
-       ENDDO
-       ENDDO
+
+          ! Find the slot of the State_Diag%DryDep array
+          ! corresponding to drydep species N.
+          D = State_Diag%Map_Drydep(N)
+
+          ! Archive into the diagnostic array if species D was listed
+          ! in HISTORY.rc (either individually or via wildcard).
+          IF ( D > 0 ) THEN
+             DO J = 1, State_Grid%NY
+             DO I = 1, State_Grid%NX
+                State_Diag%DryDep(I,J,D) = State_Diag%DryDepChm(I,J,D)       &
+                                         + State_Diag%DryDepMix(I,J,D)
+             ENDDO
+             ENDDO
+          ENDIF
        ENDDO
        !$OMP END PARALLEL DO
     ENDIF
@@ -485,7 +495,7 @@ CONTAINS
 !
     ! Scalars
     LOGICAL            :: Found
-    INTEGER            :: D, I, J, L, N
+    INTEGER            :: D, I, J, L, N, S
     REAL(fp)           :: TmpVal, Conv
 
     ! Strings
@@ -519,9 +529,9 @@ CONTAINS
     !=======================================================================
     ! Copy species concentrations to diagnostic arrays [v/v dry]
     !=======================================================================
-    !$OMP PARALLEL DO           &
-    !$OMP DEFAULT( SHARED     ) &
-    !$OMP PRIVATE( I, J, L, N )
+    !$OMP PARALLEL DO              &
+    !$OMP DEFAULT( SHARED        ) &
+    !$OMP PRIVATE( I, J, L, N, S )
     DO N = 1, State_Chm%nSpecies
     DO L = 1, State_Grid%NZ
     DO J = 1, State_Grid%NY
@@ -537,7 +547,10 @@ CONTAINS
        ! then comment this IF block out and then also uncomment the IF block
        ! in the main routine above where Set_SpcConc_Diagnostic is called.
        IF ( State_Diag%Archive_SpeciesConc ) THEN
-          State_Diag%SpeciesConc(I,J,L,N) = State_Chm%Species(I,J,L,N)
+          S = State_Diag%Map_SpeciesConc(N)
+          IF ( S > 0 ) THEN
+             State_Diag%SpeciesConc(I,J,L,S) = State_Chm%Species(I,J,L,N)
+          ENDIF
        ENDIF
 
        ! Species concentrations for restart file [v/v dry]
@@ -646,10 +659,12 @@ CONTAINS
 !\\
 ! !INTERFACE:
 !
-  SUBROUTINE Compute_Column_Mass( am_I_Root,  Input_Opt,  State_Chm,       &
-                                  State_Grid, State_Met,  SpcMap,          &
-                                  isFull,     isTrop,     isPBL,           &
-                                  ColMass,    RC      ) 
+  SUBROUTINE Compute_Column_Mass( am_I_Root,  Input_Opt,  State_Chm,        &
+                                  State_Grid, State_Met,  SpcMapping,       &
+                                  isFull,     SpcMapFull, ColMassFull,      &
+                                  isTrop,     SpcMapTrop, ColMassTrop,      &
+                                  isPBL,      SpcMapPBL,  ColMassPBL,       &
+                                  RC                                       )
 !
 ! !USES:
 !
@@ -666,17 +681,20 @@ CONTAINS
     TYPE(OptInput), INTENT(IN)    :: Input_Opt        ! Input options object
     TYPE(GrdState), INTENT(IN)    :: State_Grid       ! Grid state object
     TYPE(MetState), INTENT(IN)    :: State_Met        ! Meteorology state object
-    INTEGER,        POINTER       :: SpcMap(:)        ! Map to species indexes
+    INTEGER,        POINTER       :: SpcMapping(:)    ! Mapping
+    INTEGER,        POINTER       :: SpcMapFull(:)    ! Map to species indexes
+    INTEGER,        POINTER       :: SpcMapTrop(:)    ! Map to species indexes
+    INTEGER,        POINTER       :: SpcMapPBL (:)    ! Map to species indexes
     LOGICAL,        INTENT(IN)    :: isFull           ! True if full col diag on
     LOGICAL,        INTENT(IN)    :: isTrop           ! True if trop col diag on
     LOGICAL,        INTENT(IN)    :: isPBL            ! True if PBL col diag on
 !
 ! !INPUT/OUTPUT PARAMETERS:
 !
-    TYPE(ChmState), INTENT(INOUT) :: State_Chm        ! Chemistry state obj
-    REAL(f8),       POINTER       :: colMass(:,:,:,:) ! column masses 
-                                                      ! (I,J,spc,col region)
-                                                      ! 1:full, 2:trop, 3:pbl
+    TYPE(ChmState), INTENT(INOUT) :: State_Chm          ! Chemistry state obj
+    REAL(f8),       POINTER       :: colMassFull(:,:,:)
+    REAL(f8),       POINTER       :: colMassTrop(:,:,:)
+    REAL(f8),       POINTER       :: colMassPBL (:,:,:)
 !
 ! !OUTPUT PARAMETERS:
 !
@@ -686,6 +704,7 @@ CONTAINS
 !
 ! !REVISION HISTORY: 
 !  28 Aug 2018 - E. Lundgren - Initial version
+!  See the subsequent Git history with the gitk browser!
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -693,7 +712,7 @@ CONTAINS
 ! !LOCAL VARIABLES:
 !
     CHARACTER(LEN=255)  :: ErrMsg, ThisLoc
-    INTEGER             :: I, J, L, M, N, numSpc, region, PBL_TOP
+    INTEGER             :: I, J, L, M, N, C, numSpc, region, PBL_TOP
     REAL*8, ALLOCATABLE :: SpcMass(:,:,:,:)    
 
     !====================================================================
@@ -701,10 +720,13 @@ CONTAINS
     !====================================================================
 
     ! Initialize
-    RC      =  GC_SUCCESS
-    ThisLoc = ' -> Compute_Column_Mass ' // ModLoc
-    numSpc = SIZE(SpcMap)
-    colMass = 0.0_f8
+    RC          =  GC_SUCCESS
+    ThisLoc     = ' -> Compute_Column_Mass ' // ModLoc
+    numSpc      = SIZE(SpcMapping)
+    colMass     = 0.0_f8
+    colMassFull = 0.0_f8
+    colMassTrop = 0.0_f8
+    colMassPBL  = 0.0_f8
 
     ! Get concentrations in units of kg. Incoming units should be kg/kg dry.
     IF (State_Chm%Spc_Units == 'kg/kg dry' ) THEN
@@ -732,52 +754,84 @@ CONTAINS
 
     ! Full column
     IF ( isFull ) THEN
-       region = 1
-       !$OMP PARALLEL DO        &
-       !$OMP DEFAULT( SHARED )  &
-       !$OMP PRIVATE( I, J, M, N )
+       !$OMP PARALLEL DO              &
+       !$OMP DEFAULT( SHARED        ) &
+       !$OMP PRIVATE( I, J, M, N, C )
        DO M = 1, numSpc
-       DO J = 1, State_Grid%NY
-       DO I = 1, State_Grid%NX
-          N = SpcMap(M)
-          colMass(I,J,N,region) = SUM(SpcMass(I,J,:,M))
-       ENDDO
-       ENDDO
+
+          ! Get the species index
+          N = SpcMapping(M)
+
+          ! Find the corresponding slot in ColMassFull
+          C = SpcMapFull(N)
+          
+          ! Only save into the diagnostic if this species is  listed 
+          ! in the HISTORY.rc file (individually or via wildcard)
+          IF ( C > 0 ) THEN 
+             DO J = 1, State_Grid%NY
+             DO I = 1, State_Grid%NX
+                colMassFull(I,J,C) = SUM( SpcMass(I,J,:,N) )
+             ENDDO
+             ENDDO
+          ENDIF
        ENDDO
        !$OMP END PARALLEL DO
     ENDIF
     
     ! Troposphere
     IF ( isTrop ) THEN
-       region = 2
-       !$OMP PARALLEL DO        &
-       !$OMP DEFAULT( SHARED )  &
-       !$OMP PRIVATE( I, J, M, N )
+       !$OMP PARALLEL DO              &
+       !$OMP DEFAULT( SHARED        ) &
+       !$OMP PRIVATE( I, J, M, N, C )
        DO M = 1, numSpc
-       DO J = 1, State_Grid%NY
-       DO I = 1, State_Grid%NX
-          N = SpcMap(M)
-          colMass(I,J,N,region) = SUM(SpcMass(I,J,1:State_Met%TropLev(I,J),M))
-       ENDDO
-       ENDDO
+
+          ! Get the species index
+          N = SpcMapping(M)
+
+          ! Find the corresponding slot in ColMassFull
+          C = SpcMapTrop(N)
+
+          ! Only save into the diagnostic if this species is  listed 
+          ! in the HISTORY.rc file (individually or via wildcard)
+          IF ( C > 0 ) THEN
+             DO J = 1, State_Grid%NY
+             DO I = 1, State_Grid%NX
+                colMassTrop(I,J,C) =    &
+                     SUM( SpcMass(I,J,1:State_Met%TropLev(I,J),N) )
+             ENDDO
+             ENDDO
+          ENDIF
        ENDDO
        !$OMP END PARALLEL DO
     ENDIF
     
     ! PBL
     IF ( isPBL ) THEN
-       region = 3
-       !$OMP PARALLEL DO        &
-       !$OMP DEFAULT( SHARED )  &
-       !$OMP PRIVATE( I, J, M, N )
+       !$OMP PARALLEL DO                       &
+       !$OMP DEFAULT( SHARED                 ) &
+       !$OMP PRIVATE( I, J, M, N, C, PBL_TOP )
        DO M = 1, numSpc
-       DO J = 1, State_Grid%NY
-       DO I = 1, State_Grid%NX
-          N = SpcMap(M)
-          PBL_TOP = MAX( 1, FLOOR( State_Met%PBL_TOP_L(I,J) ) )
-          colMass(I,J,N,region) = SUM(SpcMass(I,J,1:PBL_TOP,M))
-       ENDDO
-       ENDDO
+
+          ! Get the species index
+          N = SpcMapping(M)
+
+          ! Find the corresponding slot in ColMassFull
+          C = SpcMapPBL(N)
+
+          ! Only save into the diagnostic if this species is  listed 
+          ! in the HISTORY.rc file (individually or via wildcard)
+          IF ( C > 0 ) THEN
+             DO J = 1, State_Grid%NY
+             DO I = 1, State_Grid%NX
+
+                ! Get the top PBL level
+                PBL_TOP = MAX( 1, FLOOR( State_Met%PBL_TOP_L(I,J) ) )
+
+                ! Sum up to the PBL levle
+                colMassPBL(I,J,C) = SUM( SpcMass(I,J,1:PBL_TOP,N) )
+             ENDDO
+             ENDDO
+          ENDIF
        ENDDO
        !$OMP END PARALLEL DO
     ENDIF
@@ -802,13 +856,16 @@ CONTAINS
 !\\
 ! !INTERFACE:
 !
-  SUBROUTINE Compute_Budget_Diagnostics( am_I_Root,    State_Grid, &
-                                         SpcMap,       TS,         &
-                                         isFull,       isTrop,     &
-                                         isPBL,        diagFull,   &
-                                         diagTrop,     diagPBL,    & 
-                                         mass_initial, mass_final, &
-                                         RC ) 
+  SUBROUTINE Compute_Budget_Diagnostics( am_I_Root,     State_Grid,          &
+                                         TS,            SpcMapping,          &
+                                         isFull,        SpcMapFull,          &
+                                         diagFull,      MassInitFull,        &
+                                         MassFinalFull, isTrop,              &
+                                         SpcMapTrop,    diagTrop,            &
+                                         MassInitTrop,  MassFinalTrop,       &
+                                         isPBL,         SpcMapPBL,           &
+                                         diagPBL,       MassInitPBl,         &
+                                         MassFinalPBL,  RC                  )
 !
 ! !USES:
 !
@@ -818,19 +875,26 @@ CONTAINS
 !
     LOGICAL,        INTENT(IN)  :: am_I_Root       ! Are we on the root CPU?
     TYPE(GrdState), INTENT(IN)  :: State_Grid      ! Grid State object
-    INTEGER,        POINTER     :: SpcMap(:)       ! Map to species indexes
     REAL(fp),       INTENT(IN)  :: TS              ! timestep [s]
     LOGICAL,        INTENT(IN)  :: isFull          ! True if full col diag on
     LOGICAL,        INTENT(IN)  :: isTrop          ! True if trop col diag on
     LOGICAL,        INTENT(IN)  :: isPBL           ! True if PBL col diag on
+    INTEGER,        POINTER     :: SpcMapping(:)
+    INTEGER,        POINTER     :: SpcMapFull(:)   ! Map to species indexes
+    INTEGER,        POINTER     :: SpcMapTrop(:)   ! Map to species indexes
+    INTEGER,        POINTER     :: SpcMapPBL (:)   ! Map to species indexes
 !
 ! !INPUT/OUTPUT PARAMETERS:
 !
-    REAL(f8),       TARGET      :: diagFull(:,:,:)       ! ptr to full col diag
-    REAL(f8),       TARGET      :: diagTrop(:,:,:)       ! ptr to trop col diag 
-    REAL(f8),       TARGET      :: diagPBL(:,:,:)        ! ptr to pbl col diag
-    REAL(f8),       POINTER     :: mass_initial(:,:,:,:) ! ptr to initial mass
-    REAL(f8),       POINTER     :: mass_final(:,:,:,:)   ! ptr to final mass
+    REAL(f8),       TARGET      :: diagFull     (:,:,:) ! ptr to full col diag
+    REAL(f8),       TARGET      :: diagTrop     (:,:,:) ! ptr to trop col diag 
+    REAL(f8),       TARGET      :: diagPBL      (:,:,:) ! ptr to pbl col diag
+    REAL(f8),       TARGET      :: MassInitFull (:,:,:) !
+    REAL(f8),       TARGET      :: MassFinalFull(:,:,:) !
+    REAL(f8),       TARGET      :: MassInitTrop (:,:,:) !
+    REAL(f8),       TARGET      :: MassFinalTrop(:,:,:) !
+    REAL(f8),       TARGET      :: MassInitPBL  (:,:,:) !
+    REAL(f8),       TARGET      :: MassFinalPBL (:,:,:) !
 !
 ! !OUTPUT PARAMETERS:
 !
@@ -846,10 +910,19 @@ CONTAINS
 !
 ! !LOCAL VARIABLES:
 !
-    INTEGER            :: I, J, M, N, R, numSpc, numRegions
-    CHARACTER(LEN=255) :: ErrMsg, ThisLoc
+    ! Scalars
+    INTEGER            :: I, J, M, N, R, C, numSpc, numRegions
     LOGICAL            :: setDiag
-    REAL(f8), POINTER  :: ptr3d(:,:,:)
+
+    ! Strings
+    CHARACTER(LEN=255) :: ErrMsg, ThisLoc
+
+    ! Pointers
+    INTEGER,  POINTER  :: SpcMap   (:    )   ! Map to species indexes
+    REAL(f8), POINTER  :: ptr3d    (:,:,:)
+    REAL(f8), POINTER  :: massInit (:,:,:)
+    REAL(f8), POINTER  :: massFinal(:,:,:)
+
 
     !====================================================================
     ! Compute_Budget_Diagnostics begins here!
@@ -858,7 +931,7 @@ CONTAINS
     ! Initialize
     RC         =  GC_SUCCESS
     ThisLoc    = ' -> Compute_Budget_Diagnostics ' // ModLoc
-    numSpc     = SIZE(SpcMap)
+    numSpc     = SIZE(SpcMapping)
     numRegions = 3
     ptr3d      => NULL()
 
@@ -867,14 +940,23 @@ CONTAINS
        setDiag = .FALSE.    
        SELECT CASE ( R )
           CASE ( 1 )
-             ptr3d => diagFull
-             setDiag = isFull
+             setDiag   =  isFull
+             ptr3d     => diagFull
+             SpcMap    => SpcMapFull
+             massInit  => MassInitFull
+             massFinal => MassFinalFull
           CASE ( 2 )
-             ptr3d => diagTrop
-             setDiag = isTrop
+             setDiag   =  isTrop
+             ptr3d     => diagTrop
+             SpcMap    => SpcMapTrop
+             massInit  => MassInitTrop
+             massFinal => MassFinalTrop
           CASE ( 3 )
-             ptr3d => diagPBL
-             setDiag = isPBL 
+             setDiag   =  isPBL 
+             ptr3d     => diagPBL
+             SpcMap    => SpcMapPBL 
+             massInit  => MassInitPBL
+             massFinal => MassFinalPBL
           CASE DEFAULT
              ErrMsg = 'Region not defined for budget diagnostics'
              CALL GC_Error( ErrMsg, RC, ThisLoc )
@@ -888,32 +970,46 @@ CONTAINS
        ! to also update the budget diagnostic metadata in state_diag_mod.F90
        ! within subroutine Get_Metadata_State_Diag. If you wish to output 
        ! different units, e.g. kg/m2/s instead of kg/s, update the metadata 
-       ! and also the unit string in the unit conversion call above in subroutine 
-       ! Compute_Column_Mass. (ewl, 9/26/18)
+       ! and also the unit string in the unit conversion call above in 
+       ! subroutine Compute_Column_Mass. (ewl, 9/26/18)
        IF ( setDiag ) THEN
-          !$OMP PARALLEL DO        &
-          !$OMP DEFAULT( SHARED )  &
-          !$OMP PRIVATE( I, J, M, N )
+          !$OMP PARALLEL DO              &
+          !$OMP DEFAULT( SHARED        ) &
+          !$OMP PRIVATE( I, J, M, N, C )
           DO M = 1, numSpc
-          DO J = 1, State_Grid%NY
-          DO I = 1, State_Grid%NX
-             N  = SpcMap(M)
-             ptr3d(I,J,M) =   &
-                   ( mass_final(I,J,N,R) - mass_initial(I,J,N,R) ) / TS
-          ENDDO
-          ENDDO
+
+             ! Get the species ID
+             N = SpcMapping(M)
+             
+             ! Find the corresponding slot in the diagnostic
+             C = SpcMap(N)
+
+             ! Update the diagnostic
+             IF ( C > 0 ) THEN 
+                DO J = 1, State_Grid%NY
+                DO I = 1, State_Grid%NX
+                   ptr3d(I,J,C) = ( massFinal(I,J,C) - massInit(I,J,C) ) / TS
+                ENDDO
+                ENDDO
+             ENDIF
           ENDDO
           !$OMP END PARALLEL DO
        ENDIF
 
-       ! Free pointer
-       ptr3d => NULL()
-
+       ! Free pointers
+       ptr3d     => NULL()
+       SpcMap    => NULL()
+       MassInit  => NULL()
+       MassFinal => NULL()
     ENDDO
        
     ! Zero the mass arrays now that diagnostics are set
-    mass_initial = 0.0_f8
-    mass_final   = 0.0_f8
+    MassInitFull  = 0.0_f8
+    MassFinalFull = 0.0_f8
+    MassInitTrop  = 0.0_f8
+    MassFinalTrop = 0.0_f8
+    MassInitPBL   = 0.0_f8
+    MassFinalPBL  = 0.0_f8
 
   END SUBROUTINE Compute_Budget_Diagnostics
 !EOC

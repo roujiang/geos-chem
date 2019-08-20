@@ -433,7 +433,7 @@
 ! !LOCAL VARIABLES:
 !
       ! Scalars
-      INTEGER            :: I,   J,   L,   D,   N,  NDVZ,  A
+      INTEGER            :: I,   J,   L,   D,   N,  NDVZ,  A, DV
       REAL(f8)           :: DVZ, THIK
       CHARACTER(LEN=255) :: ErrMsg,  ThisLoc
 
@@ -512,7 +512,7 @@
       !=================================================================
 !$OMP PARALLEL DO
 !$OMP+DEFAULT( SHARED )
-!$OMP+PRIVATE( I, J, THIK, D, N, NDVZ, DVZ, SpcInfo, A )
+!$OMP+PRIVATE( I, J, THIK, D, N, NDVZ, DVZ, SpcInfo, A, DV )
       DO J = 1, State_Grid%NY
       DO I = 1, State_Grid%NX
 
@@ -532,6 +532,9 @@
 
             ! GEOS-CHEM species number
             N       =  State_Chm%Map_DryDep(D)
+
+            ! DryDepVel archival index
+            DV     = 0
 
             ! Get info about this species from the database
             SpcInfo => State_Chm%SpcData(N)%Info
@@ -649,7 +652,10 @@
 
             ! Archive dry dep velocity [cm/s]
             IF ( State_Diag%Archive_DryDepVel ) THEN
-               State_Diag%DryDepVel(I,J,D) = DVZ
+               DV = State_Diag%Map_DryDepVel(D)
+               IF ( DV > 0 ) THEN
+                  State_Diag%DryDepVel(I,J,DV) = DVZ
+               ENDIF
             ENDIF
 
             ! Archive dry dep velocity [cm/s] only for those species
