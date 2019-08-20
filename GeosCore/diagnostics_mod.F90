@@ -723,7 +723,6 @@ CONTAINS
     RC          =  GC_SUCCESS
     ThisLoc     = ' -> Compute_Column_Mass ' // ModLoc
     numSpc      = SIZE(SpcMapping)
-    colMass     = 0.0_f8
     colMassFull = 0.0_f8
     colMassTrop = 0.0_f8
     colMassPBL  = 0.0_f8
@@ -744,7 +743,7 @@ CONTAINS
     DO L = 1, State_Grid%NZ
     DO J = 1, State_Grid%NY
     DO I = 1, State_Grid%NX
-       N = SpcMap(M)
+       N = SpcMapping(M)
        SpcMass(I,J,L,M) = State_Chm%Species(I,J,L,N) * State_Met%AD(I,J,L)
     ENDDO
     ENDDO
