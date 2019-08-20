@@ -985,10 +985,11 @@ CONTAINS
           !$OMP END PARALLEL DO
        ENDIF
 
-       ! Free pointer
-       ptr3d =>  NULL()
-       SpcMap => NULL()
-
+       ! Free pointers
+       ptr3d     => NULL()
+       SpcMap    => NULL()
+       MassInit  => NULL()
+       MassFinal => NULL()
     ENDDO
        
     ! Zero the mass arrays now that diagnostics are set

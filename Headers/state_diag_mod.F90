@@ -20,7 +20,7 @@
 MODULE State_Diag_Mod
 !
 ! USES:
-
+!
   USE CMN_Size_Mod,    ONLY : NDUST
   USE DiagList_Mod
   USE ErrCode_Mod
@@ -2052,6 +2052,7 @@ CONTAINS
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
 
        ! Get the number of species and the mapping array
+       ! NOTE: Use IndFlag='A' to be consistent with other budgets
        CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
                          State_Diag%Map_BudgetChemistryPBL,                 &  
                          fieldList,  RC,      IndFlag='A'                   )
@@ -2096,9 +2097,10 @@ CONTAINS
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
 
        ! Get the number of species and the mapping array
+       ! NOTE: Use IndFlag='A' to be consistent with other budgets
        CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
                          State_Diag%Map_BudgetWetDepFull,                    &  
-                         fieldList,  RC,      IndFlag='W'                   )
+                         fieldList,  RC,      IndFlag='A'                   )
        IF ( RC /= GC_SUCCESS ) THEN
           ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
           CALL GC_Error( ErrMsg, RC, ThisLoc )
@@ -2133,7 +2135,7 @@ CONTAINS
        ! Get the number of species and the mapping array
        CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
                          State_Diag%Map_BudgetWetDepTrop,                    &  
-                         fieldList,  RC,      IndFlag='W'                   )
+                         fieldList,  RC,      IndFlag='A'                   )
        IF ( RC /= GC_SUCCESS ) THEN
           ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
           CALL GC_Error( ErrMsg, RC, ThisLoc )
@@ -2166,9 +2168,10 @@ CONTAINS
        IF ( am_I_Root ) WRITE(6,20) ADJUSTL( arrayID ), TRIM( diagID )
 
        ! Get the number of species and the mapping array
+       ! NOTE: Use IndFlag='A' to be consistent with other budgets
        CALL Get_Mapping( am_I_Root, tagList,  State_Chm, nFields,            &
                          State_Diag%Map_BudgetWetDepPBL,                    &  
-                         fieldList,  RC,      IndFlag='W'                   )
+                         fieldList,  RC,      IndFlag='A'                   )
        IF ( RC /= GC_SUCCESS ) THEN
           ErrMsg = 'Error in call to GET_MAPPING for: ' // TRIM( arrayId )
           CALL GC_Error( ErrMsg, RC, ThisLoc )
@@ -7128,35 +7131,59 @@ CONTAINS
     !=======================================================================
     IF ( State_Diag%Archive_Budget ) THEN
 
+       !--------------------
        ! Full column
+       !--------------------
        nFields = MAX( nEmisDryDepFull, nTransportFull, nMixingFull,          &
                       nConvectionFull, nChemistryFull, nWetDepFull          )
 
        IF ( nFields > 0 ) THEN
-          ALLOCATE( State_Diag%BudgetMassFull1(IM, JM, nFields ), STAT=RC )
-          ALLOCATE( State_Diag%BudgetMassFull2(IM, JM, nFields ), STAT=RC )
+          ALLOCATE( State_Diag%BudgetMassFull1( IM, JM, nFields ), STAT=RC )
+          CALL GC_CheckVar( 'State_Diag%BudgetMassFull1', 0, RC )
+          IF ( RC /= GC_SUCCESS ) RETURN
+          State_Diag%BudgetMassFull1 = 0.0_f8
+          
+          ALLOCATE( State_Diag%BudgetMassFull2( IM, JM, nFields ), STAT=RC )
+          CALL GC_CheckVar( 'State_Diag%BudgetMassFull2', 0, RC )
+          IF ( RC /= GC_SUCCESS ) RETURN
+          State_Diag%BudgetMassFull2 = 0.0_f8
        ENDIF
 
+       !--------------------
        ! Trop column
+       !--------------------
        nFields = MAX( nEmisDryDepTrop, nTransportTrop, nMixingTrop,          &
                       nConvectionTrop, nChemistryTrop, nWetDepTrop          )
 
        IF ( nFields > 0 ) THEN
-          ALLOCATE( State_Diag%BudgetMassTrop1(IM, JM, nFields ), STAT=RC )
-          ALLOCATE( State_Diag%BudgetMassTrop2(IM, JM, nFields ), STAT=RC )
-       ENDIF
+          ALLOCATE( State_Diag%BudgetMassTrop1( IM, JM, nFields ), STAT=RC )
+          CALL GC_CheckVar( 'State_Diag%BudgetMassTrop1', 0, RC )
+          IF ( RC /= GC_SUCCESS ) RETURN
+          State_Diag%BudgetMassFull1 = 0.0_f8
 
+          ALLOCATE( State_Diag%BudgetMassTrop2( IM, JM, nFields ), STAT=RC )
+          CALL GC_CheckVar( 'State_Diag%BudgetMassTrop2', 0, RC )
+          IF ( RC /= GC_SUCCESS ) RETURN
+          State_Diag%BudgetMassTrop2 = 0.0_f8
+       ENDIF
+ 
+       !--------------------
        ! PBL column
+       !--------------------
        nFields = MAX( nEmisDryDepFull, nTransportFull, nMixingFull,          &
                       nConvectionFull, nChemistryFull, nWetDepFull          )
 
        IF ( nFields > 0 ) THEN
-          ALLOCATE( State_Diag%BudgetMassPBL1(IM, JM, nFields ), STAT=RC)
-          ALLOCATE( State_Diag%BudgetMassPBL2(IM, JM, nFields ), STAT=RC)
-       ENDIF
+          ALLOCATE( State_Diag%BudgetMassPBL1( IM, JM, nFields ), STAT=RC )
+          CALL GC_CheckVar( 'State_Diag%BudgetMassPBL1', 0, RC )
+          IF ( RC /= GC_SUCCESS ) RETURN
+          State_Diag%BudgetMassPBL1 = 0.0_f8
 
-       ! 4th dimension is column region: Full, Trop, PBL respectively
-       IF ( RC /= GC_SUCCESS ) RETURN
+          ALLOCATE( State_Diag%BudgetMassPBL2( IM, JM, nFields ), STAT=RC )
+          CALL GC_CheckVar( 'State_Diag%BudgetMassPBL2', 0, RC )
+          IF ( RC /= GC_SUCCESS ) RETURN
+          State_Diag%BudgetMassPBL2 = 0.0_f8
+       ENDIF
     ENDIF
 
     ! Trap potential errors

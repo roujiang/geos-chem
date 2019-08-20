@@ -240,7 +240,7 @@
      &        State_Chm   = State_Chm,
      &        State_Grid  = State_Grid,
      &        State_Met   = State_Met,
-     &        SpcMapping  = State_Chm%Map_WetDep,
+     &        SpcMapping  = State_Chm%Map_Advect,
      &        isFull      = State_Diag%Archive_BudgetWetDepFull, 
      &        SpcMapFull  = State_Diag%Map_BudgetWetDepFull,
      &        ColMassFull = State_Diag%BudgetMassFull1, 
@@ -250,7 +250,7 @@
      &        isPBL       = State_Diag%Archive_BudgetWetDepPBL,  
      &        SpcMapPBL   = State_Diag%Map_BudgetWetDepPBL, 
      &        ColMassPBL  = State_Diag%BudgetMassPBL1, 
-     &        RC          = RC                                       )
+     &        RC          = RC                                   )
 
          ! Trap potential errors
          IF ( RC /= GC_SUCCESS ) THEN
@@ -371,7 +371,7 @@
      &        State_Chm   = State_Chm,
      &        State_Grid  = State_Grid,
      &        State_Met   = State_Met,
-     &        SpcMapping  = State_Chm%Map_WetDep,
+     &        SpcMapping  = State_Chm%Map_Advect,
      &        isFull      = State_Diag%Archive_BudgetWetDepFull, 
      &        SpcMapFull  = State_Diag%Map_BudgetWetDepFull,
      &        ColMassFull = State_Diag%BudgetMassFull2, 
@@ -396,7 +396,7 @@
      &        am_I_Root     = am_I_Root,
      &        State_Grid    = State_Grid,
      &        TS            = DT_Dyn,  
-     &        SpcMapping    = State_Chm%Map_WetDep,
+     &        SpcMapping    = State_Chm%Map_Advect,
      &        isFull        = State_Diag%Archive_BudgetWetDepFull,
      &        SpcMapFull    = State_Diag%Map_BudgetWetDepFull,
      &        diagFull      = State_Diag%BudgetWetDepFull,
