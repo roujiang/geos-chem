@@ -2229,6 +2229,8 @@
 !  04 Sep 2013 - R. Yantosca - Bug fix: Prevent div-by-zero if F=0.  Because F
 !                              multiplies the whole expression for WASHFRAC,
 !                              WASHFRAC=0 whenever F=0 anyway.
+!  27 Jun 2019 - C. Keller - Change threshold from 268K to 240K, as recommended
+!                            by Eric Fleming (NASA GSFC).
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -2464,7 +2466,7 @@
       ELSE
 
          !------------------------
-         ! T < 268K: No washout
+         ! T < 240K: No washout
          !------------------------
          WASHFRAC = 0e+0_fp
 
