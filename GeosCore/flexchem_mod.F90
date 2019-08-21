@@ -209,6 +209,7 @@ CONTAINS
 !  03 Jan 2018 - M. Sulprizio- Replace UCX CPP switch with Input_Opt%LUCX
 !  18 Jan 2018 - R. Yantosca - Now do photolysis for all levels, so that 
 !                              J-values can be saved up to the atm top
+!  27 Jun 2019 - C. Keller   - Allow SZA up to 98 deg
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -731,13 +732,15 @@ CONTAINS
        ! This modification was validated by a geosfp_4x5_standard
        ! difference test. (bmy, 1/18/18)
        !
-       ! Update SUNCOSmid threshold from 0 to cos(98 degrees) since
-       ! fast-jx allows for SZA down to 98 degrees. This is important in
-       ! the stratosphere-mesosphere where sunlight still illuminates at 
-       ! high altitudes if the sun is below the horizon at the surface
-       ! (update submitted by E. Fleming (NASA), 10/11/2018)
+       ! Allow SZA to go down to 98 degrees (ie, COS(SZA) > -.13917),
+       ! to be consistent with FAST-Jx. Beyond 98 degrees gives
+       ! spurrious results. This is important for the stratosphere and
+       ! mesosphere where sunlight still illuminates if the sun is below
+       ! the horizon at the surface.  (EF, 10/4/2018)
        !====================================================================
-       IF ( State_Met%SUNCOSmid(I,J) > -0.1391731e+0_fp ) THEN
+       !IF ( State_Met%SUNCOSmid(I,J) > 0.e+0_fp ) THEN
+       ! Let it go up to 98 degrees (ckeller, 10/10/18)
+       IF ( State_Met%SUNCOSmid(I,J) > -0.13917e+0_fp ) THEN
 
           ! Get the fraction of H2SO4 that is available for photolysis
           ! (this is only valid for UCX-enabled mechanisms)
