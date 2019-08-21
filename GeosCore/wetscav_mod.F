@@ -2432,6 +2432,8 @@
 !  04 Sep 2013 - R. Yantosca - Bug fix: Prevent div-by-zero if F=0.  Because F 
 !                              multiplies the whole expression for WASHFRAC,
 !                              WASHFRAC=0 whenever F=0 anyway.
+!  27 Jun 2019 - C. Keller - Change threshold from 268K to 240K, as recommended
+!                            by NASA GSFC (Eric Fleming).
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -2444,7 +2446,11 @@
       !=================================================================
       ! WASHFRAC_HNO3 begins here!
       !=================================================================
+#if defined(MODEL_GEOS)
+      IF ( TK >= 240e+0_fp  ) THEN
+#else
       IF ( TK >= 268e+0_fp  ) THEN
+#endif
 
          !------------------------
          ! T >= 268K: Do washout
