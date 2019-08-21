@@ -503,9 +503,13 @@ MODULE Input_Opt_Mod
      INTEGER                     :: FJX_EXTRAL_ITERMAX = 5
      LOGICAL                     :: FJX_EXTRAL_ERR     = .TRUE.
      LOGICAL                     :: KppStop            = .TRUE. ! Stop KPP if integration fails twice
+     ! Toggle for het rates. If true, turns off three Cl producing het reactions
+     ! in the stratosphere. In MODEL_GEOS, this flag is set in GEOSCHEMchem_GridComp.rc
+     LOGICAL                     :: TurnOffHetRates = .FALSE.
 #else
      LOGICAL                     :: haveImpRst
      LOGICAL                     :: AlwaysSetH2O
+     LOGICAL                     :: TurnOffHetRates
 #endif
 
      !----------------------------------------
@@ -599,6 +603,7 @@ MODULE Input_Opt_Mod
 !                              from gridded comp module directly.
 !  15 Oct 2018 - E. Lundgren - Remove LFUTURECFC; no longer needed with ucx_mod updates
 !  11 Nov 2018 - M. Sulprizio- Move fields for grid menu to state_grid_mod.F90
+!  19 Jun 2019 - C. Keller   - Added toggle TurnOffHetRates.
 !EOP
 !------------------------------------------------------------------------------
 !BOC
@@ -1334,6 +1339,7 @@ CONTAINS
 #else
     Input_Opt%haveImpRst             = .FALSE.
     Input_Opt%AlwaysSetH2O           = .FALSE.
+    Input_Opt%TurnOffHetRates        = .FALSE.
 #endif
 
     !----------------------------------------
