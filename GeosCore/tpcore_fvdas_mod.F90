@@ -1042,7 +1042,9 @@ CONTAINS
        IF ( Do_ND24 .or. State_Diag%Archive_AdvFluxZonal ) THEN
 
           ! For advected species IQ, find its slot in State_Diag%AdvFluxZonal
-          AdvId = State_Diag%Map_AdvFluxZonal(IQ)
+          IF ( State_Diag%Archive_AdvFluxZonal ) THEN
+             AdvId = State_Diag%Map_AdvFluxZonal(IQ)
+          ENDIF
 
           ! Zero temp array
           DTC = 0e+0_fp
@@ -1106,7 +1108,9 @@ CONTAINS
        IF ( Do_ND25 .or. State_Diag%Archive_AdvFluxMerid ) THEN
 
           ! For advected species IQ, find its slot in State_Diag%AdvFluxMerid
-          AdvId = State_Diag%Map_AdvFluxMerid(IQ)
+          IF ( State_Diag%Archive_AdvFluxMerid ) THEN
+             AdvId = State_Diag%Map_AdvFluxMerid(IQ)
+          ENDIF
 
           ! Zero temp array
           DTC = 0e+0_fp
@@ -1177,7 +1181,9 @@ CONTAINS
        IF ( Do_ND26 .or. State_Diag%Archive_AdvFluxVert ) THEN
           
           ! For advected species IQ, find its slot in State_Diag%AdvFluxMerid
-          AdvId = State_Diag%Map_AdvFluxVert(IQ)
+          IF ( State_Diag%Archive_AdvFluxVert ) THEN
+             AdvId = State_Diag%Map_AdvFluxVert(IQ)
+          ENDIF
 
           ! Zero temp array
           DTC = 0e+0_fp
