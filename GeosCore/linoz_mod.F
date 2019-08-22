@@ -1231,8 +1231,10 @@
          enddo
 
          ! Write overall min & max
-         write (6,912) TITL1,TMIN,TMAX
- 912     FORMAT('  Linoz Data:  ',a80,1p,2e10.3)
+         IF ( am_I_Root ) THEN
+            write (6,912) TITL1,TMIN,TMAX
+ 912        FORMAT('  Linoz Data:  ',a80,1p,2e10.3)
+         ENDIF
 
       enddo
 
