@@ -274,7 +274,11 @@
       LD17 = 1
       LD18 = 1
       LD19 = 1
+#endif
+#if defined( BPCH_DIAG ) || defined( MODEL_GEOS )
       LD21 = 1
+#endif
+#if defined( BPCH_DIAG )
       LD22 = 1
       LD24 = 1
       LD25 = 1
@@ -504,7 +508,7 @@
          ENDIF
       ENDIF
 #endif
-#if defined( BPCH_DIAG ) || defined( MODEL_GEOS )
+#if defined( BPCH_DIAG )
       !=================================================================
       ! ND21: Optical depths and cloud fractions [unitless]
       !       --> uses AD21 array (allocatable) 
@@ -1162,7 +1166,11 @@
       Input_Opt%LD17  = LD17
       Input_Opt%LD18  = LD18
       Input_Opt%LD19  = LD19
+#endif
+#if defined( BPCH_DIAG )
       Input_Opt%LD21  = LD21
+#endif
+#if defined( BPCH_DIAG )
       Input_Opt%LD22  = LD22
       Input_Opt%LD24  = LD24
       Input_Opt%LD25  = LD25

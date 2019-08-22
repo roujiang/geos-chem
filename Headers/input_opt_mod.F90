@@ -490,6 +490,8 @@ MODULE Input_Opt_Mod
      ! Fields for interface to GEOS-5 GCM
      !----------------------------------------
 #if defined( MODEL_GEOS )
+     LOGICAL                     :: LCAPTROP     = .FALSE.
+     !REAL(fp)                    :: OZONOPAUSE   = -999.0
      LOGICAL                     :: haveImpRst   = .FALSE.
      LOGICAL                     :: AlwaysSetH2O = .TRUE.
      LOGICAL                     :: UseOnlineVUD = .FALSE.
@@ -1327,6 +1329,7 @@ CONTAINS
     ! Fields for interface to GEOS-5 GCM
     !----------------------------------------
 #if defined( MODEL_GEOS )
+!    Input_Opt%OZONOPAUSE             = -999.0 
 !    Input_Opt%haveImpRst             = .FALSE.
 !    Input_Opt%AlwaysSetH2O           = .FALSE.
 !    Input_Opt%LLFASTJX               = -999

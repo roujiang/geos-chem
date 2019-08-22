@@ -1027,7 +1027,7 @@
 !
       USE CMN_FJX_MOD
       USE CMN_SIZE_MOD
-#if defined( BPCH_DIAG ) || defined( MODEL_GEOS )
+#if defined( BPCH_DIAG )
       USE CMN_DIAG_MOD
       USE DIAG_MOD,           ONLY : AD21
 #endif
@@ -1293,7 +1293,7 @@
       ENDDO
 !$OMP END PARALLEL DO
 
-#if defined( BPCH_DIAG ) || defined( MODEL_GEOS )
+#if defined( BPCH_DIAG )
       !=================================================================
       ! ND21 Diagnostic: 
       !

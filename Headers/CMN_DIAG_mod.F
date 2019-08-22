@@ -48,7 +48,7 @@
       INTEGER, PARAMETER :: PD17=8           
       INTEGER, PARAMETER :: PD18=8
       INTEGER, PARAMETER :: PD19=3
-#if defined( BPCH_DIAG ) || defined( BPCH_TIMESER ) || defined( MODEL_GEOS )
+#if defined( BPCH_DIAG ) || defined( BPCH_TIMESER ) 
       INTEGER, PARAMETER :: PD21=8+(NRHAER+NDUST)*3+(NRHAER*2)+
      &                           (NSTRATAER*3)
 #endif
@@ -122,7 +122,7 @@
       ! Added LD59, LD60, LD61 (bmy, 1/22/10)
       ! Added LD57 (hotp 7/31/09)
       !=================================================================
-      INTEGER :: LD12, LD13, LD14, LD15, LD16, LD17, LD18, LD21, LD22
+      INTEGER :: LD12, LD13, LD14, LD15, LD16, LD17, LD18, LD22
       INTEGER :: LD24, LD25, LD26, LD37, LD38, LD39, LD43, LD45, LD47
       INTEGER :: LD54, LD64, LD65, LD66, LD68, LD01, LD02, LD05, LD07
       INTEGER :: LD09, LD10, LD31, LD52, LD19, LD57, LD59, LD60
